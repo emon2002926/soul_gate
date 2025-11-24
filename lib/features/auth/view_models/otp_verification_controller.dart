@@ -1,0 +1,426 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../../../core/constants/app_constant.dart';
+import '../../../core/routes/app_routes.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import 'dart:async';
+
+
+class OtpVerificationController extends GetxController {
+  final otpControllers = List.generate(6, (_) => TextEditingController());
+  final focusNodes = List.generate(6, (_) => FocusNode());
+
+  final isLoading = false.obs;
+  final email = ''.obs;
+  final isFromSignUp = false.obs;
+  final resendCountdown = 0.obs;
+  Timer? resendTimer;
+
+  // Base URL - Replace with your actual API base URL
+  static final String baseUrl = AppConstant.instance.baseUrl;
+
+  @override
+  void onInit() {
+    super.onInit();
+    // Get arguments passed from previous screen
+    final args = Get.arguments;
+    if (args != null) {
+      email.value = args['email'] ?? '';
+      isFromSignUp.value = args['isFromSignUp'] ?? false;
+    }
+
+    // Start countdown timer when controller is initialized
+    startResendCountdown(60);
+  }
+
+  String get otpCode =>
+      otpControllers.map((controller) => controller.text).join();
+
+  void startResendCountdown(int seconds) {
+    resendCountdown.value = seconds;
+    resendTimer?.cancel();
+    resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (resendCountdown.value > 0) {
+        resendCountdown.value--;
+      } else {
+        timer.cancel();
+      }
+    });
+  }
+
+  void onOtpChanged(String value, int index) {
+    if (value.length == 1 && index < 5) {
+      focusNodes[index + 1].requestFocus();
+    } else if (value.isEmpty && index > 0) {
+      focusNodes[index - 1].requestFocus();
+    }
+  }
+
+  // Main verify method that routes to correct verification
+  Future<void> verifyCode() async {
+    if (isFromSignUp.value) {
+      await signupVerifyCode();
+    } else {
+      await resetPassVerifyCode();
+    }
+  }
+
+  // Signup email verification
+  Future<void> signupVerifyCode() async {
+    // Validate OTP length
+    if (otpCode.length != 6) {
+      Get.snackbar(
+        "Error",
+        "Please enter the complete 6-digit code.",
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    // Validate email
+    if (email.value.isEmpty) {
+      Get.snackbar(
+        "Error",
+        "Email not found. Please try again.",
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+
+      final url = Uri.parse('$baseUrl/auth/email/verify');
+
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'email': email.value,
+          'otp': otpCode,
+        }),
+      );
+
+      final responseData = jsonDecode(response.body);
+
+      if (response.statusCode == 200 && responseData['success'] == true) {
+        // Cancel timer on successful verification
+        resendTimer?.cancel();
+
+        // Extract and save access token
+        // final accessToken = responseData['data']['token'];
+        // await StorageService.saveToken(accessToken);
+
+        Get.snackbar(
+          "Success",
+          responseData['message'] ?? "Email verified successfully!",
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: const Color(0xFF4CAF50),
+          colorText: Colors.white,
+        );
+
+        // Navigate to profile creation or main app
+        Get.offAllNamed(AppRoutes.login);
+      } else {
+        // Handle error response
+        Get.snackbar(
+          "Error",
+          responseData['message'] ?? 'Invalid or expired OTP code',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "Something went wrong: ${e.toString()}",
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // Reset password verification
+  Future<void> resetPassVerifyCode() async {
+    // Validate OTP length
+    if (otpCode.length != 6) {
+      Get.snackbar(
+        "Error",
+        "Please enter the complete 6-digit code.",
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    // Validate email
+    if (email.value.isEmpty) {
+      Get.snackbar(
+        "Error",
+        "Email not found. Please try again.",
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+
+      final url = Uri.parse('$baseUrl/forgot-password/check-reset-code');
+
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'email': email.value,
+          'otp': otpCode,
+        }),
+      );
+
+      final responseData = jsonDecode(response.body);
+
+      if (response.statusCode == 200 && responseData['success'] == true) {
+        // Cancel timer on successful verification
+        resendTimer?.cancel();
+
+        Get.snackbar(
+          "Success",
+          responseData['message'] ?? "Code verified!",
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: const Color(0xFF4CAF50),
+          colorText: Colors.white,
+        );
+
+        // Navigate to reset password page
+        Get.toNamed(
+          AppRoutes.resetPassword,
+          arguments: {
+            'email': email.value,
+            'otp': otpCode,
+          },
+        );
+      } else {
+        // Handle error response
+        Get.snackbar(
+          "Error",
+          responseData['message'] ?? 'Invalid or expired OTP code',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "Something went wrong: ${e.toString()}",
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // Main resend method that routes to correct resend
+  Future<void> resendOtp() async {
+    if (isFromSignUp.value) {
+      await signupResendOtp();
+    } else {
+      await resetPassResendOtp();
+    }
+  }
+
+  // Resend OTP for signup
+  Future<void> signupResendOtp() async {
+    // Check if countdown is still running
+    if (resendCountdown.value > 0) {
+      Get.snackbar(
+        "Please Wait",
+        "You can resend code in ${resendCountdown.value} seconds",
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    if (email.value.isEmpty) {
+      Get.snackbar(
+        "Error",
+        "Email not found. Please try again.",
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+
+      final url = Uri.parse('$baseUrl/auth/email/resend-otp');
+
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'email': email.value,
+        }),
+      );
+
+      final responseData = jsonDecode(response.body);
+
+      if (response.statusCode == 200 && responseData['success'] == true) {
+        // Start countdown timer
+        startResendCountdown(60);
+
+        Get.snackbar(
+          "OTP Sent",
+          responseData['message'] ?? "Verification code resent to your email.",
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.blueAccent,
+          colorText: Colors.white,
+        );
+
+        // Clear existing OTP fields
+        for (var controller in otpControllers) {
+          controller.clear();
+        }
+        // Focus on first field
+        focusNodes[0].requestFocus();
+      } else {
+        Get.snackbar(
+          "Error",
+          responseData['message'] ?? 'Failed to resend OTP',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "Something went wrong: ${e.toString()}",
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // Resend OTP for password reset
+  Future<void> resetPassResendOtp() async {
+    // Check if countdown is still running
+    if (resendCountdown.value > 0) {
+      Get.snackbar(
+        "Please Wait",
+        "You can resend code in ${resendCountdown.value} seconds",
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    if (email.value.isEmpty) {
+      Get.snackbar(
+        "Error",
+        "Email not found. Please try again.",
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+
+      final url = Uri.parse('$baseUrl/forgot-password/send-reset-code');
+
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'email': email.value,
+        }),
+      );
+
+      final responseData = jsonDecode(response.body);
+
+      if (response.statusCode == 200 && responseData['success'] == true) {
+        // Start countdown timer
+        startResendCountdown(60);
+
+        Get.snackbar(
+          "OTP Sent",
+          responseData['message'] ?? "Password reset code resent to your email.",
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.blueAccent,
+          colorText: Colors.white,
+        );
+
+        // Clear existing OTP fields
+        for (var controller in otpControllers) {
+          controller.clear();
+        }
+        // Focus on first field
+        focusNodes[0].requestFocus();
+      } else {
+        Get.snackbar(
+          "Error",
+          responseData['message'] ?? 'Failed to resend OTP',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "Something went wrong: ${e.toString()}",
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  @override
+  void onClose() {
+    resendTimer?.cancel();
+    for (var controller in otpControllers) {
+      controller.dispose();
+    }
+    for (var node in focusNodes) {
+      node.dispose();
+    }
+    super.onClose();
+  }
+}

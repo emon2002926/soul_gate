@@ -3,8 +3,6 @@ import 'package:get/get.dart';
 import 'package:soul_gate/features/home/views/reveal_screen.dart';
 import '../controllers/card_controller.dart';
 import 'dart:math' as math;
-
-
 class ShuffleScreen extends StatelessWidget {
   final CardController controller = Get.put(CardController());
 

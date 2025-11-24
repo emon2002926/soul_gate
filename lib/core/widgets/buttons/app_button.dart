@@ -1,84 +1,81 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-
 
 class AppButton extends StatelessWidget {
   final String buttonText;
-  final VoidCallback? onPressed;
-  final Color? backgroundColor;
+  final VoidCallback? onPressed; // Changed to nullable
   final Color? textColor;
   final double? borderRadius;
   final double? fontSize;
-  final double? elevation;
   final double? buttonHeight;
   final double? buttonWidth;
   final IconData? prefixIcon;
   final IconData? suffixIcon;
   final FontWeight? fontWeight;
   final bool isLoading;
-  final Gradient? gradient;
+  final double? elevation;
+  final Color? fillColor;
+  final Color? borderColor;
+  final double? borderWidth;
 
   const AppButton({
     super.key,
     required this.buttonText,
-    this.onPressed,
-    this.backgroundColor,
+    required this.onPressed,
     this.textColor,
     this.borderRadius,
     this.fontSize,
-    this.elevation=20,
     this.buttonHeight,
     this.buttonWidth,
     this.prefixIcon,
     this.suffixIcon,
     this.fontWeight,
     this.isLoading = false,
-    this.gradient,
+    this.elevation,
+    this.fillColor,
+    this.borderColor,
+    this.borderWidth,
   });
 
   @override
   Widget build(BuildContext context) {
-    final double radius = borderRadius ?? 12;
-
-    final Gradient defaultGradient = const LinearGradient(
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
-      colors: [
-        Color(0xFF5B8CDE),
-        Color(0xFFB47BC8),
-      ],
-    );
+    final double radius = borderRadius ?? 10;
+    final bool isDisabled = onPressed == null || isLoading;
 
     return SizedBox(
       width: buttonWidth ?? double.infinity,
-      height: buttonHeight ?? 56,
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: gradient ?? defaultGradient,
-          borderRadius: BorderRadius.circular(radius),
-          boxShadow: elevation != null && elevation! > 0
-              ? [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: elevation!,
-              offset: const Offset(0, 2),
+      height: buttonHeight ?? 48,
+      child: Opacity(
+        opacity: isDisabled ? 0.6 : 1.0, // Visual feedback when disabled
+        child: GestureDetector(
+          onTap: isDisabled ? null : onPressed,
+          child: Container(
+            decoration: BoxDecoration(
+              color: fillColor ?? Color(0xff7a7777),
+              borderRadius: BorderRadius.circular(radius),
+              border: Border.all(
+                color: borderColor ?? Colors.transparent,
+                width: borderWidth ?? 0,
+              ),
             ),
-          ]
-              : null,
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: isLoading ? null : onPressed,
-            borderRadius: BorderRadius.circular(radius),
-            child: Center(
+            child: ElevatedButton(
+              onPressed: isDisabled ? null : onPressed,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+                elevation: elevation ?? 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(radius),
+                ),
+                padding: EdgeInsets.zero,
+                disabledBackgroundColor: Colors.transparent, // Keep transparent when disabled
+              ),
               child: isLoading
-                  ? const SizedBox(
-                width: 24,
+                  ? SizedBox(
                 height: 24,
+                width: 24,
                 child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation(Colors.white),
+                  valueColor: AlwaysStoppedAnimation(textColor ?? Colors.white),
+                  strokeWidth: 2.5,
                 ),
               )
                   : Row(
@@ -95,9 +92,9 @@ class AppButton extends StatelessWidget {
                   ],
                   Text(
                     buttonText,
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       color: textColor ?? Colors.white,
-                      fontSize: fontSize ?? 18,
+                      fontSize: fontSize ?? 16,
                       fontWeight: fontWeight ?? FontWeight.w600,
                     ),
                   ),

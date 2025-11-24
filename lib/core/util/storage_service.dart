@@ -1,39 +1,61 @@
 import 'package:get_storage/get_storage.dart';
+import 'package:get_storage/get_storage.dart';
+
+import '../user_profile.dart';
+
 class StorageService {
   static final _box = GetStorage();
-  static const _tokenKey = 'token';
-  static const _refreshKey = 'refresh';
+  static const _tokenKey = 'access_token';
+  static const _userProfileKey = 'user_profile';
+  static const _userRoleKey = 'user_role';
 
-  static Future<void> saveTokens(String accessToken, String refreshToken) async {
+  static Future<void> saveToken(String accessToken) async {
     await _box.write(_tokenKey, accessToken);
-    await _box.write(_refreshKey, refreshToken);
   }
 
   static String? get accessToken => _box.read(_tokenKey);
-  static String? get refreshToken => _box.read(_refreshKey);
+
   static bool get hasToken => accessToken != null && accessToken!.isNotEmpty;
 
-  static Future<void> clearTokens() async {
+  static Future<void> clearToken() async {
     await _box.remove(_tokenKey);
-    await _box.remove(_refreshKey);
   }
 
-
-  static Future<void> clearAllData() async {
-    await _box.remove(_tokenKey);
-    await _box.remove(_refreshKey);
+  // Save user role
+  static Future<void> saveUserRole(String role) async {
+    await _box.write(_userRoleKey, role);
   }
 
-  static Future<void> saveLoginData({
-    required String accessToken,
-    required String refreshToken,
-    required bool drivingLicense,
-  }) async {
-    await saveTokens(accessToken, refreshToken);
+  // Get user role
+  static String? get userRole => _box.read(_userRoleKey);
+
+  // Clear user role
+  static Future<void> clearUserRole() async {
+    await _box.remove(_userRoleKey);
   }
+
+  // Save user profile
+  static Future<void> saveUserProfile(UserProfile profile) async {
+    await _box.write(_userProfileKey, profile.toJson());
+  }
+
+  // Get user profile
+  static UserProfile? get userProfile {
+    final data = _box.read(_userProfileKey);
+    if (data != null) {
+      return UserProfile.fromJson(data);
+    }
+    return null;
+  }
+
+  // Clear user profile
+  static Future<void> clearUserProfile() async {
+    await _box.remove(_userProfileKey);
+  }
+
   static Future<void> logout() async {
-    await clearAllData();
+    await clearToken();
+    await clearUserProfile();
+    await clearUserRole();
   }
-
-
 }
