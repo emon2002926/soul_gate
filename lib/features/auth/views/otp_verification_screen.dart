@@ -6,24 +6,22 @@ import '../view_models/otp_verification_controller.dart';
 import 'package:flutter/services.dart';
 
 
-class OtpVerificationPage extends StatelessWidget {
-  const OtpVerificationPage({super.key});
+class OtpVerificationScreen extends StatelessWidget {
+  const OtpVerificationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(OtpVerificationController());
 
     return Scaffold(
-      backgroundColor: Colors.amber,
       appBar: AppBar(
-        backgroundColor: Colors.amber,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 20),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: const AppText(
-          data: 'Qube',
+          data: '',
           fontSize: 24,
           fontWeight: FontWeight.w600,
           color: Colors.black,
@@ -42,26 +40,24 @@ class OtpVerificationPage extends StatelessWidget {
 
                   // Title - conditional based on flow
                   AppText(
-                    data: controller.isFromSignUp.value
-                        ? 'Verify your\naccount'
-                        : 'Forgot your\npassword',
+                    data: 'Enter Your OTP',
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                     height: 1.2,
                   ),
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 10),
 
-                  // Subtitle - conditional based on flow with email
-                  AppText(
-                    data: controller.isFromSignUp.value
-                        ? 'Enter the verification code sent to\n${controller.email.value}'
-                        : 'Enter the verification code sent to\n${controller.email.value.isNotEmpty ? controller.email.value : "your email"}',
-                    fontSize: 16,
-                    color: Colors.grey,
-                    height: 1.4,
-                  ),
+                  // // Subtitle - conditional based on flow with email
+                  // AppText(
+                  //   data: controller.isFromSignUp.value
+                  //       ? 'Enter the verification code sent to\n${controller.email.value}'
+                  //       : 'Enter the verification code sent to\n${controller.email.value.isNotEmpty ? controller.email.value : "your email"}',
+                  //   fontSize: 16,
+                  //   color: Colors.grey,
+                  //   height: 1.4,
+                  // ),
 
                   const SizedBox(height: 40),
 
@@ -111,10 +107,24 @@ class OtpVerificationPage extends StatelessWidget {
                   const SizedBox(height: 30),
 
                   // Resend section with countdown timer
+
+
+                  // Continue button with conditional text and action
+                  AppButton(
+                    buttonText: controller.isLoading.value
+                        ? 'Verifying...'
+                        : (controller.isFromSignUp.value ? 'Verify Account' : 'Continue'),
+                    onPressed: controller.isLoading.value ? null : controller.verifyCode,
+                    fontSize: 16,
+                    isLoading: controller.isLoading.value,
+                  ),
+
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+
                   Row(
                     children: [
                       AppText(
-                        data: "Didn't receive the code? ",
+                        data: " Didn't receive the code?  ",
                         fontSize: 14,
                         color: Colors.grey[600],
                       ),
@@ -149,22 +159,6 @@ class OtpVerificationPage extends StatelessWidget {
                     ],
                   ),
 
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-
-                  // Continue button with conditional text and action
-                  AppButton(
-                    buttonText: controller.isLoading.value
-                        ? 'Verifying...'
-                        : (controller.isFromSignUp.value ? 'Verify Account' : 'Continue'),
-                    onPressed: controller.isLoading.value ? null : controller.verifyCode,
-                    fillColor: const Color(0xffE0E0E0),
-                    textColor: Colors.black,
-                    borderRadius: 12,
-                    buttonHeight: 56,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    isLoading: controller.isLoading.value,
-                  ),
 
                   const SizedBox(height: 40),
                 ],

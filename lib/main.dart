@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_storage/get_storage.dart';
+import 'core/onboarding/splash/controller/splash_controller.dart';
+import 'core/onboarding/splash/views/splash_screen.dart';
 import 'core/routes/app_routes_file.dart';
-import 'features/home/home_screen.dart';
-import 'features/onboarding/splash/controller/splash_controller.dart';
 import 'package:get/get.dart';
 
-import 'features/onboarding/splash/views/splash_screen.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Add this
-
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.light,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:soul_gate/features/auth/views/widget/custom_text_field.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/text/app_text.dart';
@@ -43,17 +42,17 @@ import '../view_models/sign_up_controller.dart';
                    children: [
                      SizedBox(height: 20.h),
                      AppText(
-                       data: 'Create a new\naccount',
-                       fontSize: 32,
+                       data: 'Sign UP',
+                       fontSize: 50,
                        fontWeight: FontWeight.bold,
                        color: AppColors.instance.titleTextColor,
                        height: 1.0,
                      ),
-                     SizedBox(height: 20.h),
+                     SizedBox(height: 28.h),
 
                      // Email field
                      AppTextField(
-                       hintText: 'Full Name',
+                       label: 'Full Name',
                        controller: controller.fullNameController,
                        validator: controller.validateFullName,
                      ),
@@ -61,82 +60,81 @@ import '../view_models/sign_up_controller.dart';
 
                      // Email field
                      AppTextField(
-                       hintText: 'Email',
+                       label: 'Email',
                        controller: controller.emailController,
                        keyboardType: TextInputType.emailAddress,
                        validator: controller.validateEmail,
                      ),
-                     SizedBox(height: 20.h),
 
-                     // Phone Number field
-                     AppTextField(
-                       hintText: 'Phone Number',
-                       controller: controller.phoneController,
-                       keyboardType: TextInputType.phone,
-                       validator: controller.validatePhone,
-                     ),
+                     // SizedBox(height: 20.h),
+                     // AppTextField(
+                     //   hintText: 'Phone Number',
+                     //   controller: controller.phoneController,
+                     //   keyboardType: TextInputType.phone,
+                     //   validator: controller.validatePhone,
+                     // ),
                      SizedBox(height: 20.h),
 
                      // Date of Birth field
-                     GestureDetector(
-                       onTap: controller.selectDateOfBirth,
-                       child: AbsorbPointer(
-                         child: CustomTextField(
-                           controller: controller.dobController,
-                           hintText: "Date of birth",
-                           borderRadius: 12,
-                           validator: controller.validateDOB,
-                           suffix: const Icon(
-                             Icons.calendar_today,
-                             size: 16,
-                             color: Colors.grey,
-                           ),
-                         ),
-                       ),
-                     ),
-                     SizedBox(height: 20.h),
+                     // GestureDetector(
+                     //   onTap: controller.selectDateOfBirth,
+                     //   child: AbsorbPointer(
+                     //     child: CustomTextField(
+                     //       controller: controller.dobController,
+                     //       hintText: "Date of birth",
+                     //       borderRadius: 12,
+                     //       validator: controller.validateDOB,
+                     //       suffix: const Icon(
+                     //         Icons.calendar_today,
+                     //         size: 16,
+                     //         color: Colors.grey,
+                     //       ),
+                     //     ),
+                     //   ),
+                     // ),
+                     // SizedBox(height: 20.h),
 
                      // Gender Dropdown
-                     Obx(() => DropdownButtonFormField<String>(
-                       decoration: InputDecoration(
-                         hintText: 'Select Gender',
-                         filled: true,
-                         fillColor: Colors.white,
-                         contentPadding: const EdgeInsets.symmetric(
-                             horizontal: 16, vertical: 14),
-                         border: OutlineInputBorder(
-                           borderRadius: BorderRadius.circular(12),
-                           borderSide: BorderSide.none,
-                         ),
-                         enabledBorder: OutlineInputBorder(
-                           borderRadius: BorderRadius.circular(12),
-                           borderSide: BorderSide.none,
-                         ),
-                         focusedBorder: OutlineInputBorder(
-                           borderRadius: BorderRadius.circular(12),
-                           borderSide: const BorderSide(color: Colors.blue, width: 2),
-                         ),
-                       ),
-                       initialValue: controller.selectedGender.value.isEmpty
-                           ? null
-                           : controller.selectedGender.value,
-                       items: controller.genderList.map((String gender) {
-                         return DropdownMenuItem<String>(
-                           value: gender,
-                           child: Text(gender),
-                         );
-                       }).toList(),
-                       onChanged: (value) {
-                         if (value != null) controller.setGender(value);
-                       },
-                       validator: (value) => controller.validateGender(value),
-                     )),
+                     // Obx(() => DropdownButtonFormField<String>(
+                     //   decoration: InputDecoration(
+                     //     hintText: 'Select Gender',
+                     //     filled: true,
+                     //     fillColor: Colors.white,
+                     //     contentPadding: const EdgeInsets.symmetric(
+                     //         horizontal: 16, vertical: 14),
+                     //     border: OutlineInputBorder(
+                     //       borderRadius: BorderRadius.circular(12),
+                     //       borderSide: BorderSide.none,
+                     //     ),
+                     //     enabledBorder: OutlineInputBorder(
+                     //       borderRadius: BorderRadius.circular(12),
+                     //       borderSide: BorderSide.none,
+                     //     ),
+                     //     focusedBorder: OutlineInputBorder(
+                     //       borderRadius: BorderRadius.circular(12),
+                     //       borderSide: const BorderSide(color: Colors.blue, width: 2),
+                     //     ),
+                     //   ),
+                     //   initialValue: controller.selectedGender.value.isEmpty
+                     //       ? null
+                     //       : controller.selectedGender.value,
+                     //   items: controller.genderList.map((String gender) {
+                     //     return DropdownMenuItem<String>(
+                     //       value: gender,
+                     //       child: Text(gender),
+                     //     );
+                     //   }).toList(),
+                     //   onChanged: (value) {
+                     //     if (value != null) controller.setGender(value);
+                     //   },
+                     //   validator: (value) => controller.validateGender(value),
+                     // )),
 
-                     SizedBox(height: 20.h),
+                     // SizedBox(height: 20.h),
 
                      // Password field
                      Obx(() => AppTextField(
-                       hintText: 'Password',
+                       label: 'Password',
                        controller: controller.passwordController,
                        obscureText: !controller.isPasswordVisible.value,
                        suffixIcon: controller.isPasswordVisible.value
@@ -150,7 +148,7 @@ import '../view_models/sign_up_controller.dart';
 
                      // Confirm Password field (optional - you can add validation)
                      Obx(() => AppTextField(
-                       hintText: 'Confirm Password',
+                       label: 'Confirm Password',
                        obscureText: !controller.isPasswordVisible.value,
                        suffixIcon: controller.isPasswordVisible.value
                            ? Icons.visibility_outlined
@@ -195,9 +193,8 @@ import '../view_models/sign_up_controller.dart';
                        onPressed: controller.isLoading.value
                            ? null
                            : controller.submitProfile,
-                       fillColor: Colors.grey[600],
-                       borderRadius: 12,
-                       buttonHeight: 56,
+                       fillColor: AppColors.instance.primaryBtnColor,
+                       buttonHeight: 50,
                        fontSize: 16,
                        fontWeight: FontWeight.w600,
                        isLoading: controller.isLoading.value,
@@ -237,32 +234,7 @@ import '../view_models/sign_up_controller.dart';
            ),
 
            // Loading overlay
-           Obx(() => controller.isLoading.value
-               ? Container(
-             color: Colors.black.withOpacity(0.5),
-             child: Center(
-               child: Container(
-                 padding: const EdgeInsets.all(20),
-                 decoration: BoxDecoration(
-                   color: Colors.white,
-                   borderRadius: BorderRadius.circular(12),
-                 ),
-                 child: Column(
-                   mainAxisSize: MainAxisSize.min,
-                   children: [
-                     const CircularProgressIndicator(),
-                     const SizedBox(height: 16),
-                     AppText(
-                       data: 'Creating your account...',
-                       fontSize: 16,
-                       color: Colors.black87,
-                     ),
-                   ],
-                 ),
-               ),
-             ),
-           )
-               : const SizedBox.shrink()),
+
          ],
        ),
      );

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
 class AppButton extends StatelessWidget {
   final String buttonText;
-  final VoidCallback? onPressed; // Changed to nullable
+  final VoidCallback? onPressed;
   final Color? textColor;
   final double? borderRadius;
   final double? fontSize;
@@ -12,6 +15,7 @@ class AppButton extends StatelessWidget {
   final IconData? suffixIcon;
   final FontWeight? fontWeight;
   final bool isLoading;
+  final String? loadingText; // New: Optional loading text
   final double? elevation;
   final Color? fillColor;
   final Color? borderColor;
@@ -30,6 +34,7 @@ class AppButton extends StatelessWidget {
     this.suffixIcon,
     this.fontWeight,
     this.isLoading = false,
+    this.loadingText,
     this.elevation,
     this.fillColor,
     this.borderColor,
@@ -38,19 +43,19 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double radius = borderRadius ?? 10;
+    final double radius = borderRadius ?? 25;
     final bool isDisabled = onPressed == null || isLoading;
 
     return SizedBox(
       width: buttonWidth ?? double.infinity,
-      height: buttonHeight ?? 48,
+      height: buttonHeight ?? 50,
       child: Opacity(
-        opacity: isDisabled ? 0.6 : 1.0, // Visual feedback when disabled
+        opacity: isDisabled ? 0.6 : 1.0,
         child: GestureDetector(
           onTap: isDisabled ? null : onPressed,
           child: Container(
             decoration: BoxDecoration(
-              color: fillColor ?? Color(0xff7a7777),
+              color: fillColor ?? const Color(0xFFBC9041),
               borderRadius: BorderRadius.circular(radius),
               border: Border.all(
                 color: borderColor ?? Colors.transparent,
@@ -67,16 +72,35 @@ class AppButton extends StatelessWidget {
                   borderRadius: BorderRadius.circular(radius),
                 ),
                 padding: EdgeInsets.zero,
-                disabledBackgroundColor: Colors.transparent, // Keep transparent when disabled
+                disabledBackgroundColor: Colors.transparent,
               ),
               child: isLoading
-                  ? SizedBox(
-                height: 24,
-                width: 24,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation(textColor ?? Colors.white),
-                  strokeWidth: 2.5,
-                ),
+                  ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation(
+                        textColor ?? Colors.white,
+                      ),
+                      strokeWidth: 2.5,
+                    ),
+                  ),
+                  if (loadingText != null) ...[
+                    const SizedBox(width: 12),
+                    Text(
+                      loadingText!,
+                      style: TextStyle(
+                        color: textColor ?? Colors.white,
+                        fontSize: fontSize ?? 16,
+                        fontWeight: fontWeight ?? FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ],
               )
                   : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -112,6 +136,61 @@ class AppButton extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  /// Static method to show full-screen loading overlay (Soul-gate style)
+  static Widget buildLoadingOverlay({
+    required RxBool isLoading,
+    required String loadingMessage,
+    Color? backgroundColor,
+    Color? cardColor,
+  }) {
+    return Obx(
+          () => isLoading.value
+          ? Container(
+        color: (backgroundColor ?? Colors.black).withOpacity(0.5),
+        child: Center(
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            margin: const EdgeInsets.symmetric(horizontal: 40),
+            decoration: BoxDecoration(
+              color: cardColor ?? const Color(0xFFF5F5DC), // Cream
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(
+                    Color(0xFF9B7EBD), // Purple/mauve
+                  ),
+                  strokeWidth: 3,
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  loadingMessage,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF4A4A4A),
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      )
+          : const SizedBox.shrink(),
     );
   }
 }

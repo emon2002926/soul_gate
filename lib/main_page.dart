@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:soul_gate/features/home/views/home_page.dart';
 import '../../core/widgets/bottom_navigation/bottom_navigation.dart';
-import '../card_reading/views/card_reading_screen.dart';
-import '../profile/views/profile_page.dart';
+import 'features/card_reading/views/card_reading_screen.dart';
+import 'features/profile/views/profile_page.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+
+
+
+class MainPage extends StatefulWidget {
+  const MainPage({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<MainPage> createState() => _MainPageState();
 }
-
-class _HomeScreenState extends State<HomeScreen> {
+class _MainPageState extends State<MainPage> {
   int currentIndex = 0;
-  int lastTapTime = 0; // For double-tap detection
+  int lastTapTime = 0;
 
-  // Global keys for each tab's navigator
   final homeNavKey = GlobalKey<NavigatorState>();
   final notificationNavKey = GlobalKey<NavigatorState>();
   final favoriteNavKey = GlobalKey<NavigatorState>();
@@ -24,9 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void onTabSelected(int index) {
     final currentTime = DateTime.now().millisecondsSinceEpoch;
 
-    // Double-tap detection: If the same tab is tapped twice in quick succession
     if (index == currentIndex && currentTime - lastTapTime < 500) {
-      // If double-tapped on the same tab, pop all the routes and go back to the first screen of the tab
       if (index == 0) {
         homeNavKey.currentState?.popUntil((route) => route.isFirst);
       } else if (index == 1) {
@@ -52,8 +51,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final screens = [
       // HomeScreen(),
+      HomePage(),
       ShuffleScreen(),
-      CardReadingScreen(),
       ProfilePage(),
       // SettingsScreen(),
     ];
@@ -119,10 +118,18 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: currentIndex,
-        onTabSelected: onTabSelected,
-      ),
+      bottomNavigationBar:Padding(
+        padding: const EdgeInsets.only(
+          left: 16,
+          right: 16,
+          bottom: 12, // Space at the bottom
+        ),
+        child: CustomBottomNavigationBar(
+          currentIndex: currentIndex,
+          onTabSelected: onTabSelected,
+        ),
+      )
+
     );
   }
 }

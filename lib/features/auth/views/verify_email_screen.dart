@@ -12,15 +12,8 @@ class EmailVerificationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get arguments to determine the flow
-    final Map<String, dynamic> arguments = Get.arguments as Map<String, dynamic>? ?? {};
-    final bool isFromSignUp = arguments['isFromSignUp'] ?? false;
-    final String? email = arguments['email']; // Optional email from previous screen
 
-    // Initialize controllers with flow context
-    final EmailVerificationController controller = Get.put(
-        EmailVerificationController( )
-    );
+    final EmailVerificationController controller = Get.put(EmailVerificationController());
 
     return Scaffold(
       backgroundColor: Color(0xFFCCC6C3),
@@ -48,10 +41,8 @@ class EmailVerificationPage extends StatelessWidget {
 
             // Title - conditional based on flow
             AppText(
-              data: isFromSignUp
-                  ? 'Verify your\nemail address'
-                  : 'Forgot your\npassword',
-              fontSize: 32,
+              data: 'Forgot your password',
+              fontSize: 30,
               fontWeight: FontWeight.bold,
               color: AppColors.instance.titleTextColor,
               height: 1.2,
@@ -61,9 +52,7 @@ class EmailVerificationPage extends StatelessWidget {
 
             // Subtitle - conditional based on flow
             AppText(
-              data: isFromSignUp
-                  ? 'We\'ll send a verification code to your email\nto complete your account setup'
-                  : 'Enter your email address and we\'ll send you\na verification code to reset your password',
+              data: 'Enter your email address and we\'ll send you\na verification code to reset your password',
               fontSize: 16,
               color: Colors.grey,
               height: 1.4,
@@ -73,10 +62,10 @@ class EmailVerificationPage extends StatelessWidget {
 
             // Email field
             AppTextField(
-              hintText: 'Enter your email',
+              // hintText: 'Enter your email',
+              label: 'Enter your email',
               controller: controller.emailController,
               borderColor: Colors.transparent,
-              enabled: !isFromSignUp, // Disable if coming from signup (email already known)
             ),
 
             const SizedBox(height: 20),
@@ -122,23 +111,22 @@ class EmailVerificationPage extends StatelessWidget {
               );
             }),
 
-            const Spacer(),
+            // const Spacer(),
+            const SizedBox(height: 20),
 
             // Continue button
             Obx(() {
               final isLoading = controller.isLoading.value;
               final hasCodeBeenSent = controller.hasCodeBeenSent.value;
               return AppButton(
-                buttonText: hasCodeBeenSent
-                    ? 'Continue to Verification'
-                    : (isFromSignUp ? 'Send Verification Code' : 'Send Reset Code'),
+                buttonText: 'Send Reset Code',
                 onPressed: hasCodeBeenSent
                     ? controller.continueToOtpVerification
                     : controller.sendVerificationCode,
-                fillColor: AppColors.instance.btnColor,
+                fillColor: AppColors.instance.primaryBtnColor,
                 textColor: AppColors.instance.btnTextColor,
-                borderRadius: 12,
-                buttonHeight: 56,
+                borderRadius: 25,
+                buttonHeight: 50,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 isLoading: isLoading,

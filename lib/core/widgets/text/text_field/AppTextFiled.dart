@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTextField extends StatelessWidget {
   final String? label;
   final String? label2;
-  final String hintText;
+  final String? hintText;
   final TextEditingController? controller;
   final IconData? prefixIcon;
   final IconData? suffixIcon;
@@ -16,12 +16,14 @@ class AppTextField extends StatelessWidget {
   final Color? borderColor;
   final TextInputType? keyboardType;
   final bool enabled;
+  final VoidCallback? label2OnClick;
 
   const AppTextField({
     super.key,
     this.label,
     this.label2,
-    required this.hintText,
+    this.label2OnClick,
+    this.hintText,
     this.controller,
     this.prefixIcon,
     this.suffixIcon,
@@ -48,19 +50,22 @@ class AppTextField extends StatelessWidget {
             children: [
               Text(
                 label!,
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.inter(
                   fontWeight: FontWeight.w600,
                   color: const Color(0xFF2D291A),
                   fontSize: 14,
                 ),
               ),
               if (label2 != null)
-                Text(
-                  label2!,
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF2D291A),
-                    fontSize: 14,
+                GestureDetector(
+                  onTap: label2OnClick,
+                  child: Text(
+                    label2!,
+                    style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w600,
+                      color:  Colors.blue,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
             ],
@@ -86,7 +91,7 @@ class AppTextField extends StatelessWidget {
               fontWeight: FontWeight.w400,
             ),
             filled: true,
-            fillColor: enabled ? const Color(0xFFEFFFE0) : Colors.grey.shade300,
+            fillColor: enabled ?  Colors.white : Colors.grey.shade300,
             prefixIcon: prefixIcon != null
                 ? Icon(prefixIcon, color: Colors.grey[700], size: 20)
                 : null,
@@ -100,19 +105,19 @@ class AppTextField extends StatelessWidget {
               horizontal: 16,
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(10),
               borderSide: borderColor != null
                   ? BorderSide(color: borderColor!)
                   : BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(10),
               borderSide: borderColor != null
                   ? BorderSide(color: borderColor!)
                   : BorderSide.none,
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(10),
               borderSide: borderColor != null
                   ? BorderSide(color: borderColor!)
                   : BorderSide.none,

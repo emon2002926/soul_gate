@@ -14,7 +14,6 @@ class AppConstant {
   // final String baseUrl = 'http://103.186.20.115:14000';
   // final String baseUrl = 'https://nestocbackend.dsrt321.online';
   final String baseUrl = 'https://nestorcapi.boltscootersllc.com';
-  // Endpoints
   final String loginEndpoint = '/api/auth/login/';
   final String singUpEndpoint = '/api/auth/register/';
   final String forgotPasswordEndpoint = '/api/auth/forgot-password/';
