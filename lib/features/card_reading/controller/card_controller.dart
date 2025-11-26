@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import '../data/cards_data.dart';
-import '../data/tarot_card.dart';
+import '../../home/data/cards_data.dart';
+import '../../home/data/tarot_card.dart';
 
 class CardController extends GetxController {
   // All 78 cards

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/card_controller.dart';
-import '../data/tarot_card.dart';
+import '../controller/card_controller.dart';
+import '../../home/data/tarot_card.dart';
 
 class RevealScreen extends StatefulWidget {
+  const RevealScreen({super.key});
+
   @override
   _RevealScreenState createState() => _RevealScreenState();
 }
@@ -195,7 +197,7 @@ class _RevealScreenState extends State<RevealScreen> {
   Widget _buildBottomDecoration() {
     return Column(
       children: [
-        Container(
+        SizedBox(
           height: 60,
           child: Icon(
             Icons.spa,
@@ -227,7 +229,7 @@ class _RevealScreenState extends State<RevealScreen> {
               ),
               elevation: 0,
             ),
-            child: Container(
+            child: SizedBox(
               width: double.infinity,
               child: Center(
                 child: Text(

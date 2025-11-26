@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:soul_gate/core/util/app_navigation.dart';
 
 import '../controller/profile_controller.dart';
+import 'change_password_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -57,7 +58,9 @@ class ProfilePage extends StatelessWidget {
                     iconColor: const Color(0xFFE8A54B),
                     title: 'Change Password',
                     subtitle: 'Change your account password securely.',
-                    onTap: controller.onChangePassword,
+                    onTap: (){
+                      AppNavigation.push(context, ChangePasswordPage());
+                    },
                   ),
                 ],
               ),

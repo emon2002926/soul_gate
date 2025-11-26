@@ -8,9 +8,6 @@ import 'package:google_fonts/google_fonts.dart';
 // ============================================================================
 // CHANGE PASSWORD CONTROLLER
 // ============================================================================
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/text/text_field/AppTextFiled.dart';

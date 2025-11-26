@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
-import 'package:soul_gate/features/auth/views/reset_password_screen.dart';
 import 'package:soul_gate/features/auth/views/sign_up_screen.dart';
 import 'package:soul_gate/features/auth/views/verify_email_screen.dart';
 import '../../../core/constants/app_colors.dart';
 import 'package:get/get.dart';
-import '../../../core/routes/app_routes.dart';
 import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/text/app_text.dart';
 import '../../../core/widgets/text/text_field/AppTextFiled.dart';

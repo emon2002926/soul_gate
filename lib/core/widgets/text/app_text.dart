@@ -20,6 +20,7 @@ class AppText extends StatelessWidget {
     this.translate = false,
     this.fontFamily,
     this.frosted = false,
+    this.latterSpacing,
   });
 
   final String data;
@@ -36,6 +37,8 @@ class AppText extends StatelessWidget {
   final bool translate;
   final String? fontFamily;
   final bool frosted;
+  final double? latterSpacing;
+
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +57,7 @@ class AppText extends StatelessWidget {
         fontFamily:  GoogleFonts.inter().fontFamily,
         decoration: decoration,
         decorationColor: decorationColor,
+        letterSpacing: latterSpacing,
       ),
       textScaler: TextScaler.linear(textScaleFactor),
     );

@@ -2,13 +2,15 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../../home/controllers/card_controller.dart';
+import '../controller/card_controller.dart';
 import 'package:get/get.dart';
 
-import '../../home/views/reveal_screen.dart';
+import 'reveal_screen.dart';
 
 class ShuffleScreen extends StatelessWidget {
   final CardController controller = Get.put(CardController());
+
+   ShuffleScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +102,7 @@ class ShuffleScreen extends StatelessWidget {
     return Obx(() {
       final isShuffling = controller.isShuffling.value;
 
-      return Container(
+      return SizedBox(
         height: 140,
         width: MediaQuery.of(context).size.width * 0.85,
         child: Stack(
@@ -193,7 +195,7 @@ class ShuffleScreen extends StatelessWidget {
                   SizedBox(height: 40),
 
                   // 13 card stacks spread horizontally
-                  Container(
+                  SizedBox(
                     height: 160,
                     child: Center(
                       child: SingleChildScrollView(
@@ -296,7 +298,7 @@ class ShuffleScreen extends StatelessWidget {
     return Column(
       children: [
         // Lotus decoration
-        Container(
+        SizedBox(
           height: 80,
           child: Image.asset(
             'assets/lotus_decoration.png',
@@ -339,7 +341,7 @@ class ShuffleScreen extends StatelessWidget {
                 ),
                 elevation: 0,
               ),
-              child: Container(
+              child: SizedBox(
                 width: double.infinity,
                 child: Center(
                   child: Row(

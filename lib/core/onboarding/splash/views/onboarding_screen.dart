@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_assert_image.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/util/app_navigation.dart';
 import '../../../../core/widgets/text/app_text.dart';

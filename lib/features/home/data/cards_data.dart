@@ -1,6 +1,5 @@
 import 'package:soul_gate/features/home/data/tarot_card.dart';
 
-import '../controllers/card_controller.dart';
 
 class CardsData {
   static List<TarotCard> getAllCards() {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../core/constants/app_assert_image.dart';
 import '../../../../core/widgets/text/app_text.dart';
 import '../controller/splash_controller.dart';
 
