@@ -23,6 +23,8 @@ dependencies:
   flutter_screenutil: ^5.9.0
   image_picker: ^1.2.0
   intl: ^0.18.1
+  flutter_tts: ^3.8.5
+
 
 
 
