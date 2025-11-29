@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../core/constants/app_assert_image.dart';
+import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/text/app_text.dart';
 import '../../../core/widgets/text/text_field/AppTextFiled.dart';
@@ -11,12 +13,11 @@ class ResetPassScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ResetPassController());
-    final mediaQuery = MediaQuery.of(context);
 
     return Scaffold(
-      backgroundColor: Color(0xFFCCC6C3),
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Color(0xFFCCC6C3),
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 20),
@@ -30,116 +31,131 @@ class ResetPassScreen extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 40),
-
-                // Title - matching screenshot
-                const AppText(
-                  data: 'Create a new\npassword',
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  height: 1.2,
-                ),
-
-                const SizedBox(height: 16),
-
-                // Subtitle - matching screenshot
-                const AppText(
-                  data: 'Enter a new password and try not to forget it.',
-                  fontSize: 16,
-                  color: Colors.grey,
-                  height: 1.4,
-                ),
-
-                const SizedBox(height: 40),
-
-                // New Password Field
-                Obx(() => AppTextField(
-                  hintText: "new password",
-                  controller: controller.newPasswordController,
-                  suffixIcon: controller.isNewPasswordVisible.value
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
-                  obscureText: !controller.isNewPasswordVisible.value,
-                  borderColor: Colors.transparent,
-                  onSuffixIconTap: controller.toggleNewPasswordVisibility,
-                  validator: controller.validateNewPassword,
-                )),
-
-                const SizedBox(height: 20),
-
-                // Confirm Password Field
-                Obx(() => AppTextField(
-                  hintText: "re-enter the new password",
-                  controller: controller.confirmPasswordController,
-                  suffixIcon: controller.isConfirmPasswordVisible.value
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
-                  obscureText: !controller.isConfirmPasswordVisible.value,
-                  borderColor: Colors.transparent,
-                  onSuffixIconTap: controller.toggleConfirmPasswordVisibility,
-                  validator: controller.validateConfirmPassword,
-                )),
-
-                const Spacer(),
-
-                // Continue button
-                Obx(() => AppButton(
-                  buttonText: controller.isLoading.value
-                      ? 'Updating...'
-                      : 'Continue',
-                  onPressed: controller.isLoading.value
-                      ? null
-                      : controller.resetPassword,
-                  fillColor: const Color(0xffE0E0E0),
-                  textColor: Colors.black,
-                  borderRadius: 12,
-                  buttonHeight: 56,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  isLoading: controller.isLoading.value,
-                )),
-
-                const SizedBox(height: 40),
-              ],
-            ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(AppAssertImage.instance.appBackground),
+            fit: BoxFit.cover,
           ),
-
-          // Loading overlay
-          Obx(() => controller.isLoading.value
-              ? Container(
-            color: Colors.black.withOpacity(0.3),
-            child: Center(
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                ),
+        ),
+        child: Stack(
+          children: [
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const CircularProgressIndicator(),
-                    const SizedBox(height: 16),
-                    AppText(
-                      data: 'Updating password...',
-                      fontSize: 16,
-                      color: Colors.black87,
+                    const SizedBox(height: 40),
+
+                    // Title
+                    const AppText(
+                      data: 'Create a new\npassword',
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      height: 1.2,
                     ),
+
+                    const SizedBox(height: 16),
+
+                    // Subtitle
+                    const AppText(
+                      data: 'Enter a new password and try not to forget it.',
+                      fontSize: 16,
+                      color: Colors.grey,
+                      height: 1.4,
+                    ),
+
+                    const SizedBox(height: 40),
+
+                    // New Password Field
+                    Obx(() => AppTextField(
+                      hintText: "new password",
+                      label: "New Password",
+                      controller: controller.newPasswordController,
+                      suffixIcon: controller.isNewPasswordVisible.value
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
+                      obscureText: !controller.isNewPasswordVisible.value,
+                      onSuffixIconTap: controller.toggleNewPasswordVisibility,
+                      validator: controller.validateNewPassword,
+                      hintTextColor: Colors.white,
+                      borderColor: AppColors.instance.primaryBtnColor,
+                      fillColor: Colors.transparent,
+                    )),
+
+                    const SizedBox(height: 20),
+
+                    // Confirm Password Field
+                    Obx(() => AppTextField(
+                      hintText: "re-enter the new password",
+                      label: "Confirm Password",
+                      controller: controller.confirmPasswordController,
+                      suffixIcon: controller.isConfirmPasswordVisible.value
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
+                      obscureText: !controller.isConfirmPasswordVisible.value,
+                      onSuffixIconTap: controller.toggleConfirmPasswordVisibility,
+                      validator: controller.validateConfirmPassword,
+                      hintTextColor: Colors.white,
+                      borderColor: AppColors.instance.primaryBtnColor,
+                      fillColor: Colors.transparent,
+                    )),
+
+                    const Spacer(),
+
+                    // Continue button
+                    Obx(() => AppButton(
+                      buttonText: controller.isLoading.value
+                          ? 'Updating...'
+                          : 'Continue',
+                      onPressed: controller.isLoading.value
+                          ? null
+                          : controller.resetPassword,
+                      fontSize: 16,
+                      isLoading: controller.isLoading.value,
+                    )),
+
+
+
+                    const SizedBox(height: 40),
                   ],
                 ),
               ),
             ),
-          )
-              : const SizedBox.shrink()),
-        ],
+
+            // Loading overlay
+            Obx(() => controller.isLoading.value
+                ? Container(
+              color: Colors.black.withOpacity(0.3),
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const CircularProgressIndicator(),
+                      const SizedBox(height: 16),
+                      AppText(
+                        data: 'Updating password...',
+                        fontSize: 16,
+                        color: Colors.black87,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+                : const SizedBox.shrink()),
+          ],
+        ),
       ),
     );
   }

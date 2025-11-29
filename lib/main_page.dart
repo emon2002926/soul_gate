@@ -3,10 +3,6 @@ import 'package:soul_gate/features/home/views/home_page.dart';
 import '../../core/widgets/bottom_navigation/bottom_navigation.dart';
 import 'features/card_reading/views/blessing_screen.dart';
 import 'features/profile/views/profile_page.dart';
-
-
-
-
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 

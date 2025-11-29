@@ -303,6 +303,8 @@ class SignUpController extends GetxController {
     }
   }
 
+
+
   @override
   void onClose() {
     fullNameController.dispose();

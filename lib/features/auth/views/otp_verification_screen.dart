@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../core/constants/app_assert_image.dart';
 import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/text/app_text.dart';
 import '../view_models/otp_verification_controller.dart';
@@ -14,7 +15,9 @@ class OtpVerificationScreen extends StatelessWidget {
     final controller = Get.put(OtpVerificationController());
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 20),
@@ -28,172 +31,170 @@ class OtpVerificationScreen extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Obx(() => Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 40),
-
-                  // Title - conditional based on flow
-                  AppText(
-                    data: 'Enter Your OTP',
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    height: 1.2,
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  // // Subtitle - conditional based on flow with email
-                  // AppText(
-                  //   data: controller.isFromSignUp.value
-                  //       ? 'Enter the verification code sent to\n${controller.email.value}'
-                  //       : 'Enter the verification code sent to\n${controller.email.value.isNotEmpty ? controller.email.value : "your email"}',
-                  //   fontSize: 16,
-                  //   color: Colors.grey,
-                  //   height: 1.4,
-                  // ),
-
-                  const SizedBox(height: 40),
-
-                  // OTP Fields (6 OTP TextFields)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: List.generate(6, (index) {
-                      return Container(
-                        width: 50,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: TextField(
-                          controller: controller.otpControllers[index],
-                          focusNode: controller.focusNodes[index],
-                          onChanged: (value) => controller.onOtpChanged(value, index),
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          maxLength: 1,
-                          enabled: !controller.isLoading.value,
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                            fontFamily: 'Poppins',
-                          ),
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            counterText: '',
-                            contentPadding: EdgeInsets.zero,
-                          ),
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                        ),
-                      );
-                    }),
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  // Resend section with countdown timer
-
-
-                  // Continue button with conditional text and action
-                  AppButton(
-                    buttonText: controller.isLoading.value
-                        ? 'Verifying...'
-                        : (controller.isFromSignUp.value ? 'Verify Account' : 'Continue'),
-                    onPressed: controller.isLoading.value ? null : controller.verifyCode,
-                    fontSize: 16,
-                    isLoading: controller.isLoading.value,
-                  ),
-
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-
-                  Row(
-                    children: [
-                      AppText(
-                        data: " Didn't receive the code?  ",
-                        fontSize: 14,
-                        color: Colors.grey[600],
-                      ),
-                      Obx(() {
-                        if (controller.resendCountdown.value > 0) {
-                          return AppText(
-                            data: '00:${controller.resendCountdown.value.toString().padLeft(2, '0')} ',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey[600],
-                          );
-                        }
-                        return const SizedBox.shrink();
-                      }),
-                      Obx(() => GestureDetector(
-                        onTap: (controller.isLoading.value || controller.resendCountdown.value > 0)
-                            ? null
-                            : controller.resetPassResendOtp,
-                        child: AppText(
-                          data: 'Resend',
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: (controller.isLoading.value || controller.resendCountdown.value > 0)
-                              ? Colors.grey[400]
-                              : const Color(0xff007AFF),
-                          decoration: TextDecoration.underline,
-                          decorationColor: (controller.isLoading.value || controller.resendCountdown.value > 0)
-                              ? Colors.grey[400]
-                              : const Color(0xff007AFF),
-                        ),
-                      )),
-                    ],
-                  ),
-
-
-                  const SizedBox(height: 40),
-                ],
-              )),
-            ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(AppAssertImage.instance.appBackground),
+            fit: BoxFit.cover,
           ),
+        ),
+        child: Stack(
+          children: [
+            SafeArea(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Obx(() => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 40),
 
-          // Loading overlay
-          Obx(() => controller.isLoading.value
-              ? Container(
-            color: Colors.black.withOpacity(0.3),
-            child: Center(
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const CircularProgressIndicator(),
-                    const SizedBox(height: 16),
-                    AppText(
-                      data: 'Verifying OTP...',
-                      fontSize: 16,
-                      color: Colors.black87,
-                    ),
-                  ],
+                      // Title
+                      AppText(
+                        data: 'Enter Your OTP',
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        height: 1.2,
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      const SizedBox(height: 40),
+
+                      // OTP Fields (6 OTP TextFields)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: List.generate(6, (index) {
+                          return Container(
+                            width: 50,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: TextField(
+                              controller: controller.otpControllers[index],
+                              focusNode: controller.focusNodes[index],
+                              onChanged: (value) => controller.onOtpChanged(value, index),
+                              keyboardType: TextInputType.number,
+                              textAlign: TextAlign.center,
+                              maxLength: 1,
+                              enabled: !controller.isLoading.value,
+                              style: const TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontFamily: 'Poppins',
+                              ),
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                counterText: '',
+                                contentPadding: EdgeInsets.zero,
+                              ),
+                              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                            ),
+                          );
+                        }),
+                      ),
+
+                      const SizedBox(height: 30),
+
+                      // Continue button
+                      AppButton(
+                        buttonText: controller.isLoading.value
+                            ? 'Verifying...'
+                            : (controller.isFromSignUp.value ? 'Verify Account' : 'Continue'),
+                        // onPressed: controller.isLoading.value ? null : controller.verifyCode,
+                        onPressed: controller.testNextScreen,
+                        fontSize: 16,
+                        isLoading: controller.isLoading.value,
+                      ),
+
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+
+                      Row(
+                        children: [
+                          AppText(
+                            data: " Didn't receive the code?  ",
+                            fontSize: 14,
+                            color: Colors.white,
+                          ),
+                          Obx(() {
+                            if (controller.resendCountdown.value > 0) {
+                              return AppText(
+                                data: '00:${controller.resendCountdown.value.toString().padLeft(2, '0')} ',
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              );
+                            }
+                            return const SizedBox.shrink();
+                          }),
+                          Obx(() => GestureDetector(
+                            onTap: (controller.isLoading.value || controller.resendCountdown.value > 0)
+                                ? null
+                                : controller.resetPassResendOtp,
+                            child: AppText(
+                              data: 'Resend',
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: (controller.isLoading.value || controller.resendCountdown.value > 0)
+                                  ? Colors.grey[400]
+                                  : const Color(0xff007AFF),
+                              decoration: TextDecoration.underline,
+                              decorationColor: (controller.isLoading.value || controller.resendCountdown.value > 0)
+                                  ? Colors.grey[400]
+                                  : const Color(0xff007AFF),
+                            ),
+                          )),
+                        ],
+                      ),
+
+                      const SizedBox(height: 40),
+                    ],
+                  )),
                 ),
               ),
             ),
-          )
-              : const SizedBox.shrink()),
-        ],
+
+            // Loading overlay
+            Obx(() => controller.isLoading.value
+                ? Container(
+              color: Colors.black.withOpacity(0.3),
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const CircularProgressIndicator(),
+                      const SizedBox(height: 16),
+                      AppText(
+                        data: 'Verifying OTP...',
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ) : const SizedBox.shrink()),
+          ],
+        ),
       ),
     );
   }

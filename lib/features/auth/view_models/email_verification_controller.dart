@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:soul_gate/core/util/app_navigation.dart';
 import '../../../core/constants/app_constant.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../../../core/routes/app_routes.dart';
+import '../views/otp_verification_screen.dart';
 
 class EmailVerificationController extends GetxController {
   final TextEditingController emailController = TextEditingController();
@@ -177,6 +179,7 @@ class EmailVerificationController extends GetxController {
     }
   }
 
+
   Future<void> continueToOtpVerification() async {
     // Navigate to OTP verification with context
     bool isFromSignUp = false;
@@ -188,6 +191,11 @@ class EmailVerificationController extends GetxController {
       },
     );
   }
+
+  void OtpVerification() {
+   AppNavigation.push(Get.context!,  OtpVerificationScreen()) ;
+  }
+
 
   @override
   void onClose() {

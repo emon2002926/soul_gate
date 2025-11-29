@@ -7,8 +7,6 @@ class AppConstant {
   final String font = "Montserrat";
   final String playfair = "PlayfairDisplay";
   final String poppins = "Poppins";
-  final String GOOGLE_MAPS_API_KEY = "API_KEY";
-  final String scavengerHunt = "A Scavenger Hunt";
   final String freeTour = "Free Tour";
   final double DEAFULT_CAMERA_ZOOM = 15;
   // final String baseUrl = 'http://103.186.20.115:14000';

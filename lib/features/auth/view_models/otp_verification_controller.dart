@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:soul_gate/core/util/app_navigation.dart';
 import '../../../core/constants/app_constant.dart';
 import '../../../core/routes/app_routes.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'dart:async';
+
+import '../views/reset_password_screen.dart';
 
 
 class OtpVerificationController extends GetxController {
@@ -65,6 +68,10 @@ class OtpVerificationController extends GetxController {
     } else {
       await resetPassVerifyCode();
     }
+  }
+
+  void testNextScreen() {
+    AppNavigation.push(Get.context!, ResetPassScreen());
   }
 
   // Signup email verification

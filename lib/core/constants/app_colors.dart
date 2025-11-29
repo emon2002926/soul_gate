@@ -89,7 +89,7 @@ class AppColors {
   final Color white900 = const Color(0xff646464);
 
 ////////////////title color
-  final Color titleTextColor = const Color(0xFF333333);
+  final Color titleTextColor = const Color(0xFFF6CB81);
 
 
   ////////////////Auth Screen Color
@@ -107,7 +107,7 @@ class AppColors {
   final Color softMint = const Color(0xFFF5F5F5);
   final Color softMintBackground = const Color(0xFFFFFFFF);
   final Color cardBackground = const Color(0xFFF5F5F5);
-  final Color primaryBtnColor = const Color(0xFFBC9041);
+  final Color primaryBtnColor = const Color(0xFFF6CB81);
 
 
 

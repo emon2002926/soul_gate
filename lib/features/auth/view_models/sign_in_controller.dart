@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class LoginController extends GetxController {
+class SignInController extends GetxController {
   // Text editing controllers
   final emailController = TextEditingController();
   final passwordController = TextEditingController();

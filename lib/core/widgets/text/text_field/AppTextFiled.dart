@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:soul_gate/core/widgets/text/app_text.dart';
+
+import '../../../constants/app_colors.dart';
 
 class AppTextField extends StatelessWidget {
   final String? label;
@@ -17,6 +20,9 @@ class AppTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final bool enabled;
   final VoidCallback? label2OnClick;
+  final Color? fillColor;
+  final Color? inputTextColor;
+  final Color? hintTextColor;
 
   const AppTextField({
     super.key,
@@ -35,6 +41,9 @@ class AppTextField extends StatelessWidget {
     this.borderColor,
     this.keyboardType,
     this.enabled = true,
+    this.fillColor,
+    this.inputTextColor,
+    this.hintTextColor,
   });
 
   @override
@@ -48,13 +57,11 @@ class AppTextField extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                label!,
-                style: GoogleFonts.inter(
+              AppText(
+                data: label!,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xFF2D291A),
+                  color: AppColors.instance.titleTextColor,
                   fontSize: 14,
-                ),
               ),
               if (label2 != null)
                 GestureDetector(
@@ -80,18 +87,18 @@ class AppTextField extends StatelessWidget {
           keyboardType: keyboardType,
           enabled: enabled,
           style: GoogleFonts.poppins(
-            color: Colors.black,
+            color: inputTextColor,
             fontSize: 14,
           ),
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: GoogleFonts.inter(
-              color: const Color(0xFF2D291A),
+              color: hintTextColor?? Colors.grey,
               fontSize: 14,
               fontWeight: FontWeight.w400,
             ),
             filled: true,
-            fillColor: enabled ?  Colors.white : Colors.grey.shade300,
+            fillColor: enabled ?  fillColor : Colors.grey.shade300,
             prefixIcon: prefixIcon != null
                 ? Icon(prefixIcon, color: Colors.grey[700], size: 20)
                 : null,

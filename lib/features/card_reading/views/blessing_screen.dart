@@ -1,20 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../../core/widgets/app_bar/build_app_bar.dart';
 import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/text/app_text.dart';
 
-
-// Import your helper widgets
-// import 'path/to/app_button.dart';
-// import 'path/to/app_text.dart';
-// import 'path/to/app_text_field.dart';
-// import 'path/to/build_app_bar.dart';
-
-// ============================================================================
-// BLESSING FLOW CONTROLLER
-// ============================================================================
 
 class BlessingFlowController extends GetxController {
   final pageController = PageController();
@@ -59,7 +48,7 @@ class BlessingFlowController extends GetxController {
         Get.snackbar(
           'Error',
           'Please enter your question',
-          snackPosition: SnackPosition.BOTTOM,
+          snackPosition: SnackPosition.TOP,
         );
         return;
       }
@@ -91,9 +80,6 @@ class BlessingFlowController extends GetxController {
   }
 }
 
-// ============================================================================
-// BLESSING FLOW PAGE
-// ============================================================================
 
 class BlessingFlowPage extends StatelessWidget {
   const BlessingFlowPage({super.key});
