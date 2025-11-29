@@ -1,325 +1,119 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:soul_gate/core/widgets/text/app_text.dart';
 
+import '../../../core/constants/app_assert_image.dart';
 import '../controller/card_controller.dart';
 import 'package:get/get.dart';
 
 import 'reveal_screen.dart';
 
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'dart:math' as math;
+
 class ShuffleScreen extends StatelessWidget {
   final CardController controller = Get.put(CardController());
 
-   ShuffleScreen({super.key});
+  ShuffleScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F3EE), // Cream background
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xFF8B7355)),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Get.back(),
         ),
-      ),
-      body: SafeArea(
-        child: Obx(() {
-          if (!controller.hasShuffled.value) {
-            return _buildShuffleView(context);
-          } else {
-            return _buildStackSelectionView(context);
-          }
-        }),
-      ),
-    );
-  }
-
-  // Initial shuffle view
-  Widget _buildShuffleView(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: constraints.maxHeight,
-            ),
-            child: IntrinsicHeight(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(height: 20),
-
-                  // Title
-                  Text(
-                    'Preparing Your Reading',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF3C2A21),
-                    ),
-                  ),
-
-                  SizedBox(height: 40),
-
-                  // Center card deck with instruction
-                  Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Text(
-                          'Breathe slowly. Allow the cards to align with your intention.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Color(0xFF6B5B4F),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 40),
-
-                      // Card deck visualization with animation
-                      _buildCardDeck(context),
-                    ],
-                  ),
-
-                  Spacer(),
-
-                  // Bottom decoration and button
-                  _buildBottomSection(context),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  // Card deck display with shuffle animation
-  Widget _buildCardDeck(BuildContext context) {
-    return Obx(() {
-      final isShuffling = controller.isShuffling.value;
-
-      return SizedBox(
-        height: 140,
-        width: MediaQuery.of(context).size.width * 0.85,
-        child: Stack(
-          alignment: Alignment.center,
-          clipBehavior: Clip.none,
-          children: [
-            // Multiple overlapping cards to show deck
-            for (int i = 0; i < 30; i++)
-              AnimatedPositioned(
-                duration: Duration(milliseconds: 800),
-                curve: Curves.easeInOut,
-                left: isShuffling
-                    ? 20 + (i * 2.0) + (math.Random(i).nextDouble() * 40 - 20)
-                    : 20 + (i * 2.0),
-                top: isShuffling
-                    ? (math.Random(i + 100).nextDouble() * 30 - 15)
-                    : 0,
-                child: AnimatedContainer(
-                  duration: Duration(milliseconds: 800),
-                  curve: Curves.easeInOut,
-                  transform: Matrix4.identity()
-                    ..rotateZ(isShuffling
-                        ? (math.Random(i + 50).nextDouble() * 0.3 - 0.15)
-                        : 0),
-                  width: 80,
-                  height: 120,
-                  decoration: BoxDecoration(
-                    color: Color(0xFF8B7BA8), // Purple card color
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Color(0xFFD4C5B9), width: 1),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(isShuffling ? 0.2 : 0.1),
-                        blurRadius: isShuffling ? 8 : 4,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Center(
-                    child: Icon(
-                      Icons.energy_savings_leaf,
-                      color: Color(0xFFD4AF37), // Gold accent
-                      size: 40,
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
-      );
-    });
-  }
-
-  // Stack selection view - 13 stacks spread horizontally
-  Widget _buildStackSelectionView(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: constraints.maxHeight,
-            ),
-            child: IntrinsicHeight(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(height: 20),
-
-                  // Title
-                  Text(
-                    'Choose Your Cards',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF3C2A21),
-                    ),
-                  ),
-
-                  SizedBox(height: 40),
-
-                  // Instruction
-                  Text(
-                    'Your intuition knows.',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Color(0xFF6B5B4F),
-                    ),
-                  ),
-
-                  SizedBox(height: 40),
-
-                  // 13 card stacks spread horizontally
-                  SizedBox(
-                    height: 160,
-                    child: Center(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(13, (index) {
-                            return TweenAnimationBuilder<double>(
-                              tween: Tween(begin: 0.0, end: 1.0),
-                              duration: Duration(milliseconds: 400 + (index * 50)),
-                              curve: Curves.easeOutBack,
-                              builder: (context, value, child) {
-                                // Clamp value to ensure it stays within 0.0 to 1.0
-                                final clampedValue = value.clamp(0.0, 1.0);
-                                return Transform.scale(
-                                  scale: clampedValue,
-                                  child: Transform.translate(
-                                    offset: Offset(0, 50 * (1 - clampedValue)),
-                                    child: Opacity(
-                                      opacity: clampedValue,
-                                      child: child,
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: GestureDetector(
-                                onTap: () => _onStackSelected(index),
-                                child: _buildCardStack(index),
-                              ),
-                            );
-                          }),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  Spacer(),
-
-                  // Bottom decoration
-                  _buildBottomSection(context),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  // Individual card stack (overlapping 6 cards to show depth)
-  Widget _buildCardStack(int index) {
-    return Container(
-      width: 70,
-      height: 120,
-      margin: EdgeInsets.symmetric(horizontal: 4),
-      child: Stack(
-        children: [
-          // Show 3-4 overlapping cards to create stack effect
-          for (int i = 0; i < 4; i++)
-            Positioned(
-              left: i * 0.5,
-              top: i * 0.8,
-              child: Container(
-                width: 60,
-                height: 100,
-                decoration: BoxDecoration(
-                  color: Color(0xFF8B7BA8),
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(
-                    color: i == 3 ? Color(0xFFD4C5B9) : Color(0xFFD4C5B9).withOpacity(0.5),
-                    width: 1,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.15),
-                      blurRadius: 4,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: i == 3
-                    ? Center(
-                  child: Icon(
-                    Icons.energy_savings_leaf,
-                    color: Color(0xFFD4AF37),
-                    size: 30,
-                  ),
-                )
-                    : null,
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  // Bottom section with lotus decoration
-  Widget _buildBottomSection(BuildContext context) {
-    return Column(
-      children: [
-        // Lotus decoration
-        SizedBox(
-          height: 80,
-          child: Image.asset(
-            'assets/lotus_decoration.png',
-            fit: BoxFit.contain,
-            color: Color(0xFFD4C5B9).withOpacity(0.3),
-            errorBuilder: (context, error, stackTrace) {
-              return Icon(
-                Icons.spa,
-                size: 60,
-                color: Color(0xFFD4C5B9).withOpacity(0.3),
-              );
+        actions: [
+          IconButton(
+            icon: Icon(Icons.account_circle_outlined, color: Colors.white),
+            onPressed: () {
+              // Profile action
             },
           ),
+        ],
+      ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF0A1628),
+              Color(0xFF1a2744),
+              Color(0xFF2d4a7c),
+            ],
+          ),
         ),
+        child: Stack(
+          children: [
+            // Starry background
+            ...List.generate(100, (index) {
+              final random = math.Random(index);
+              return Positioned(
+                left: random.nextDouble() * 400,
+                top: random.nextDouble() * 800,
+                child: Container(
+                  width: random.nextDouble() * 3 + 1,
+                  height: random.nextDouble() * 3 + 1,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(random.nextDouble() * 0.8),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              );
+            }),
+            SafeArea(
+              child: Obx(() {
+                if (!controller.hasShuffled.value) {
+                  return _buildShuffleView(context);
+                } else {
+                  return _buildStackSelectionView(context);
+                }
+              }),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
+  // Initial shuffle view with circular card spread
+  Widget _buildShuffleView(BuildContext context) {
+    return Column(
+      children: [
         SizedBox(height: 20),
 
-        // Draw Cards button with Obx
+        // Title
+        Text(
+          'Preparing Your Reading',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+            letterSpacing: 0.5,
+          ),
+        ),
+
+        Spacer(),
+
+        // Circular card spread
+        Obx(() {
+          return _buildCircularCardSpread(context);
+        }),
+
+        Spacer(),
+
+        // Draw Cards button
         Obx(() {
           final isShuffling = controller.isShuffling.value;
-          final hasShuffled = controller.hasShuffled.value;
 
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: 40),
@@ -327,15 +121,11 @@ class ShuffleScreen extends StatelessWidget {
               onPressed: isShuffling
                   ? null
                   : () {
-                if (!hasShuffled) {
-                  controller.shuffleAndDivideCards();
-                }
+                controller.shuffleAndDivideCards();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: isShuffling
-                    ? Color(0xFFD4C5B9)
-                    : Color(0xFFC8A882),
-                padding: EdgeInsets.symmetric(vertical: 16),
+                backgroundColor: Color(0xFFD4A574),
+                padding: EdgeInsets.symmetric(vertical: 18),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
@@ -344,30 +134,13 @@ class ShuffleScreen extends StatelessWidget {
               child: SizedBox(
                 width: double.infinity,
                 child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (isShuffling)
-                        Padding(
-                          padding: EdgeInsets.only(right: 10),
-                          child: SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                            ),
-                          ),
-                        ),
-                      Text(
-                        isShuffling ? 'Shuffling...' : 'Draw Cards',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    isShuffling ? 'Shuffling...' : 'Draw Cards',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
@@ -376,6 +149,241 @@ class ShuffleScreen extends StatelessWidget {
         }),
 
         SizedBox(height: 40),
+      ],
+    );
+  }
+
+  // Circular card spread animation
+  Widget _buildCircularCardSpread(BuildContext context) {
+    final isShuffling = controller.isShuffling.value;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final cardCount = 45;
+    final radius = screenWidth * 0.45;
+
+    // Arc span: from ~7 o'clock to ~5 o'clock (about 240 degrees on bottom half)
+    final startAngle = math.pi * 0.7; // ~126 degrees
+    final sweepAngle = math.pi * 1.6; // ~288 degrees
+
+    return SizedBox(
+      height: 300,
+      width: screenWidth,
+      child: Stack(
+        alignment: Alignment.center,
+        clipBehavior: Clip.none,
+        children: [
+          // Main card arc
+          for (int i = 0; i < cardCount; i++)
+            Builder(
+              builder: (context) {
+                final progress = i / (cardCount - 1);
+                final angle = startAngle + (sweepAngle * progress);
+
+                final x = radius * math.cos(angle);
+                final y = radius * math.sin(angle);
+
+                // Card rotation to follow the arc
+                final cardRotation = angle + math.pi / 2;
+
+                return AnimatedPositioned(
+                  duration: Duration(milliseconds: isShuffling ? 300 : 600),
+                  curve: Curves.easeInOut,
+                  left: screenWidth / 2 + x - 30,
+                  top: 150 + y - 45,
+                  child: TweenAnimationBuilder<double>(
+                    tween: Tween(begin: 0.0, end: 1.0),
+                    duration: Duration(milliseconds: 800 + (i * 15)),
+                    curve: Curves.easeOutBack,
+                    builder: (context, value, child) {
+                      return Transform.scale(
+                        scale: 0.3 + (value * 0.7),
+                        child: Transform.rotate(
+                          angle: cardRotation + (isShuffling ? math.sin(i.toDouble()) * 0.2 : 0),
+                          child: Opacity(
+                            opacity: value,
+                            child: child,
+                          ),
+                        ),
+                      );
+                    },
+                    child: _buildTarotCard(highlighted: i == 30),
+                  ),
+                );
+              },
+            ),
+        ],
+      ),
+    );
+  }
+
+  // Individual tarot card
+  Widget _buildTarotCard({bool highlighted = false}) {
+    return Container(
+      width: 60,
+      height: 90,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: highlighted
+              ? [Color(0xFFB8956A), Color(0xFF9B7B5E)]
+              : [Color(0xFF8B6B8B), Color(0xFF6B5B6B)],
+        ),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(
+          color: highlighted ? Color(0xFFE5D4C1) : Color(0xFFD4C5B9),
+          width: highlighted ? 2 : 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(highlighted ? 0.4 : 0.3),
+            blurRadius: highlighted ? 8 : 4,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Center(
+        child: Icon(
+          Icons.auto_awesome,
+          color: Color(0xFFE5D4C1),
+          size: highlighted ? 28 : 24,
+        ),
+      ),
+    );
+  }
+
+  // Stack selection view - Celtic Cross spread pattern
+  Widget _buildStackSelectionView(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(height: 20),
+
+        // Title
+        Text(
+          'Card Reveal',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+            letterSpacing: 0.5,
+          ),
+        ),
+
+        SizedBox(height: 60),
+
+        // Celtic Cross card layout
+        Expanded(
+          child: _buildCelticCrossLayout(context),
+        ),
+
+        // Bottom action buttons
+        _buildBottomActions(context),
+
+        SizedBox(height: 40),
+      ],
+    );
+  }
+
+  // Celtic Cross card layout pattern
+  Widget _buildCelticCrossLayout(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        // Card positions based on your screenshot
+        // Center cross (cards 0-5)
+        _buildPositionedCard(0, top: 80, left: null, index: 0),  // Top center
+        _buildPositionedCard(1, top: 180, left: 60, index: 1),   // Left
+        _buildPositionedCard(2, top: 180, left: null, index: 2), // Center
+        _buildPositionedCard(3, top: 180, right: 60, index: 3),  // Right
+        _buildPositionedCard(4, top: 280, left: null, index: 4), // Bottom center
+
+        // Right column (cards 6-9)
+        _buildPositionedCard(5, top: 80, right: 20, index: 5),
+        _buildPositionedCard(6, top: 180, right: 20, index: 6),
+        _buildPositionedCard(7, top: 280, right: 20, index: 7),
+      ],
+    );
+  }
+
+  Widget _buildPositionedCard(
+      int stackIndex, {
+        double? top,
+        double? left,
+        double? right,
+        required int index,
+      }) {
+    return Positioned(
+      top: top,
+      left: left,
+      right: right,
+      child: TweenAnimationBuilder<double>(
+        tween: Tween(begin: 0.0, end: 1.0),
+        duration: Duration(milliseconds: 600 + (index * 100)),
+        curve: Curves.easeOutBack,
+        builder: (context, value, child) {
+          return Transform.scale(
+            scale: value,
+            child: Transform.translate(
+              offset: Offset(0, 30 * (1 - value)),
+              child: Opacity(
+                opacity: value,
+                child: child,
+              ),
+            ),
+          );
+        },
+        child: GestureDetector(
+          onTap: () => _onStackSelected(stackIndex),
+          child: _buildRevealCard(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRevealCard() {
+    return Container(
+      width: 70,
+      height: 105,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFFB8956A), Color(0xFF9B7B5E)],
+        ),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Color(0xFFE5D4C1), width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 8,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Center(
+        child: Icon(
+          Icons.auto_awesome,
+          color: Color(0xFFE5D4C1),
+          size: 32,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomActions(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(
+          onPressed: () {},
+          icon: Icon(Icons.favorite_border, color: Colors.white),
+          iconSize: 28,
+        ),
+        SizedBox(width: 20),
+        IconButton(
+          onPressed: () {},
+          icon: Icon(Icons.touch_app, color: Colors.white),
+          iconSize: 28,
+        ),
       ],
     );
   }

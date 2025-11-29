@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:soul_gate/core/util/app_navigation.dart';
+import 'package:soul_gate/core/widgets/text/app_text.dart';
+import '../../../../features/card_reading/views/shuffle_screen.dart';
 import '../../../constants/app_assert_image.dart';
 
-class ShortBlessingController extends GetxController {
+class ShortBlessingController extends GetxController
+    with GetTickerProviderStateMixin {
   final FlutterTts flutterTts = FlutterTts();
   final isSpeaking = false.obs;
   final isCompleted = false.obs;
   final isInitialized = false.obs;
+
+  // Animation controllers for speaking indicator
+  late List<AnimationController> speakingAnimControllers;
+  late List<Animation<double>> speakingAnimations;
 
   final String blessingText =
       "Archangel Michael, protect this session from any false or negative energy. "
@@ -17,18 +25,33 @@ class ShortBlessingController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _initSpeakingAnimations();
     _initTts();
+  }
+
+  void _initSpeakingAnimations() {
+    speakingAnimControllers = List.generate(
+      5,
+          (index) => AnimationController(
+        duration: Duration(milliseconds: 400 + (index * 100)),
+        vsync: this,
+      )..repeat(reverse: true),
+    );
+
+    speakingAnimations = speakingAnimControllers
+        .map((controller) => Tween<double>(begin: 0.3, end: 1.0).animate(
+      CurvedAnimation(parent: controller, curve: Curves.easeInOut),
+    ))
+        .toList();
   }
 
   Future<void> _initTts() async {
     try {
-      // Configure TTS settings
       await flutterTts.setLanguage("en-US");
       await flutterTts.setSpeechRate(0.4);
       await flutterTts.setVolume(1.0);
       await flutterTts.setPitch(1.0);
 
-      // For iOS
       await flutterTts.setIosAudioCategory(
         IosTextToSpeechAudioCategory.playback,
         [
@@ -39,7 +62,6 @@ class ShortBlessingController extends GetxController {
         IosTextToSpeechAudioMode.voicePrompt,
       );
 
-      // Set handlers
       flutterTts.setStartHandler(() {
         isSpeaking.value = true;
       });
@@ -57,7 +79,6 @@ class ShortBlessingController extends GetxController {
 
       isInitialized.value = true;
 
-      // Start speaking after a short delay
       await Future.delayed(const Duration(milliseconds: 1000));
       await _speakBlessing();
     } catch (e) {
@@ -79,23 +100,26 @@ class ShortBlessingController extends GetxController {
     Future.delayed(const Duration(seconds: 2), () {
       // Navigate to shuffle screen or next step
       // Get.off(() => const ShuffleScreen());
+      AppNavigation.push(Get.context!,  ShuffleScreen());
     });
   }
 
   Future<void> skipBlessing() async {
     await flutterTts.stop();
     isSpeaking.value = false;
-    Get.back();
+    // Get.back();
+    AppNavigation.push(Get.context!,  ShuffleScreen());
   }
 
   @override
   void onClose() {
     flutterTts.stop();
+    for (var controller in speakingAnimControllers) {
+      controller.dispose();
+    }
     super.onClose();
   }
 }
-
-
 
 class ShortBlessingScreen extends StatelessWidget {
   const ShortBlessingScreen({super.key});
@@ -169,6 +193,11 @@ class ShortBlessingScreen extends StatelessWidget {
           image: DecorationImage(
             image: AssetImage(AppAssertImage.instance.appBackground),
             fit: BoxFit.cover,
+            // Optional: Add a dark overlay for better text readability
+            colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.3),
+              BlendMode.darken,
+            ),
           ),
         ),
         child: SafeArea(
@@ -178,8 +207,6 @@ class ShortBlessingScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Spacer(flex: 2),
-
-                // Blessing Text - Always visible now
                 const Text(
                   'Archangel Michael, Protect This\nSession From Any False Or\nNegative Energy.\nReveal Only What The Client\nNeeds For Clarity And Truth.\nThank You, Thank You, Thank\nYou.',
                   textAlign: TextAlign.center,
@@ -191,21 +218,18 @@ class ShortBlessingScreen extends StatelessWidget {
                     letterSpacing: 0.5,
                   ),
                 ),
-
                 const Spacer(flex: 2),
-
-                // Speaking Indicator
                 Obx(() {
                   if (controller.isSpeaking.value) {
                     return Column(
                       children: [
-                        const _SpeakingIndicator(),
+                        SpeakingIndicator(controller: controller),
                         const SizedBox(height: 16),
-                        Text(
+                        const Text(
                           'Speaking...',
                           style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.white.withOpacity(0.6),
+                            fontSize: 16,
+                            color: Colors.white,
                           ),
                         ),
                       ],
@@ -231,23 +255,17 @@ class ShortBlessingScreen extends StatelessWidget {
                   }
                   return const SizedBox(height: 70);
                 }),
-
                 const SizedBox(height: 40),
-
-                // Skip Button
                 TextButton(
                   onPressed: controller.skipBlessing,
-                  child: Text(
-                    'Skip',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white.withOpacity(0.5),
+                  child: AppText(
+                    data: 'Skip',
+                      fontSize: 15,
+                      color: Colors.white,
                       decoration: TextDecoration.underline,
                       decorationColor: Colors.white.withOpacity(0.5),
-                    ),
                   ),
                 ),
-
                 const SizedBox(height: 40),
               ],
             ),
@@ -257,48 +275,13 @@ class ShortBlessingScreen extends StatelessWidget {
     );
   }
 }
+class SpeakingIndicator extends StatelessWidget {
+  final ShortBlessingController controller;
 
-// ============================================================================
-// SPEAKING INDICATOR WIDGET (Animated)
-// ============================================================================
-
-class _SpeakingIndicator extends StatefulWidget {
-  const _SpeakingIndicator();
-
-  @override
-  State<_SpeakingIndicator> createState() => _SpeakingIndicatorState();
-}
-
-class _SpeakingIndicatorState extends State<_SpeakingIndicator>
-    with TickerProviderStateMixin {
-  late List<AnimationController> _controllers;
-  late List<Animation<double>> _animations;
-
-  @override
-  void initState() {
-    super.initState();
-    _controllers = List.generate(
-      5,
-          (index) => AnimationController(
-        duration: Duration(milliseconds: 400 + (index * 100)),
-        vsync: this,
-      )..repeat(reverse: true),
-    );
-
-    _animations = _controllers
-        .map((controller) => Tween<double>(begin: 0.3, end: 1.0).animate(
-      CurvedAnimation(parent: controller, curve: Curves.easeInOut),
-    ))
-        .toList();
-  }
-
-  @override
-  void dispose() {
-    for (var controller in _controllers) {
-      controller.dispose();
-    }
-    super.dispose();
-  }
+  const SpeakingIndicator({
+    super.key,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -308,14 +291,14 @@ class _SpeakingIndicatorState extends State<_SpeakingIndicator>
         mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(5, (index) {
           return AnimatedBuilder(
-            animation: _animations[index],
+            animation: controller.speakingAnimations[index],
             builder: (context, child) {
               return Container(
                 margin: const EdgeInsets.symmetric(horizontal: 3),
                 width: 4,
-                height: 20 * _animations[index].value,
+                height: 20 * controller.speakingAnimations[index].value,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFD4AF37).withOpacity(0.8),
+                  color: const Color(0xFFF1C746).withOpacity(0.8),
                   borderRadius: BorderRadius.circular(2),
                 ),
               );
