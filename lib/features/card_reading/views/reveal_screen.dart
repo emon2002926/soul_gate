@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:soul_gate/core/widgets/text/app_text.dart';
+import '../../../core/background/starry_background.dart';
 import '../controller/card_controller.dart';
 import '../../home/data/tarot_card.dart';
 
@@ -24,52 +26,55 @@ class _RevealScreenState extends State<RevealScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: Color(0xFFF5F3EE),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xFF8B7355)),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {Navigator.pop(context);},
         ),
-        title: Text(
-          'Card Reveal',
-          style: TextStyle(
-            color: Color(0xFF3C2A21),
-            fontWeight: FontWeight.w600,
-          ),
+        title: AppText(
+          data: 'Result',
+          color: Colors.white,
+          fontWeight: FontWeight.w600,
         ),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          SizedBox(height: 20),
+      body: StarryBackground(
+        child: SafeArea(
+          child: Column(
+            children: [
+              SizedBox(height: 20),
 
-          // Grid of 7 cards
-          Expanded(
-            child: Obx(() {
-              return GridView.builder(
-                padding: EdgeInsets.all(20),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  childAspectRatio: 0.7,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                ),
-                itemCount: controller.selectedCards.length,
-                itemBuilder: (context, index) {
-                  return _buildCardWidget(
-                    controller.selectedCards[index],
-                    index,
+              // Grid of 7 cards
+              Expanded(
+                child: Obx(() {
+                  return GridView.builder(
+                    padding: EdgeInsets.all(20),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      childAspectRatio: 0.7,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                    ),
+                    itemCount: controller.selectedCards.length,
+                    itemBuilder: (context, index) {
+                      return _buildCardWidget(
+                        controller.selectedCards[index],
+                        index,
+                      );
+                    },
                   );
-                },
-              );
-            }),
-          ),
+                }),
+              ),
 
-          // Bottom decoration
-          _buildBottomDecoration(),
-        ],
+              // Bottom decoration
+              _buildBottomDecoration(),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -232,13 +237,11 @@ class _RevealScreenState extends State<RevealScreen> {
             child: SizedBox(
               width: double.infinity,
               child: Center(
-                child: Text(
-                  'View Full Reading',
-                  style: TextStyle(
+                child: AppText(
+                  data: 'View Full Reading',
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
-                  ),
                 ),
               ),
             ),

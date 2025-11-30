@@ -1,17 +1,12 @@
 import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:soul_gate/core/widgets/text/app_text.dart';
-
-import '../../../core/constants/app_assert_image.dart';
+import '../../../core/background/starry_background.dart';
 import '../controller/card_controller.dart';
 import 'package:get/get.dart';
-
 import 'reveal_screen.dart';
 
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'dart:math' as math;
+
 
 class ShuffleScreen extends StatelessWidget {
   final CardController controller = Get.put(CardController());
@@ -38,50 +33,18 @@ class ShuffleScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF0A1628),
-              Color(0xFF1a2744),
-              Color(0xFF2d4a7c),
-            ],
-          ),
-        ),
-        child: Stack(
-          children: [
-            // Starry background
-            ...List.generate(100, (index) {
-              final random = math.Random(index);
-              return Positioned(
-                left: random.nextDouble() * 400,
-                top: random.nextDouble() * 800,
-                child: Container(
-                  width: random.nextDouble() * 3 + 1,
-                  height: random.nextDouble() * 3 + 1,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(random.nextDouble() * 0.8),
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              );
-            }),
-            SafeArea(
-              child: Obx(() {
-                if (!controller.hasShuffled.value) {
-                  return _buildShuffleView(context);
-                } else {
-                  return _buildStackSelectionView(context);
-                }
-              }),
-            ),
-          ],
+      body: StarryBackground(
+        child: SafeArea(
+          child: Obx(() {
+            if (!controller.hasShuffled.value) {
+              return _buildShuffleView(context);
+            } else {
+              return _buildStackSelectionView(context);
+            }
+          }),
         ),
       ),
+
     );
   }
 
@@ -92,14 +55,11 @@ class ShuffleScreen extends StatelessWidget {
         SizedBox(height: 20),
 
         // Title
-        Text(
-          'Preparing Your Reading',
-          style: TextStyle(
+        AppText(
+          data: 'Preparing Your Reading',
             fontSize: 24,
             fontWeight: FontWeight.w600,
             color: Colors.white,
-            letterSpacing: 0.5,
-          ),
         ),
 
         Spacer(),
@@ -153,69 +113,78 @@ class ShuffleScreen extends StatelessWidget {
     );
   }
 
-  // Circular card spread animation
   Widget _buildCircularCardSpread(BuildContext context) {
     final isShuffling = controller.isShuffling.value;
+    final hasShuffled = controller.hasShuffled.value;
     final screenWidth = MediaQuery.of(context).size.width;
-    final cardCount = 45;
+    final cardCount = 13; // Changed from 45 to 13
     final radius = screenWidth * 0.45;
 
-    // Arc span: from ~7 o'clock to ~5 o'clock (about 240 degrees on bottom half)
-    final startAngle = math.pi * 0.7; // ~126 degrees
-    final sweepAngle = math.pi * 1.6; // ~288 degrees
+    // Arc span: centered arc for 13 cards
+    final startAngle = math.pi * 1.15; // Start from left side
+    final sweepAngle = math.pi * 0.7; // Tighter spread
 
     return SizedBox(
       height: 300,
       width: screenWidth,
-      child: Stack(
-        alignment: Alignment.center,
-        clipBehavior: Clip.none,
-        children: [
-          // Main card arc
-          for (int i = 0; i < cardCount; i++)
-            Builder(
-              builder: (context) {
-                final progress = i / (cardCount - 1);
-                final angle = startAngle + (sweepAngle * progress);
+      child: Center(
+        child: SizedBox(
+          width: screenWidth * 0.9, // Contain within 90% of screen width
+          height: 300,
+          child: Stack(
+            alignment: Alignment.center,
+            clipBehavior: Clip.none,
+            children: [
+              // Main card arc
+              for (int i = 0; i < cardCount; i++)
+                Builder(
+                  builder: (context) {
+                    final progress = i / (cardCount - 1);
+                    final angle = startAngle + (sweepAngle * progress);
 
-                final x = radius * math.cos(angle);
-                final y = radius * math.sin(angle);
+                    final x = radius * math.cos(angle);
+                    final y = radius * math.sin(angle);
 
-                // Card rotation to follow the arc
-                final cardRotation = angle + math.pi / 2;
+                    // Card rotation to follow the arc
+                    final cardRotation = angle + math.pi / 2;
 
-                return AnimatedPositioned(
-                  duration: Duration(milliseconds: isShuffling ? 300 : 600),
-                  curve: Curves.easeInOut,
-                  left: screenWidth / 2 + x - 30,
-                  top: 150 + y - 45,
-                  child: TweenAnimationBuilder<double>(
-                    tween: Tween(begin: 0.0, end: 1.0),
-                    duration: Duration(milliseconds: 800 + (i * 15)),
-                    curve: Curves.easeOutBack,
-                    builder: (context, value, child) {
-                      return Transform.scale(
-                        scale: 0.3 + (value * 0.7),
-                        child: Transform.rotate(
-                          angle: cardRotation + (isShuffling ? math.sin(i.toDouble()) * 0.2 : 0),
-                          child: Opacity(
-                            opacity: value,
-                            child: child,
-                          ),
+                    return AnimatedPositioned(
+                      duration: Duration(milliseconds: isShuffling ? 300 : 600),
+                      curve: Curves.easeInOut,
+                      left: (screenWidth * 0.9) / 2 + x - 30,
+                      top: 150 + y - 45,
+                      child: TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0.0, end: 1.0),
+                        duration: Duration(milliseconds: 800 + (i * 15)),
+                        curve: Curves.easeOutBack,
+                        builder: (context, value, child) {
+                          return Transform.scale(
+                            scale: 0.3 + (value * 0.7),
+                            child: Transform.rotate(
+                              angle: cardRotation + (isShuffling ? math.sin(i.toDouble()) * 0.2 : 0),
+                              child: Opacity(
+                                opacity: value.clamp(0.0, 1.0),
+                                child: child,
+                              ),
+                            ),
+                          );
+                        },
+                        child: GestureDetector(
+                          onTap: hasShuffled && !isShuffling
+                              ? () => _onStackSelected(i)
+                              : null,
+                          child: _buildTarotCard(highlighted: i == 6), // Highlight middle card (index 6 of 13)
                         ),
-                      );
-                    },
-                    child: _buildTarotCard(highlighted: i == 30),
-                  ),
-                );
-              },
-            ),
-        ],
+                      ),
+                    );
+                  },
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }
-
-  // Individual tarot card
   Widget _buildTarotCard({bool highlighted = false}) {
     return Container(
       width: 60,
@@ -258,14 +227,11 @@ class ShuffleScreen extends StatelessWidget {
         SizedBox(height: 20),
 
         // Title
-        Text(
-          'Card Reveal',
-          style: TextStyle(
+        AppText(
+          data: 'Card Reveal',
             fontSize: 24,
             fontWeight: FontWeight.w600,
             color: Colors.white,
-            letterSpacing: 0.5,
-          ),
         ),
 
         SizedBox(height: 60),
@@ -298,7 +264,7 @@ class ShuffleScreen extends StatelessWidget {
 
         // Right column (cards 6-9)
         _buildPositionedCard(5, top: 80, right: 20, index: 5),
-        _buildPositionedCard(6, top: 180, right: 20, index: 6),
+        // _buildPositionedCard(6, top: 180, right: 20, index: 6),
         _buildPositionedCard(7, top: 280, right: 20, index: 7),
       ],
     );
@@ -325,7 +291,7 @@ class ShuffleScreen extends StatelessWidget {
             child: Transform.translate(
               offset: Offset(0, 30 * (1 - value)),
               child: Opacity(
-                opacity: value,
+                opacity: value.clamp(0.0, 1.0),  // <-- Add .clamp(0.0, 1.0) here
                 child: child,
               ),
             ),
@@ -370,20 +336,65 @@ class ShuffleScreen extends StatelessWidget {
   }
 
   Widget _buildBottomActions(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Column(
       children: [
-        IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.favorite_border, color: Colors.white),
-          iconSize: 28,
+        // Reshuffle button
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 40),
+          child: ElevatedButton(
+            onPressed: () {
+              controller.resetReading();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xFFD4A574),
+              padding: EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              elevation: 0,
+            ),
+            child: SizedBox(
+              width: double.infinity,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.shuffle, color: Colors.white, size: 20),
+                    SizedBox(width: 8),
+                    Text(
+                      'Reshuffle Cards',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
-        SizedBox(width: 20),
-        IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.touch_app, color: Colors.white),
-          iconSize: 28,
-        ),
+
+        SizedBox(height: 20),
+
+        // Favorite and Touch icons
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   children: [
+        //     IconButton(
+        //       onPressed: () {},
+        //       icon: Icon(Icons.favorite_border, color: Colors.white),
+        //       iconSize: 28,
+        //     ),
+        //     SizedBox(width: 20),
+        //     IconButton(
+        //       onPressed: () {},
+        //       icon: Icon(Icons.touch_app, color: Colors.white),
+        //       iconSize: 28,
+        //     ),
+        //   ],
+        // ),
       ],
     );
   }
