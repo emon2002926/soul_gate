@@ -6,6 +6,8 @@ import 'package:soul_gate/features/auth/views/sign_up_screen.dart';
 import 'package:soul_gate/features/auth/views/verify_email_screen.dart';
 import '../../../core/constants/app_colors.dart';
 import 'package:get/get.dart';
+import '../../../core/onboarding/splash/views/onboarding_screen.dart';
+import '../../../core/onboarding/splash/views/subscription_page.dart';
 import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/text/app_text.dart';
 import '../../../core/widgets/text/text_field/AppTextFiled.dart';
@@ -87,7 +89,10 @@ class SingInScreen extends StatelessWidget {
 
                     Obx(() => AppButton(
                       buttonText: controller.isLoading.value ? 'Loading...' : 'Log in',
-                      onPressed: controller.isLoading.value ? null : controller.login,
+                      // onPressed: controller.isLoading.value ? null : controller.login,
+                      onPressed:(){
+                        AppNavigation.push(context, SubscriptionPage());
+                      },
                       fillColor: AppColors.instance.primaryBtnColor,
                       borderRadius: 25,
                       buttonHeight: 50,
@@ -104,7 +109,7 @@ class SingInScreen extends StatelessWidget {
                         const AppText(
                           data: 'Don\'t have an account? ',
                           fontSize: 16,
-                          color: Colors.grey,
+                          color: Colors.white,
                         ),
                         GestureDetector(
                           onTap: () {
@@ -113,10 +118,10 @@ class SingInScreen extends StatelessWidget {
                           child: const AppText(
                             data: 'Sign up',
                             fontSize: 16,
-                            color: Colors.blue,
+                            color: Colors.white,
                             fontWeight: FontWeight.w600,
                             decoration: TextDecoration.underline,
-                            decorationColor: Colors.blue,
+                            decorationColor: Colors.white,
                           ),
                         ),
                       ],

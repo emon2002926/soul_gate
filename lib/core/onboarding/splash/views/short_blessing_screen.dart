@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
-import 'package:soul_gate/core/widgets/text/app_text.dart';
 import '../../../../features/card_reading/views/shuffle_screen.dart';
+import '../../../../features/profile/views/profile_page.dart';
 import '../../../constants/app_assert_image.dart';
+
 
 class ShortBlessingController extends GetxController
     with GetTickerProviderStateMixin {
@@ -18,9 +19,11 @@ class ShortBlessingController extends GetxController
   late List<Animation<double>> speakingAnimations;
 
   final String blessingText =
-      "Archangel Michael, protect this session from any false or negative energy. "
-      "Reveal only what the client needs for clarity and truth. "
-      "Thank you, thank you, thank you.";
+      "In this moment, I open this session with clarity and intention. "
+      "Archangel Michael surrounds us with his light and protects this space. "
+      "Guides of light, reveal only what serves the highest good. "
+      "May every message bring truth, peace, and alignment. "
+      "Thank you, thank you, thank you. And so it is.";
 
   @override
   void onInit() {
@@ -98,17 +101,14 @@ class ShortBlessingController extends GetxController
 
   void _onBlessingComplete() {
     Future.delayed(const Duration(seconds: 2), () {
-      // Navigate to shuffle screen or next step
-      // Get.off(() => const ShuffleScreen());
-      AppNavigation.push(Get.context!,  ShuffleScreen());
+      AppNavigation.push(Get.context!, ShuffleScreen());
     });
   }
 
   Future<void> skipBlessing() async {
     await flutterTts.stop();
     isSpeaking.value = false;
-    // Get.back();
-    AppNavigation.push(Get.context!,  ShuffleScreen());
+    AppNavigation.push(Get.context!, ShuffleScreen());
   }
 
   @override
@@ -142,23 +142,23 @@ class ShortBlessingScreen extends StatelessWidget {
             },
             child: Container(
               decoration: BoxDecoration(
-                color: const Color(0xFFD4AF37).withOpacity(0.3),
+                color: Colors.white.withOpacity(0.2),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
-                Icons.chevron_left,
-                color: Color(0xFFD4AF37),
-                size: 28,
+                Icons.arrow_back,
+                color: Colors.white,
+                size: 24,
               ),
             ),
           ),
         ),
         title: const Text(
-          'Short Blessing',
+          'Saint Michael\'s Blessing',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w500,
-            color: Color(0xFFD4AF37),
+            color: Colors.white,
             letterSpacing: 0.5,
           ),
         ),
@@ -169,16 +169,17 @@ class ShortBlessingScreen extends StatelessWidget {
             child: GestureDetector(
               onTap: () {
                 // Navigate to profile
+                AppNavigation.push(Get.context!, ProfilePage());
               },
               child: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFD4AF37).withOpacity(0.3),
+                  color: Colors.white.withOpacity(0.2),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
-                  Icons.person_outline,
-                  color: Color(0xFFD4AF37),
+                  Icons.account_circle_outlined,
+                  color: Colors.white,
                   size: 24,
                 ),
               ),
@@ -201,80 +202,108 @@ class ShortBlessingScreen extends StatelessWidget {
           ),
         ),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Spacer(flex: 2),
-                const Text(
-                  'Archangel Michael, Protect This\nSession From Any False Or\nNegative Energy.\nReveal Only What The Client\nNeeds For Clarity And Truth.\nThank You, Thank You, Thank\nYou.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white,
-                    height: 1.6,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                const Spacer(flex: 2),
-                Obx(() {
-                  if (controller.isSpeaking.value) {
-                    return Column(
+          child: Column(
+            children: [
+              const Spacer(flex: 1),
+
+              // Saint Michael Image
+              Image.asset(
+                AppAssertImage.instance.saintMichaelImage, // Add this image to your assets
+                width: 280,
+                height: 280,
+                fit: BoxFit.contain,
+              ),
+
+              const SizedBox(height: 40),
+
+              // Blessing Text
+              Expanded(
+                flex: 3,
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    child: Column(
                       children: [
-                        SpeakingIndicator(controller: controller),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'Speaking...',
+                        Text(
+                          'IN THIS MOMENT, I OPEN THIS SESSION\nWITH CLARITY AND INTENTION.\nARCHANGEL MICHAEL SURROUNDS US\nWITH HIS LIGHT AND PROTECTS THIS\nSPACE.\nGUIDES OF LIGHT, REVEAL ONLY WHAT\nSERVES THE HIGHEST GOOD.\nMAY EVERY MESSAGE BRING TRUTH, PEACE,\nAND ALIGNMENT.\nTHANK YOU, THANK YOU, THANK YOU.\nAND SO IT IS',
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 16,
+                            fontWeight: FontWeight.w400,
                             color: Colors.white,
+                            height: 1.5,
+                            letterSpacing: 0.8,
                           ),
                         ),
+
+                        const SizedBox(height: 40),
+
+                        // Speaking Indicator
+                        Obx(() {
+                          if (controller.isSpeaking.value) {
+                            return Column(
+                              children: [
+                                SpeakingIndicator(controller: controller),
+                                const SizedBox(height: 16),
+                                const Text(
+                                  'Speaking...',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            );
+                          } else if (controller.isCompleted.value) {
+                            return Column(
+                              children: [
+                                const Icon(
+                                  Icons.check_circle_outline,
+                                  color: Color(0xFFD4AF37),
+                                  size: 40,
+                                ),
+                                const SizedBox(height: 12),
+                                Text(
+                                  'Blessing Complete',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white.withOpacity(0.7),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+                          return const SizedBox(height: 70);
+                        }),
                       ],
-                    );
-                  } else if (controller.isCompleted.value) {
-                    return Column(
-                      children: [
-                        const Icon(
-                          Icons.check_circle_outline,
-                          color: Color(0xFFD4AF37),
-                          size: 40,
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          'Blessing Complete',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.white.withOpacity(0.7),
-                          ),
-                        ),
-                      ],
-                    );
-                  }
-                  return const SizedBox(height: 70);
-                }),
-                const SizedBox(height: 40),
-                TextButton(
-                  onPressed: controller.skipBlessing,
-                  child: AppText(
-                    data: 'Skip',
-                      fontSize: 15,
-                      color: Colors.white,
-                      decoration: TextDecoration.underline,
-                      decorationColor: Colors.white.withOpacity(0.5),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 40),
-              ],
-            ),
+              ),
+
+              // Skip Button
+              TextButton(
+                onPressed: controller.skipBlessing,
+                child: Text(
+                  'Skip',
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.white,
+                    decoration: TextDecoration.underline,
+                    decorationColor: Colors.white.withOpacity(0.5),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 30),
+            ],
           ),
         ),
       ),
     );
   }
 }
+
 class SpeakingIndicator extends StatelessWidget {
   final ShortBlessingController controller;
 
@@ -298,7 +327,7 @@ class SpeakingIndicator extends StatelessWidget {
                 width: 4,
                 height: 20 * controller.speakingAnimations[index].value,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF1C746).withOpacity(0.8),
+                  color: const Color(0xFFD4AF37).withOpacity(0.8),
                   borderRadius: BorderRadius.circular(2),
                 ),
               );

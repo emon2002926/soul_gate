@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../core/constants/app_assert_image.dart';
 import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/text/text_field/AppTextFiled.dart';
 import '../controller/edit_profile_controller.dart';
@@ -32,7 +33,10 @@ class EditProfilePage extends StatelessWidget {
               size: 20,
             ),
           ),
-          onPressed: () => Get.back(),
+          onPressed: () {
+            Navigator.pop(context);
+          }
+          ,
         ),
         centerTitle: true,
         title: Text(
@@ -44,63 +48,81 @@ class EditProfilePage extends StatelessWidget {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-
-            // Profile Image Section
-            Center(child: _buildProfileImage(controller)),
-
-            const SizedBox(height: 32),
-
-            // Name Field
-            _buildWhiteLabel('Name'),
-            const SizedBox(height: 8),
-            AppTextField(
-              controller: controller.nameController,
-              hintText: 'Enter your name',
-              keyboardType: TextInputType.name,
+      extendBodyBehindAppBar: true,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(AppAssertImage.instance.appBackground),
+            fit: BoxFit.cover,
+            // Optional: Add a dark overlay for better text readability
+            colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.3),
+              BlendMode.darken,
             ),
+          ),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 20),
 
-            const SizedBox(height: 20),
+                // Profile Image Section
+                Center(child: _buildProfileImage(controller)),
 
-            // Email Field
-            _buildWhiteLabel('Email'),
-            const SizedBox(height: 8),
-            AppTextField(
-              controller: controller.emailController,
-              hintText: 'Enter your email',
-              keyboardType: TextInputType.emailAddress,
+                const SizedBox(height: 32),
+
+                // Name Field
+                _buildWhiteLabel('Name'),
+                const SizedBox(height: 8),
+                AppTextField(
+                  controller: controller.nameController,
+                  hintText: 'Enter your name',
+                  keyboardType: TextInputType.name,
+                ),
+
+                const SizedBox(height: 20),
+
+                // Email Field
+                _buildWhiteLabel('Email'),
+                const SizedBox(height: 8),
+                AppTextField(
+                  controller: controller.emailController,
+                  hintText: 'Enter your email',
+                  keyboardType: TextInputType.emailAddress,
+                ),
+
+                const SizedBox(height: 20),
+
+                // Mobile Field
+                _buildWhiteLabel('Mobile'),
+                const SizedBox(height: 8),
+                AppTextField(
+                  controller: controller.mobileController,
+                  hintText: 'Enter your mobile number',
+                  keyboardType: TextInputType.phone,
+                ),
+
+                const SizedBox(height: 40),
+
+                // Save Button using AppButton
+                Obx(() => AppButton(
+                  buttonText: 'Save',
+                  onPressed: controller.isLoading.value ? null : controller.saveProfile,
+                  isLoading: controller.isLoading.value,
+                  fillColor: const Color(0xFFBC9041),
+                  borderRadius: 26,
+                  buttonHeight: 52,
+                )),
+
+                const SizedBox(height: 100),
+              ],
             ),
-
-            const SizedBox(height: 20),
-
-            // Mobile Field
-            _buildWhiteLabel('Mobile'),
-            const SizedBox(height: 8),
-            AppTextField(
-              controller: controller.mobileController,
-              hintText: 'Enter your mobile number',
-              keyboardType: TextInputType.phone,
-            ),
-
-            const SizedBox(height: 40),
-
-            // Save Button using AppButton
-            Obx(() => AppButton(
-              buttonText: 'Save',
-              onPressed: controller.isLoading.value ? null : controller.saveProfile,
-              isLoading: controller.isLoading.value,
-              fillColor: const Color(0xFFBC9041),
-              borderRadius: 26,
-              buttonHeight: 52,
-            )),
-
-            const SizedBox(height: 100),
-          ],
+          ),
         ),
       ),
     );

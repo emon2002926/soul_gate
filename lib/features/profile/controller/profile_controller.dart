@@ -4,6 +4,7 @@ import 'package:soul_gate/core/util/app_navigation.dart';
 import 'package:soul_gate/features/profile/views/change_password_page.dart';
 
 import '../views/edit_profile_page.dart';
+import '../views/legal_conditions_screen.dart';
 
 class ProfileController extends GetxController {
   // User data
@@ -40,7 +41,7 @@ class ProfileController extends GetxController {
 
   void onContactUs() {
     // Navigate to contact us
-    Get.snackbar('Contact Us', 'Opening contact page...');
+    AppNavigation.push(Get.context!, LegalConditionsScreen());
   }
 
   void onFAQ() {

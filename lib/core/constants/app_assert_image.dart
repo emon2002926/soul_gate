@@ -12,6 +12,14 @@
     final String appBackground = "assets/images/app_bg_one.png";
     final String cardDecoration = "assets/images/card_decoration.png";
     final String onboardingImage1 = "assets/images/art4.png";
-    final String onboardingImage2 = "assets/images/art2.png";
-    final String onboardingImage3 = "assets/images/art3.png";
+    // final String onboardingImage2 = "assets/images/art2.png";
+    // final String onboardingImage3 = "assets/images/art3.png";
+    final String deck1 = "assets/images/card1.png";
+    final String deck2 = "assets/images/card2.png";
+    final String deck3 = "assets/images/card3.png";
+    final String portalImage = "assets/images/portalImage.png";
+    final String cardBg = "assets/images/dialog_bg.jpg";
+    final String saintMichaelImage = "assets/images/saintMichaelImage.png";
+
+
   }

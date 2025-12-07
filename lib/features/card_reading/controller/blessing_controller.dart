@@ -9,6 +9,8 @@ class BlessingIntroController extends GetxController {
   final isLoading = false.obs;
 
   void onGoToBlessing() {
+    //Todo ShuffleScreen btn click
+
     AppNavigation.push(Get.context!,ShuffleScreen());
   }
 }

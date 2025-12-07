@@ -58,6 +58,9 @@ class SignUpScreen extends StatelessWidget {
                       label: 'Full Name',
                       controller: controller.fullNameController,
                       validator: controller.validateFullName,
+                      hintTextColor: Colors.white,
+                      borderColor: AppColors.instance.primaryBtnColor,
+                      fillColor: Colors.transparent,
                     ),
                     SizedBox(height: 20.h),
 
@@ -67,6 +70,9 @@ class SignUpScreen extends StatelessWidget {
                       controller: controller.emailController,
                       keyboardType: TextInputType.emailAddress,
                       validator: controller.validateEmail,
+                      hintTextColor: Colors.white,
+                      borderColor: AppColors.instance.primaryBtnColor,
+                      fillColor: Colors.transparent,
                     ),
 
                     SizedBox(height: 20.h),
@@ -80,6 +86,9 @@ class SignUpScreen extends StatelessWidget {
                           : Icons.visibility_off_outlined,
                       onSuffixIconTap: controller.togglePasswordVisibility,
                       validator: controller.validatePassword,
+                      hintTextColor: Colors.white,
+                      borderColor: AppColors.instance.primaryBtnColor,
+                      fillColor: Colors.transparent,
                     )),
 
                     SizedBox(height: 20.h),
@@ -91,6 +100,9 @@ class SignUpScreen extends StatelessWidget {
                           ? Icons.visibility_outlined
                           : Icons.visibility_off_outlined,
                       onSuffixIconTap: controller.togglePasswordVisibility,
+                      hintTextColor: Colors.white,
+                      borderColor: AppColors.instance.primaryBtnColor,
+                      fillColor: Colors.transparent,
                     )),
 
                     SizedBox(height: 20.h),
@@ -100,12 +112,12 @@ class SignUpScreen extends StatelessWidget {
                           width: 24,
                           height: 24,
                           decoration: BoxDecoration(
-                            color: Colors.grey[600],
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: const Icon(
                             Icons.check,
-                            color: Colors.white,
+                            color: Colors.black,
                             size: 16,
                           ),
                         ),
@@ -113,7 +125,7 @@ class SignUpScreen extends StatelessWidget {
                         const AppText(
                           data: 'I agree to terms & conditions',
                           fontSize: 16,
-                          color: Colors.grey,
+                          color: Colors.white,
                         ),
                       ],
                     ),
@@ -144,7 +156,7 @@ class SignUpScreen extends StatelessWidget {
                         const AppText(
                           data: 'Already have an account? ',
                           fontSize: 16,
-                          color: Colors.grey,
+                          color: Colors.white,
                         ),
                         GestureDetector(
                           onTap: () {
@@ -153,10 +165,10 @@ class SignUpScreen extends StatelessWidget {
                           child: const AppText(
                             data: 'Sign in',
                             fontSize: 16,
-                            color: Colors.blue,
+                            color: Colors.white,
                             fontWeight: FontWeight.w600,
                             decoration: TextDecoration.underline,
-                            decorationColor: Colors.blue,
+                            decorationColor: Colors.white,
                           ),
                         ),
                       ],

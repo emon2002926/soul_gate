@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import '../../home/data/cards_data.dart';
 import '../../home/data/tarot_card.dart';
@@ -22,6 +23,12 @@ class CardController extends GetxController {
     allCards = CardsData.getAllCards(); // Load 78 cards
   }
 
+  @override
+  void onReady() {
+    super.onReady();
+    // Auto-start shuffling when controller is ready
+    shuffleAndDivideCards();
+  }
   // Shuffle deck + divide into 13 stacks of 6
   void shuffleAndDivideCards() {
     isShuffling.value = true;
@@ -86,4 +93,26 @@ class CardController extends GetxController {
     isShuffling.value = false;
     hasShuffled.value = false;
   }
+}
+
+// Custom painter for the decorative pattern in the middle
+class DecorativePatternPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Color(0xFFE5B566).withOpacity(0.3)
+      ..strokeWidth = 1;
+
+    // Draw small vertical lines to create texture
+    for (double i = 0; i < size.width; i += 3) {
+      canvas.drawLine(
+        Offset(i, 0),
+        Offset(i, size.height),
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
 
+import '../../../core/constants/app_assert_image.dart';
 import '../controller/profile_controller.dart';
 import 'change_password_page.dart';
 
@@ -15,97 +16,113 @@ class ProfilePage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
+      extendBodyBehindAppBar: true,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(AppAssertImage.instance.appBackground),
+            fit: BoxFit.cover,
+            // Optional: Add a dark overlay for better text readability
+            colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.3),
+              BlendMode.darken,
+            ),
+          ),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
 
-              // Profile Header Section
-              _buildProfileHeader(controller),
+                // Profile Header Section
+                _buildProfileHeader(controller),
 
-              const SizedBox(height: 24),
+                const SizedBox(height: 24),
 
-              // Language Change Section
-              _buildMenuCard(
-                children: [
-                  _buildMenuItem(
-                    icon: Icons.language_rounded,
-                    iconColor: const Color(0xFF4A90D9),
-                    title: 'Language Change',
-                    subtitle: 'Switch to your preferred language.',
-                    onTap: controller.onLanguageChange,
-                  ),
-                ],
-              ),
+                // Language Change Section
+                // _buildMenuCard(
+                //   children: [
+                //     _buildMenuItem(
+                //       icon: Icons.language_rounded,
+                //       iconColor: const Color(0xFF4A90D9),
+                //       title: 'Language Change',
+                //       subtitle: 'Switch to your preferred language.',
+                //       onTap: controller.onLanguageChange,
+                //     ),
+                //   ],
+                // ),
 
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-              // Account Settings Section
-              _buildMenuCard(
-                children: [
-                  _buildMenuItem(
-                    icon: Icons.person_outline_rounded,
-                    iconColor: const Color(0xFFE8A54B),
-                    title: 'Edit Profile',
-                    subtitle: 'Update your account details.',
-                    onTap: controller.onEditProfile,
-                  ),
-                  const Divider(height: 1, indent: 56),
-                  _buildMenuItem(
-                    icon: Icons.lock_outline_rounded,
-                    iconColor: const Color(0xFFE8A54B),
-                    title: 'Change Password',
-                    subtitle: 'Change your account password securely.',
-                    onTap: (){
-                      AppNavigation.push(context, ChangePasswordPage());
-                    },
-                  ),
-                ],
-              ),
+                // Account Settings Section
+                _buildMenuCard(
+                  children: [
+                    _buildMenuItem(
+                      icon: Icons.person_outline_rounded,
+                      iconColor: const Color(0xFFE8A54B),
+                      title: 'Edit Profile',
+                      subtitle: 'Update your account details.',
+                      onTap: controller.onEditProfile,
+                    ),
+                    const Divider(height: 1, indent: 56),
+                    _buildMenuItem(
+                      icon: Icons.lock_outline_rounded,
+                      iconColor: const Color(0xFFE8A54B),
+                      title: 'Change Password',
+                      subtitle: 'Change your account password securely.',
+                      onTap: (){
+                        AppNavigation.push(context, ChangePasswordPage());
+                      },
+                    ),
+                  ],
+                ),
 
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-              // Support Section
-              _buildMenuCard(
-                children: [
-                  _buildMenuItem(
-                    icon: Icons.info_outline_rounded,
-                    iconColor: const Color(0xFFE85C4A),
-                    title: 'About us',
-                    subtitle: 'Learn about our team and mission.',
-                    onTap: controller.onAboutUs,
-                  ),
-                  const Divider(height: 1, indent: 56),
-                  _buildMenuItem(
-                    icon: Icons.privacy_tip_outlined,
-                    iconColor: const Color(0xFFE85C4A),
-                    title: 'Privacy Policy',
-                    subtitle: 'Understand how we protect your data.',
-                    onTap: controller.onPrivacyPolicy,
-                  ),
-                  const Divider(height: 1, indent: 56),
-                  _buildMenuItem(
-                    icon: Icons.headset_mic_outlined,
-                    iconColor: const Color(0xFFE85C4A),
-                    title: 'Contact Us',
-                    subtitle: 'Reach our support team for help.',
-                    onTap: controller.onContactUs,
-                  ),
-                  const Divider(height: 1, indent: 56),
-                  _buildMenuItem(
-                    icon: Icons.help_outline_rounded,
-                    iconColor: const Color(0xFFE85C4A),
-                    title: 'FAQ',
-                    subtitle: 'Reach our support team for help.',
-                    onTap: controller.onFAQ,
-                  ),
-                ],
-              ),
+                // Support Section
+                _buildMenuCard(
+                  children: [
+                    // _buildMenuItem(
+                    //   icon: Icons.info_outline_rounded,
+                    //   iconColor: const Color(0xFFE85C4A),
+                    //   title: 'About us',
+                    //   subtitle: 'Learn about our team and mission.',
+                    //   onTap: controller.onAboutUs,
+                    // ),
+                    const Divider(height: 1, indent: 56),
+                    _buildMenuItem(
+                      icon: Icons.privacy_tip_outlined,
+                      iconColor: const Color(0xFFE85C4A),
+                      title: 'Privacy Policy',
+                      subtitle: 'Understand how we protect your data.',
+                      onTap: controller.onPrivacyPolicy,
+                    ),
+                    const Divider(height: 1, indent: 56),
+                    _buildMenuItem(
+                      icon: Icons.headset_mic_outlined,
+                      iconColor: const Color(0xFFE85C4A),
+                      title: 'Legal Conditions of Use',
+                      subtitle: 'Legal Conditions of Use.',
+                      onTap: controller.onContactUs,
+                    ),
+                    // const Divider(height: 1, indent: 56),
+                    // _buildMenuItem(
+                    //   icon: Icons.help_outline_rounded,
+                    //   iconColor: const Color(0xFFE85C4A),
+                    //   title: 'FAQ',
+                    //   subtitle: 'Reach our support team for help.',
+                    //   onTap: controller.onFAQ,
+                    // ),
+                  ],
+                ),
 
-              const SizedBox(height: 100), // Space for bottom nav
-            ],
+                const SizedBox(height: 100), // Space for bottom nav
+              ],
+            ),
           ),
         ),
       ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../constants/app_assert_image.dart';
 import 'package:get/get.dart';
+import '../../../widgets/buttons/app_button.dart';
 import '../controller/onboarding_controller.dart';
-import 'ask_oracle_screen.dart';
-
 
 
 
@@ -34,14 +34,22 @@ class OnboardingScreen extends StatelessWidget {
                   onPageChanged: (index) => controller.currentPage.value = index,
                   itemCount: onboardingPages.length,
                   itemBuilder: (context, index) {
-                    return _OnboardingPage(data: onboardingPages[index]);
+                    final data = onboardingPages[index];
+
+                    // Combined Reading & Deck Selection Page
+                    if (data.type == OnboardingPageType.selectionPage) {
+                      return _SelectionPage(data: data, controller: controller);
+                    }
+
+                    // Standard pages
+                    return _OnboardingPage(data: data);
                   },
                 ),
               ),
 
               // Page Indicator
               Obx(() => Padding(
-                padding: const EdgeInsets.only(bottom: 20),
+                padding: const EdgeInsets.only(bottom: 12), // Reduced from 20
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(
@@ -53,7 +61,7 @@ class OnboardingScreen extends StatelessWidget {
                       height: 8,
                       decoration: BoxDecoration(
                         color: controller.currentPage.value == index
-                            ? const Color(0xFFD4AF37) // Gold
+                            ? const Color(0xFFD4AF37)
                             : Colors.white.withOpacity(0.4),
                         borderRadius: BorderRadius.circular(4),
                       ),
@@ -67,40 +75,26 @@ class OnboardingScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Obx(() {
                   final isLastPage = controller.currentPage.value == onboardingPages.length - 1;
-                  return SizedBox(
-                    width: double.infinity,
-                    height: 56,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (isLastPage) {
-                          // Navigate to Sign In
-                          Get.offAll(() => const AskOracleScreen());
-                        } else {
-                          controller.nextPage();
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFD4AF37).withOpacity(0.85),
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(28),
-                        ),
-                      ),
-                      child: Text(
-                        onboardingPages[controller.currentPage.value].buttonText,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ),
+                  final currentPageData = onboardingPages[controller.currentPage.value];
+
+                  return AppButton(
+                    buttonText: currentPageData.buttonText,
+                    onPressed: () {
+                      if (isLastPage) {
+                        controller.completeOnboarding();
+                      } else {
+                        controller.nextPage();
+                      }
+                    },
+                    fillColor: const Color(0xFFD4AF37).withOpacity(0.85),
+                    buttonHeight: 52, // Reduced from 56
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
                   );
                 }),
               ),
 
-              const SizedBox(height: 40),
+              const SizedBox(height: 20), // Reduced from 40
             ],
           ),
         ),
@@ -109,7 +103,7 @@ class OnboardingScreen extends StatelessWidget {
   }
 }
 
-
+// Standard Onboarding Page
 class _OnboardingPage extends StatelessWidget {
   final OnboardingData data;
 
@@ -117,99 +111,378 @@ class _OnboardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 60),
+    return SingleChildScrollView( // Added ScrollView
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+        child: Column(
+          children: [
+            const SizedBox(height: 60), // Reduced from 80
 
-          // Title
-          Text(
-            data.title,
-            style: const TextStyle(
-              fontSize: 36,
+            Text(
+              data.title,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.cinzel(
+                fontSize: 32, // Reduced from 34
+                fontWeight: FontWeight.w400,
+                color: Colors.white,
+                height: 1.2,
+                letterSpacing: 1.5,
+              ),
+            ),
+
+            // Subtitle (if exists)
+            if (data.subtitle != null) ...[
+              const SizedBox(height: 14), // Reduced from 16
+              Text(
+                data.subtitle!.toUpperCase(),
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 14, // Reduced from 15
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white,
+                  letterSpacing: 2.5,
+                ),
+              ),
+            ],
+
+            const SizedBox(height: 50), // Reduced from 60
+
+            // Center Image (if exists)
+            if (data.centerImage != null) ...[
+              Image.asset(
+                data.centerImage!,
+                width: 240, // Reduced from 260
+                height: 240, // Reduced from 260
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(height: 30), // Reduced from 40
+            ],
+
+            // Features List (if exists)
+            if (data.features != null) ...[
+              ...data.features!.map((feature) => Padding(
+                padding: const EdgeInsets.only(bottom: 20), // Reduced from 24
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      feature.icon,
+                      color: Colors.white.withOpacity(0.9),
+                      size: 20, // Reduced from 22
+                    ),
+                    const SizedBox(width: 14), // Reduced from 16
+                    Expanded(
+                      child: Text(
+                        feature.text.toUpperCase(),
+                        style: GoogleFonts.cinzel(
+                          fontSize: 13, // Reduced from 14
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white.withOpacity(0.95),
+                          letterSpacing: 1.3,
+                          height: 1.4,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )),
+            ],
+
+            // Description (if exists)
+            if (data.description != null) ...[
+              Text(
+                data.description!,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.cinzel(
+                  fontSize: 17, // Reduced from 18
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white.withOpacity(0.95),
+                  height: 1.6,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
+
+            const SizedBox(height: 100), // Extra bottom space for button area
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Combined Reading Preference & Deck Selection Page
+class _SelectionPage extends StatelessWidget {
+  final OnboardingData data;
+  final OnboardingController controller;
+
+  const _SelectionPage({
+    required this.data,
+    required this.controller,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Column(
+        children: [
+          const SizedBox(height: 30), // Reduced from 40
+
+          // Reading Preference Section
+           Text(
+            'How would you like\nyour reading?',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.cinzel(
+              fontSize: 22, // Reduced from 24
               fontWeight: FontWeight.w400,
-              color: Color(0xFFD4AF37), // Gold color
-              height: 1.2,
+              color: Colors.white,
+              height: 1.3,
+              letterSpacing: 1,
+            ),
+          ),
+
+          const SizedBox(height: 20), // Reduced from 24
+
+          // Reading Type Selection Cards
+          Obx(() => Row(
+            children: [
+              // Audio & Text Reading
+              Expanded(
+                child: _SelectionCard(
+                  icon: Icons.graphic_eq_rounded,
+                  label: 'Audio & Text Reading',
+                  isSelected: controller.selectedReadingType.value == ReadingType.audioAndText,
+                  onTap: () => controller.selectReadingType(ReadingType.audioAndText),
+                ),
+              ),
+              const SizedBox(width: 12), // Reduced from 16
+
+              // Text Reading
+              Expanded(
+                child: _SelectionCard(
+                  icon: Icons.menu_book_rounded,
+                  label: 'Text Reading',
+                  isSelected: controller.selectedReadingType.value == ReadingType.textOnly,
+                  onTap: () => controller.selectReadingType(ReadingType.textOnly),
+                ),
+              ),
+            ],
+          )),
+
+          const SizedBox(height: 30), // Reduced from 35
+
+          // Deck Selection Section
+           Text(
+            'Select Deck of Cards',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.cinzel(
+              fontSize: 19, // Reduced from 20
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
               letterSpacing: 1.5,
             ),
           ),
 
-          // Subtitle (if exists)
-          if (data.subtitle != null) ...[
-            const SizedBox(height: 16),
-            Text(
-              data.subtitle!.toUpperCase(),
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-                letterSpacing: 3,
-              ),
-            ),
-          ],
+          const SizedBox(height: 18), // Reduced from 20
 
-          // Description (if exists)
-          if (data.description != null) ...[
-            const SizedBox(height: 40),
-            Text(
-              data.description!,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-                color: Colors.white.withOpacity(0.9),
-                height: 1.6,
-                letterSpacing: 0.5,
+          // Deck Cards
+          Obx(() => Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _DeckCard(
+                deckType: DeckType.classic,
+                imagePath: AppAssertImage.instance.deck1,
+                isSelected: controller.selectedDeck.value == DeckType.classic,
+                onTap: () => controller.selectDeck(DeckType.classic),
               ),
-            ),
-          ],
+              const SizedBox(width: 10), // Reduced from 12
+              _DeckCard(
+                deckType: DeckType.mystical,
+                imagePath: AppAssertImage.instance.deck2,
+                isSelected: controller.selectedDeck.value == DeckType.mystical,
+                onTap: () => controller.selectDeck(DeckType.mystical),
+              ),
+              const SizedBox(width: 10), // Reduced from 12
+              _DeckCard(
+                deckType: DeckType.celestial,
+                imagePath: AppAssertImage.instance.deck3,
+                isSelected: controller.selectedDeck.value == DeckType.celestial,
+                onTap: () => controller.selectDeck(DeckType.celestial),
+              ),
+            ],
+          )),
 
-          // Features List (if exists)
-          if (data.features != null) ...[
-            const SizedBox(height: 40),
-            ...data.features!.map((feature) => Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(
-                    feature.icon,
-                    color: Colors.white.withOpacity(0.8),
-                    size: 22,
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Text(
-                      feature.text.toUpperCase(),
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white.withOpacity(0.9),
-                        letterSpacing: 1.5,
-                        height: 1.4,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            )),
-          ],
-
-          // Portal Image (for last page)
-          if (data.showPortal) ...[
-            const Spacer(),
-            Center(
-              child: Image.asset(
-                AppAssertImage.instance.onboardingImage1, // Add portal image to your AppAssertImage class
-                width: 220,
-                height: 300,
-                fit: BoxFit.contain,
-              ),
-            ),
-            const Spacer(),
-          ],
+          const SizedBox(height: 100), // Bottom padding
         ],
+      ),
+    );
+  }
+}
+
+// Selection Card Widget (for Reading Type)
+class _SelectionCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _SelectionCard({
+    required this.icon,
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        height: 100, // Reduced from 110
+        padding: const EdgeInsets.all(10), // Reduced from 12
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isSelected
+                ? const Color(0xFFD4AF37)
+                : Colors.white.withOpacity(0.3),
+            width: isSelected ? 2.5 : 1.5,
+          ),
+        ),
+        child: Stack(
+          children: [
+            // Checkmark (if selected)
+            if (isSelected)
+              Positioned(
+                top: 0,
+                right: 0,
+                child: Container(
+                  width: 18, // Reduced from 20
+                  height: 18,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFD4AF37),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.check,
+                    color: Colors.white,
+                    size: 11, // Reduced from 12
+                  ),
+                ),
+              ),
+
+            // Content
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Icon
+                Icon(
+                  icon,
+                  size: 28, // Reduced from 30
+                  color: Colors.white,
+                ),
+
+                const SizedBox(height: 6), // Reduced from 8
+
+                // Label
+                Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 10, // Reduced from 11
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                    height: 1.2,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Deck Card Widget
+class _DeckCard extends StatelessWidget {
+  final DeckType deckType;
+  final String imagePath;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _DeckCard({
+    required this.deckType,
+    required this.imagePath,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        width: 80, // Reduced from 85
+        height: 110, // Reduced from 120
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected
+                ? const Color(0xFFD4AF37)
+                : Colors.white.withOpacity(0.4),
+            width: isSelected ? 3 : 2,
+          ),
+          boxShadow: isSelected
+              ? [
+            BoxShadow(
+              color: const Color(0xFFD4AF37).withOpacity(0.4),
+              blurRadius: 12,
+              spreadRadius: 2,
+            ),
+          ]
+              : null,
+        ),
+        child: Stack(
+          children: [
+            // Deck Image
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.asset(
+                imagePath,
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            ),
+
+            // Checkmark Overlay (if selected)
+            if (isSelected)
+              Positioned(
+                top: 5, // Reduced from 6
+                right: 5,
+                child: Container(
+                  width: 18, // Reduced from 20
+                  height: 18,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFD4AF37),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.check,
+                    color: Colors.white,
+                    size: 11, // Reduced from 12
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
