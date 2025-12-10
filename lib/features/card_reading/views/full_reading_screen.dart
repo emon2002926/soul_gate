@@ -8,8 +8,6 @@ import '../../../core/widgets/text/app_text.dart';
 import '../controller/card_controller.dart';
 
 class FullReadingScreen extends StatelessWidget {
-
-
   final CardController controller = Get.find<CardController>();
 
   FullReadingScreen({super.key});
@@ -32,6 +30,7 @@ class FullReadingScreen extends StatelessWidget {
           data: 'Message',
           color: Colors.white,
           fontWeight: FontWeight.w600,
+          fontSize: 24,
         ),
         centerTitle: true,
         actions: [

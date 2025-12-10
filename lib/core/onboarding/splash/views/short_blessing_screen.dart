@@ -101,7 +101,7 @@ class ShortBlessingController extends GetxController
 
   void _onBlessingComplete() {
     Future.delayed(const Duration(seconds: 2), () {
-      AppNavigation.push(Get.context!, ShuffleScreen());
+      // AppNavigation.push(Get.context!, ShuffleScreen());
     });
   }
 

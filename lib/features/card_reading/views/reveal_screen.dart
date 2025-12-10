@@ -33,8 +33,8 @@ class _RevealScreenState extends State<RevealScreen> {
     if (allRevealed) {
       // Wait a moment before navigating
       Future.delayed(Duration(milliseconds: 2000), () {
-        // Navigate to next page - replace NextScreen() with your actual screen
-        AppNavigation.push(context,FullReadingScreen());
+        // Navigate to next page
+        AppNavigation.push(context, FullReadingScreen());
       });
     }
   }
@@ -57,11 +57,12 @@ class _RevealScreenState extends State<RevealScreen> {
           data: 'Result',
           color: Colors.white,
           fontWeight: FontWeight.w600,
+          fontSize: 24,
         ),
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.account_circle_outlined, color: Colors.white),
+            icon: Icon(Icons.account_circle_outlined, color: Colors.white, size: 24),
             onPressed: () {},
           ),
         ],
@@ -71,7 +72,6 @@ class _RevealScreenState extends State<RevealScreen> {
           image: DecorationImage(
             image: AssetImage(AppAssertImage.instance.appBackground),
             fit: BoxFit.cover,
-            // Optional: Add a dark overlay for better text readability
             colorFilter: ColorFilter.mode(
               Colors.black.withOpacity(0.3),
               BlendMode.darken,
@@ -81,7 +81,7 @@ class _RevealScreenState extends State<RevealScreen> {
         child: SafeArea(
           child: Stack(
             children: [
-              // Grid of 7 cards
+              // Celtic Cross card layout
               Padding(
                 padding: EdgeInsets.only(
                   top: 20,
@@ -89,23 +89,7 @@ class _RevealScreenState extends State<RevealScreen> {
                   right: 20,
                   bottom: selectedCardIndex != null ? 280 : 20,
                 ),
-                child: Obx(() {
-                  return GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 0.65,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                    ),
-                    itemCount: controller.selectedCards.length,
-                    itemBuilder: (context, index) {
-                      return _buildCardWidget(
-                        controller.selectedCards[index],
-                        index,
-                      );
-                    },
-                  );
-                }),
+                child: _buildCelticCrossLayout(context),
               ),
 
               // Bottom dialog for card details
@@ -119,6 +103,112 @@ class _RevealScreenState extends State<RevealScreen> {
                   ),
                 ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Celtic Cross layout with positioned cards
+  Widget _buildCelticCrossLayout(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Calculate card dimensions based on available space
+        double cardWidth = (constraints.maxWidth - 60) / 4;
+        double cardHeight = cardWidth * 1.5;
+
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            // Top card (index 0)
+            _buildPositionedCard(0,
+              top: 0,
+              left: constraints.maxWidth / 2 - cardWidth / 2,
+              cardWidth: cardWidth,
+              cardHeight: cardHeight,
+            ),
+
+            // Middle row - 3 cards
+            _buildPositionedCard(1,
+              top: cardHeight + 20,
+              left: 0,
+              cardWidth: cardWidth,
+              cardHeight: cardHeight,
+            ), // Left
+            _buildPositionedCard(2,
+              top: cardHeight + 20,
+              left: cardWidth + 20,
+              cardWidth: cardWidth,
+              cardHeight: cardHeight,
+            ), // Center
+            _buildPositionedCard(3,
+              top: cardHeight + 20,
+              left: (cardWidth + 20) * 2,
+              cardWidth: cardWidth,
+              cardHeight: cardHeight,
+            ), // Right
+
+            // Bottom center card (index 4)
+            _buildPositionedCard(4,
+              top: (cardHeight + 20) * 2,
+              left: constraints.maxWidth / 2 - cardWidth / 2,
+              cardWidth: cardWidth,
+              cardHeight: cardHeight,
+            ),
+
+            // Right column - 2 cards
+            _buildPositionedCard(5,
+              top: (cardHeight + 20) * 1.7,
+              right: 0,
+              cardWidth: cardWidth,
+              cardHeight: cardHeight,
+            ), // Bottom right
+            _buildPositionedCard(6,
+              top: cardHeight + -20,
+              right: 0,
+              cardWidth: cardWidth,
+              cardHeight: cardHeight,
+            ), // Top right
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildPositionedCard(
+      int index, {
+        double? top,
+        double? left,
+        double? right,
+        required double cardWidth,
+        required double cardHeight,
+      }) {
+    return Positioned(
+      top: top,
+      left: left,
+      right: right,
+      child: TweenAnimationBuilder<double>(
+        tween: Tween(begin: 0.0, end: 1.0),
+        duration: Duration(milliseconds: 600 + (index * 100)),
+        curve: Curves.easeOutBack,
+        builder: (context, value, child) {
+          return Transform.scale(
+            scale: value,
+            child: Transform.translate(
+              offset: Offset(0, 30 * (1 - value)),
+              child: Opacity(
+                opacity: value.clamp(0.0, 1.0),
+                child: child,
+              ),
+            ),
+          );
+        },
+        child: SizedBox(
+          width: cardWidth,
+          height: cardHeight,
+          child: _buildCardWidget(
+            controller.selectedCards[index],
+            index,
           ),
         ),
       ),
@@ -161,11 +251,6 @@ class _RevealScreenState extends State<RevealScreen> {
     return Container(
       key: ValueKey(false),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFFD4A574), Color(0xFFB8956A)],
-        ),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Color(0xFFE5D4C1), width: 2),
         boxShadow: [
@@ -176,11 +261,30 @@ class _RevealScreenState extends State<RevealScreen> {
           ),
         ],
       ),
-      child: Center(
-        child: Icon(
-          Icons.auto_awesome,
-          color: Color(0xFFE5D4C1),
-          size: 40,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Image.asset(
+          AppAssertImage.instance.deck1,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0xFFD4A574), Color(0xFFB8956A)],
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.auto_awesome,
+                  color: Color(0xFFE5D4C1),
+                  size: 40,
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -191,7 +295,7 @@ class _RevealScreenState extends State<RevealScreen> {
     return Container(
       key: ValueKey(true),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFFE5D4C1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Color(0xFFD4AF37), width: 2),
         boxShadow: [
@@ -369,10 +473,10 @@ class _RevealScreenState extends State<RevealScreen> {
                       ),
                       child: IconButton(
                         icon: Image.asset(
-                          'assets/images/share_icon.png', // Your asset path
+                          'assets/images/share_icon.png',
                           width: 24,
                           height: 24,
-                          color: Colors.white, // This applies color filter to the image
+                          color: Colors.white,
                         ),
                         onPressed: () {
                           // Share functionality
@@ -392,21 +496,3 @@ class _RevealScreenState extends State<RevealScreen> {
     );
   }
 }
-
-
-// // Create your next screen (Full Reading Screen)
-// class FullReadingScreen extends StatelessWidget {
-//   final CardController controller = Get.find<CardController>();
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: AppText(data: 'Full Reading'),
-//       ),
-//       body: Center(
-//         child: Text('All cards revealed! Full reading details here.'),
-//       ),
-//     );
-//   }
-// }

@@ -23,7 +23,6 @@ class QuestionScreen extends StatelessWidget {
           image: DecorationImage(
             image: AssetImage(AppAssertImage.instance.appBackground),
             fit: BoxFit.cover,
-            // Optional: Add a dark overlay for better text readability
             colorFilter: ColorFilter.mode(
               Colors.black.withOpacity(0.3),
               BlendMode.darken,
@@ -33,46 +32,37 @@ class QuestionScreen extends StatelessWidget {
         child: SafeArea(
           child: GestureDetector(
             onTap: () {
-              // Dismiss keyboard when tapping outside
               FocusScope.of(context).unfocus();
             },
             child: Column(
               children: [
                 Expanded(
                   child: SingleChildScrollView(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24),
-                      child: Column(
-                        children: [
-                          SizedBox(height: 60),
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 80),
 
-                          // Title
-                          Text(
-                         'DO YOU HAVE ANY\nQUESTION OR DOUBTS?',
-                           style: GoogleFonts.cinzel(
-                             fontSize: 28,
-                             fontWeight: FontWeight.bold,
-                             color: Colors.white,
-                           ),
+                        // Title with elegant styling
+                        Text(
+                          'DO YOU HAVE ANY\nQUESTION OR DOUBTS?',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.cinzel(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            height: 1.3,
+                            letterSpacing: 1.2,
                           ),
+                        ),
 
-                          SizedBox(height: 40),
+                        SizedBox(height: 60),
 
-                          // Question input field
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 16,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: Colors.white.withOpacity(0.3),
-                                width: 1,
-                              ),
-                            ),
-                            child: TextField(
+                        // Question input field with underline design
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TextField(
                               controller: textController,
                               onChanged: (value) {
                                 controller.updateQuestion(value);
@@ -80,55 +70,81 @@ class QuestionScreen extends StatelessWidget {
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
+                                height: 1.5,
                               ),
-                              maxLines: 3,
+                              minLines: 1,
+                              maxLines: 5,
+                              maxLength: 500,
+                              textAlign: TextAlign.center,
+                              keyboardType: TextInputType.multiline,
+                              textInputAction: TextInputAction.done,
                               decoration: InputDecoration(
                                 hintText:
-                                'What do I most need to understand about my current situation?',
+                                'What do I most need to understand about my\ncurrent situation?',
                                 hintStyle: TextStyle(
-                                  color: Colors.white.withOpacity(0.6),
-                                  fontSize: 15,
+                                  color: Colors.white.withOpacity(0.7),
+                                  fontSize: 16,
+                                  height: 1.5,
                                 ),
                                 border: InputBorder.none,
-                                isDense: true,
+                                enabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
+                                counterText: '', // Hide character counter
                               ),
                             ),
-                          ),
+                            // Underline
+                            Container(
+                              height: 1.5,
+                              margin: EdgeInsets.only(top: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.3),
+                              ),
+                            ),
+                          ],
+                        ),
 
-                          SizedBox(height: 40),
-                        ],
-                      ),
+                        SizedBox(height: 60),
+                      ],
                     ),
                   ),
                 ),
 
-                // Bottom buttons
+                // Bottom buttons with updated styling
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  padding: EdgeInsets.only(
+                    left: 24,
+                    right: 24,
+                    bottom: 30,
+                  ),
                   child: Column(
                     children: [
                       // Yes, continue button
                       SizedBox(
                         width: double.infinity,
+                        height: 56,
                         child: ElevatedButton(
                           onPressed: () {
-                            // controller.submitQuestion();
                             AppNavigation.push(context, ShuffleScreen());
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFFD4A574),
-                            padding: EdgeInsets.symmetric(vertical: 18),
+                            padding: EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
+                              borderRadius: BorderRadius.circular(28),
                             ),
                             elevation: 0,
                           ),
                           child: Text(
                             'Yes, continue',
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 18,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
+                              letterSpacing: 0.5,
                             ),
                           ),
                         ),
@@ -136,18 +152,19 @@ class QuestionScreen extends StatelessWidget {
 
                       SizedBox(height: 16),
 
-                      // No, Thanks button
+                      // No, Thanks button with transparent background
                       SizedBox(
                         width: double.infinity,
+                        height: 56,
                         child: OutlinedButton(
                           onPressed: () {
-                            // controller.skipQuestion();
                             AppNavigation.push(context, ClosingScreen());
                           },
                           style: OutlinedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(vertical: 18),
+                            backgroundColor: Colors.transparent,
+                            padding: EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
+                              borderRadius: BorderRadius.circular(28),
                             ),
                             side: BorderSide(
                               color: Color(0xFFD4A574),
@@ -157,15 +174,14 @@ class QuestionScreen extends StatelessWidget {
                           child: Text(
                             'No, Thanks',
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 18,
                               fontWeight: FontWeight.w600,
                               color: Color(0xFFD4A574),
+                              letterSpacing: 0.5,
                             ),
                           ),
                         ),
                       ),
-
-                      SizedBox(height: 30),
                     ],
                   ),
                 ),
@@ -177,8 +193,6 @@ class QuestionScreen extends StatelessWidget {
     );
   }
 }
-
-
 
 class QuestionController extends GetxController {
   final questionText = ''.obs;

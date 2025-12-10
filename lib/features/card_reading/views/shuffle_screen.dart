@@ -7,11 +7,8 @@ import '../controller/card_controller.dart';
 import 'package:get/get.dart';
 import 'reveal_screen.dart';
 
-
-
 class ShuffleScreen extends StatelessWidget {
   final CardController controller = Get.put(CardController());
-
   ShuffleScreen({super.key});
 
   @override
@@ -64,8 +61,6 @@ class ShuffleScreen extends StatelessWidget {
     return Column(
       children: [
         SizedBox(height: 20),
-
-        // Title
         AppText(
           data: 'Preparing Your Reading',
           fontSize: 24,
@@ -74,7 +69,6 @@ class ShuffleScreen extends StatelessWidget {
         ),
 
         Spacer(),
-
         // Circular card spread
         Obx(() {
           return _buildCircularCardSpread(context);
@@ -82,7 +76,6 @@ class ShuffleScreen extends StatelessWidget {
 
         // Spacer(),
 
-        // Draw Cards button
         Obx(() {
           final isShuffling = controller.isShuffling.value;
 
@@ -105,13 +98,11 @@ class ShuffleScreen extends StatelessWidget {
               child: SizedBox(
                 width: double.infinity,
                 child: Center(
-                  child: Text(
-                    isShuffling ? 'Shuffling...' : 'Draw Cards',
-                    style: TextStyle(
+                  child: AppText(
+                    data:isShuffling ? 'Shuffling...' : 'Draw Cards',
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
-                    ),
                   ),
                 ),
               ),
@@ -219,13 +210,11 @@ class ShuffleScreen extends StatelessWidget {
                     ),
                     elevation: 0,
                   ),
-                  child: Text(
-                    '7 card Reading',
-                    style: TextStyle(
+                  child: AppText(
+                    data: '7 card Reading',
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
-                    ),
                   ),
                 ),
               ),
@@ -243,13 +232,11 @@ class ShuffleScreen extends StatelessWidget {
                     ),
                     elevation: 0,
                   ),
-                  child: Text(
-                    '3 card reading',
-                    style: TextStyle(
+                  child: AppText(
+                    data: '3 card reading',
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
-                    ),
                   ),
                 ),
               ),
@@ -265,7 +252,6 @@ class ShuffleScreen extends StatelessWidget {
             child: _buildCircularCardSpread(context),
           );
         }),
-// Celtic Cross card layout below
         Expanded(
           child: Transform.translate(
             offset: Offset(0, -10), // Negative Y value moves it up
@@ -292,20 +278,25 @@ class ShuffleScreen extends StatelessWidget {
 
 
   // Celtic Cross card layout pattern
+
   Widget _buildCelticCrossLayout(BuildContext context) {
     return Stack(
       alignment: Alignment.center,
       children: [
-        // Center cross (cards 0-4)
-        _buildPositionedCard(0, top: 20, left: null, index: 0), // Top center
-        _buildPositionedCard(1, top: 100, left: 40, index: 1), // Left
-        _buildPositionedCard(2, top: 100, left: null, index: 2), // Center
-        _buildPositionedCard(3, top: 100, right: 40, index: 3), // Right
-        _buildPositionedCard(4, top: 180, left: null, index: 4), // Bottom center
+        // Top card
+        _buildPositionedCard(0, top: 0, left: 140, index: 0),
+
+        // Middle row - 3 cards
+        _buildPositionedCard(1, top: 120, left: 20, index: 1),  // Left
+        _buildPositionedCard(2, top: 120, left: 105, index: 2), // Center
+        _buildPositionedCard(3, top: 120, right: 155, index: 3),  // Right
+        // Bottom row - 3 cards
+        _buildPositionedCard(4, top: 240, left: 140, index: 4),  // Bottom center
+        _buildPositionedCard(5, top: 200, right: 60, index: 5),   // Bottom right
+        _buildPositionedCard(6, top: 80, right: 60, index: 6),     // Top right
       ],
     );
   }
-
   Widget _buildPositionedCard(
       int stackIndex, {
         double? top,
@@ -346,11 +337,6 @@ class ShuffleScreen extends StatelessWidget {
       width: 70,
       height: 105,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFFB8956A), Color(0xFF9B7B5E)],
-        ),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: Color(0xFFE5D4C1), width: 2),
         boxShadow: [
@@ -361,11 +347,31 @@ class ShuffleScreen extends StatelessWidget {
           ),
         ],
       ),
-      child: Center(
-        child: Icon(
-          Icons.auto_awesome,
-          color: Color(0xFFE5D4C1),
-          size: 32,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(6),
+        child: Image.asset(
+         AppAssertImage.instance.deck1, // Your card back image path
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            // Fallback to gradient if image fails to load
+            return Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFFB8956A), Color(0xFF9B7B5E)],
+                ),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.auto_awesome,
+                  color: Color(0xFFE5D4C1),
+                  size: 32,
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -400,13 +406,11 @@ class ShuffleScreen extends StatelessWidget {
                   children: [
                     Icon(Icons.shuffle, color: Colors.white, size: 20),
                     SizedBox(width: 8),
-                    Text(
-                      'Reshuffle Cards',
-                      style: TextStyle(
+                    AppText(
+                      data:'Reshuffle Cards',
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
-                      ),
                     ),
                   ],
                 ),
@@ -423,19 +427,11 @@ class ShuffleScreen extends StatelessWidget {
     controller.selectStack(stackIndex);
     Get.to(() => RevealScreen());
   }
-
   Widget buildTarotCard({bool highlighted = false}) {
     return Container(
       width: 60,
       height: 90,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: highlighted
-              ? [Color(0xFFD4A574), Color(0xFFB8956A)]
-              : [Color(0xFFB8956A), Color(0xFF9B7B5E)],
-        ),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: highlighted ? Colors.white : Color(0xFFE5D4C1),
@@ -449,11 +445,33 @@ class ShuffleScreen extends StatelessWidget {
           ),
         ],
       ),
-      child: Center(
-        child: Icon(
-          Icons.auto_awesome,
-          color: Color(0xFFE5D4C1),
-          size: 24,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(6),
+        child: Image.asset(
+          AppAssertImage.instance.deck1, // Your card back image path
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            // Fallback to gradient if image fails to load
+            return Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: highlighted
+                      ? [Color(0xFFD4A574), Color(0xFFB8956A)]
+                      : [Color(0xFFB8956A), Color(0xFF9B7B5E)],
+                ),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.auto_awesome,
+                  color: Color(0xFFE5D4C1),
+                  size: 24,
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
