@@ -18,14 +18,13 @@ class SingInScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(SignInController());
+    // ✅ Initialize controller ONCE
+    final controller = Get.put(LoginController());
 
     return Scaffold(
       body: Stack(
-         fit: StackFit.expand, // Add this
-
+        fit: StackFit.expand,
         children: [
-          // Background Image
           Positioned.fill(
             child: Image.asset(
               AppAssertImage.instance.appBackground,
@@ -33,7 +32,6 @@ class SingInScreen extends StatelessWidget {
             ),
           ),
 
-          // Content
           SafeArea(
             child: SingleChildScrollView(
               child: Padding(
@@ -42,7 +40,7 @@ class SingInScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: 50.h),
-                    // Title
+
                     AppText(
                       data: 'Sign In',
                       fontSize: 40,
@@ -52,7 +50,8 @@ class SingInScreen extends StatelessWidget {
                     ),
 
                     SizedBox(height: 40.h),
-                    // Email field
+
+                    // Email Field
                     AppTextField(
                       label: 'Email',
                       hintText: 'Enter your email',
@@ -60,17 +59,19 @@ class SingInScreen extends StatelessWidget {
                       hintTextColor: Colors.white,
                       borderColor: AppColors.instance.primaryBtnColor,
                       fillColor: Colors.transparent,
+                      inputTextColor: Colors.white,
+                      keyboardType: TextInputType.emailAddress,
                     ),
 
                     SizedBox(height: 24.h),
 
-                    // Password field
+                    // Password Field
                     Obx(() => AppTextField(
                       label: 'Password',
                       label2: 'Forgot Password?',
                       hintText: 'Enter your Password',
                       label2OnClick: () {
-                        AppNavigation.push(context, EmailVerificationPage());
+                        Get.to(() => EmailVerificationPage());
                       },
                       controller: controller.passwordController,
                       obscureText: !controller.isPasswordVisible.value,
@@ -81,28 +82,52 @@ class SingInScreen extends StatelessWidget {
                       hintTextColor: Colors.white,
                       borderColor: AppColors.instance.primaryBtnColor,
                       fillColor: Colors.transparent,
+                      inputTextColor: Colors.white,
                     )),
 
-                    SizedBox(height: 16.h),
+                    SizedBox(height: 48.h),
 
-                    SizedBox(height: 32.h),
-
-                    Obx(() => AppButton(
-                      buttonText: controller.isLoading.value ? 'Loading...' : 'Log in',
-                      // onPressed: controller.isLoading.value ? null : controller.login,
-                      onPressed:(){
-                        AppNavigation.push(context, SubscriptionPage());
-                      },
-                      fillColor: AppColors.instance.primaryBtnColor,
-                      borderRadius: 25,
-                      buttonHeight: 50,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      textColor: AppColors.instance.btnTextColor,
-                    )),
+                    // ✅ CRITICAL: Minimal button implementation
+                    Obx(() {
+                      final loading = controller.isLoading.value;
+                      return SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: loading ? null : () {
+                            print("🔘 Button pressed");
+                            controller.login();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.instance.primaryBtnColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                          ),
+                          child: loading
+                              ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2.5,
+                            ),
+                          )
+                              : Text(
+                            'Log in',
+                            style: TextStyle(
+                              color: AppColors.instance.btnTextColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
 
                     SizedBox(height: 20.h),
 
+                    // Sign up link
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -113,7 +138,7 @@ class SingInScreen extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: () {
-                            AppNavigation.push(context, SignUpScreen());
+                            Get.to(() => SignUpScreen());
                           },
                           child: const AppText(
                             data: 'Sign up',

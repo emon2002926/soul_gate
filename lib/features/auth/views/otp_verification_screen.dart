@@ -114,8 +114,7 @@ class OtpVerificationScreen extends StatelessWidget {
                         buttonText: controller.isLoading.value
                             ? 'Verifying...'
                             : (controller.isFromSignUp.value ? 'Verify Account' : 'Continue'),
-                        // onPressed: controller.isLoading.value ? null : controller.verifyCode,
-                        onPressed: controller.testNextScreen,
+                        onPressed: controller.isLoading.value ? null : controller.verifyCode,
                         fontSize: 16,
                         isLoading: controller.isLoading.value,
                       ),

@@ -9,13 +9,12 @@ class AppConstant {
   final String poppins = "Poppins";
   final String freeTour = "Free Tour";
   final double DEAFULT_CAMERA_ZOOM = 15;
-  // final String baseUrl = 'http://103.186.20.115:14000';
-  // final String baseUrl = 'https://nestocbackend.dsrt321.online';
-  final String baseUrl = 'https://nestorcapi.boltscootersllc.com';
-  final String loginEndpoint = '/api/auth/login/';
-  final String singUpEndpoint = '/api/auth/register/';
-  final String forgotPasswordEndpoint = '/api/auth/forgot-password/';
-  final String verifyCodeEndpoint = '/api/auth/verify_code/';
-  final String resetPasswordEndpoint = '/api/auth/set_new_password/';
+
+   String baseUrl = 'https://sofiapi.dsrt321.online';
+    String loginEndpoint = '${instance.baseUrl}/api/auth/login/';
+  static const String signUpEndpoint = '/api/auth/signup/';
+  static const String forgotPasswordEndpoint = '/api/auth/forgot-password/';
+  static const String verifyCodeEndpoint = '/api/auth/verify_code/';
+  static const String resetPasswordEndpoint = '/api/auth/set_new_password/';
 
 }

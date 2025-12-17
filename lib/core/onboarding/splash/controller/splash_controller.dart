@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:get/get.dart';
+import 'package:soul_gate/core/routes/app_routes.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
 import '../../../../core/util/storage_service.dart';
 import 'package:get_storage/get_storage.dart';
@@ -27,7 +28,8 @@ class SplashController extends GetxController {
       } else {
         // No token, navigate to onboarding
 
-        AppNavigation.pushAndClear(Get.context!, SingInScreen());
+        Get.offAllNamed(AppRoutes.login);
+        // AppNavigation.pushAndClear(Get.context!, SingInScreen());
 
 
         // AppNavigation.pushAndClear(Get.context!, MainPage());

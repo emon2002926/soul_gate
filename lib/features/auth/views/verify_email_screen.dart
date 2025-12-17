@@ -126,10 +126,9 @@ class EmailVerificationPage extends StatelessWidget {
                   final hasCodeBeenSent = controller.hasCodeBeenSent.value;
                   return AppButton(
                     buttonText: 'Send Reset Code',
-                    // onPressed: hasCodeBeenSent
-                    //     ? controller.continueToOtpVerification
-                    //     : controller.sendVerificationCode,
-                    onPressed: controller.OtpVerification,
+                    onPressed: hasCodeBeenSent
+                        ? controller.continueToOtpVerification
+                        : controller.sendVerificationCode,
                     fillColor: AppColors.instance.primaryBtnColor,
                     textColor: AppColors.instance.btnTextColor,
                     borderRadius: 25,

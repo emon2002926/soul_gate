@@ -18,7 +18,8 @@ class EmailVerificationController extends GetxController {
   final isLoading = false.obs;
   final hasCodeBeenSent = false.obs;
 
-  static final String baseUrl = AppConstant.instance.baseUrl;
+  // Updated Base URL
+  static final String baseUrl = 'https://sofiapi.dsrt321.online/api';
 
   void startResendCountdown(int seconds) {
     resendCountdown.value = seconds;
@@ -58,7 +59,7 @@ class EmailVerificationController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('$baseUrl/forgot-password/send-reset-code');
+      final url = Uri.parse('$baseUrl/auth/forgot-password/');
 
       final response = await http.post(
         url,
@@ -72,12 +73,12 @@ class EmailVerificationController extends GetxController {
 
       final responseData = jsonDecode(response.body);
 
-      if (response.statusCode == 200 && responseData['success'] == true) {
+      if (response.statusCode == 200) {
         hasCodeBeenSent.value = true;
         startResendCountdown(60); // 1 minute countdown
 
         // Show success message
-        String message = responseData['message'] ?? 'Password reset code sent to ${emailController.text}';
+        String message = responseData['message'] ?? 'OTP sent to your email';
 
         Get.snackbar(
           "Success",
@@ -127,7 +128,7 @@ class EmailVerificationController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('$baseUrl/forgot-password/send-reset-code');
+      final url = Uri.parse('$baseUrl/auth/forgot-password/');
 
       final response = await http.post(
         url,
@@ -141,11 +142,11 @@ class EmailVerificationController extends GetxController {
 
       final responseData = jsonDecode(response.body);
 
-      if (response.statusCode == 200 && responseData['success'] == true) {
+      if (response.statusCode == 200) {
         startResendCountdown(60); // 1 minute countdown for next resend
 
         // Show success message
-        String message = responseData['message'] ?? 'Password reset code resent to ${emailController.text}';
+        String message = responseData['message'] ?? 'OTP sent to your email';
 
         Get.snackbar(
           "Code Sent",
@@ -179,21 +180,15 @@ class EmailVerificationController extends GetxController {
     }
   }
 
-
   Future<void> continueToOtpVerification() async {
     // Navigate to OTP verification with context
-    bool isFromSignUp = false;
     Get.toNamed(
       AppRoutes.otpVerifyPage,
       arguments: {
-        "isFromSignUp": isFromSignUp,
+        "isFromSignUp": false,
         "email": emailController.text.trim(),
       },
     );
-  }
-
-  void OtpVerification() {
-   AppNavigation.push(Get.context!,  OtpVerificationScreen()) ;
   }
 
 

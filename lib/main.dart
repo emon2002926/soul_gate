@@ -14,7 +14,6 @@ import 'package:get_storage/get_storage.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
   Get.lazyPut(() => SplashController());
 

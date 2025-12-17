@@ -16,8 +16,8 @@ class ResetPassController extends GetxController {
   final email = ''.obs;
   final otp = ''.obs;
 
-  // Base URL - Replace with your actual API base URL
-  static final String baseUrl = AppConstant.instance.baseUrl;
+  // Updated Base URL
+  static final String baseUrl = 'https://sofiapi.dsrt321.online/api';
 
   @override
   void onInit() {
@@ -42,8 +42,8 @@ class ResetPassController extends GetxController {
     if (value == null || value.trim().isEmpty) {
       return 'Please enter new password';
     }
-    if (value.length < 6) {
-      return 'Password must be at least 6 characters';
+    if (value.length < 8) {
+      return 'Password must be at least 8 characters';
     }
     return null;
   }
@@ -71,10 +71,10 @@ class ResetPassController extends GetxController {
       return;
     }
 
-    if (newPasswordController.text.length < 6) {
+    if (newPasswordController.text.length < 8) {
       Get.snackbar(
         'Error',
-        'Password must be at least 6 characters',
+        'Password must be at least 8 characters',
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -118,7 +118,7 @@ class ResetPassController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('$baseUrl/forgot-password/set-new-password');
+      final url = Uri.parse('$baseUrl/auth/reset-password/');
 
       final response = await http.post(
         url,
@@ -128,16 +128,17 @@ class ResetPassController extends GetxController {
         body: jsonEncode({
           'email': email.value,
           'otp': otp.value,
-          'password': newPasswordController.text.trim(),
+          'new_password': newPasswordController.text.trim(),
+          'confirm_password': confirmPasswordController.text.trim(),
         }),
       );
 
       final responseData = jsonDecode(response.body);
 
-      if (response.statusCode == 200 && responseData['success'] == true) {
+      if (response.statusCode == 200) {
         Get.snackbar(
           'Success',
-          responseData['message'] ?? 'Password updated successfully',
+          responseData['message'] ?? 'Password reset successful',
           snackPosition: SnackPosition.TOP,
           backgroundColor: const Color(0xFF4CAF50),
           colorText: Colors.white,
@@ -148,9 +149,27 @@ class ResetPassController extends GetxController {
         await Future.delayed(const Duration(seconds: 1));
         Get.offAllNamed(AppRoutes.login);
       } else {
+        // Handle error response
+        String errorMessage = 'Failed to reset password';
+
+        if (responseData is Map) {
+          // Check for specific field errors
+          if (responseData.containsKey('new_password')) {
+            errorMessage = responseData['new_password'][0] ?? 'Password error';
+          } else if (responseData.containsKey('confirm_password')) {
+            errorMessage = responseData['confirm_password'][0] ?? 'Password confirmation error';
+          } else if (responseData.containsKey('otp')) {
+            errorMessage = responseData['otp'][0] ?? 'Invalid or expired OTP';
+          } else if (responseData.containsKey('email')) {
+            errorMessage = responseData['email'][0] ?? 'Email error';
+          } else if (responseData.containsKey('message')) {
+            errorMessage = responseData['message'];
+          }
+        }
+
         Get.snackbar(
           'Error',
-          responseData['message'] ?? 'Failed to reset password',
+          errorMessage,
           snackPosition: SnackPosition.TOP,
           backgroundColor: Colors.red,
           colorText: Colors.white,

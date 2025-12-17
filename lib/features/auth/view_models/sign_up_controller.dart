@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import '../../../core/constants/app_constant.dart';
 import '../../../core/routes/app_routes.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -13,23 +12,23 @@ class SignUpController extends GetxController {
   // Form key
   final formKey = GlobalKey<FormState>();
 
-  // Text controllers
+  // Text controllers - keeping all for UI flexibility
   final fullNameController = TextEditingController();
-  final emailController = TextEditingController(); // Add email controller
-  final passwordController = TextEditingController(); // Add password controller
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
   final phoneController = TextEditingController();
   final dobController = TextEditingController();
   final addressController = TextEditingController();
 
   final isLoading = false.obs;
   final profileImage = Rx<File?>(null);
-  final isPasswordVisible = false.obs; // Add password visibility
+  final isPasswordVisible = false.obs;
 
   final genderList = ['Male', 'Female', 'Other'];
   final selectedGender = ''.obs;
 
-  // Base URL - Replace with your actual API base URL
-  static final String baseUrl = AppConstant.instance.baseUrl;
+  // Updated Base URL
+  static final String baseUrl = 'https://sofiapi.dsrt321.online/api';
 
   void togglePasswordVisibility() {
     isPasswordVisible.value = !isPasswordVisible.value;
@@ -61,8 +60,8 @@ class SignUpController extends GetxController {
     if (value == null || value.trim().isEmpty) {
       return 'Please enter your password';
     }
-    if (value.length < 6) {
-      return 'Password must be at least 6 characters';
+    if (value.length < 8) {
+      return 'Password must be at least 8 characters';
     }
     return null;
   }
@@ -213,25 +212,45 @@ class SignUpController extends GetxController {
     );
   }
 
-  // Convert date from dd/MM/yyyy to yyyy-MM-dd format for API
-  String _convertDateFormat(String date) {
-    try {
-      final parsedDate = DateFormat('dd/MM/yyyy').parse(date);
-      return DateFormat('yyyy-MM-dd').format(parsedDate);
-    } catch (e) {
-      return date;
-    }
-  }
-
   Future<void> submitProfile() async {
-    if (!formKey.currentState!.validate()) {
+    // Validate only email and password (required by API)
+    if (emailController.text.trim().isEmpty) {
+      Get.snackbar(
+        'Error',
+        'Please enter your email',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
       return;
     }
 
-    if (selectedGender.value.isEmpty) {
+    if (validateEmail(emailController.text) != null) {
       Get.snackbar(
         'Error',
-        'Please select your gender',
+        'Please enter a valid email',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    if (passwordController.text.trim().isEmpty) {
+      Get.snackbar(
+        'Error',
+        'Please enter your password',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    if (validatePassword(passwordController.text) != null) {
+      Get.snackbar(
+        'Error',
+        'Password must be at least 8 characters',
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -242,10 +261,7 @@ class SignUpController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('$baseUrl/auth/email/signup');
-
-      // Convert date format from dd/MM/yyyy to yyyy-MM-dd
-      final formattedDate = _convertDateFormat(dobController.text.trim());
+      final url = Uri.parse('$baseUrl/auth/signup/');
 
       final response = await http.post(
         url,
@@ -253,33 +269,50 @@ class SignUpController extends GetxController {
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
-          'name': fullNameController.text.trim(),
           'email': emailController.text.trim(),
           'password': passwordController.text.trim(),
-          'phone': phoneController.text.trim(),
-          'date_of_birth': formattedDate,
-          'gender': selectedGender.value,
         }),
       );
 
       final responseData = jsonDecode(response.body);
 
-      if (response.statusCode == 201 && responseData['success'] == true) {
+      if (response.statusCode == 201 || response.statusCode == 200) {
         Get.snackbar(
           'Success',
-          responseData['message'] ?? 'Please check your email for verification code',
+          'Account created successfully! Please login.',
           snackPosition: SnackPosition.TOP,
           backgroundColor: const Color(0xFF4CAF50),
           colorText: Colors.white,
         );
 
-        // Navigate to verification or login screen
+        // Navigate to login screen
         Get.offAllNamed(AppRoutes.otpVerifyPage, arguments: {
           'email': emailController.text.trim(),
           'isFromSignUp': true,
         });
+      } else if (response.statusCode == 400) {
+        // Handle validation errors
+        String errorMessage = 'Failed to create account';
+
+        if (responseData is Map) {
+          // Check for specific field errors
+          if (responseData.containsKey('email')) {
+            errorMessage = responseData['email'][0] ?? 'Email error';
+          } else if (responseData.containsKey('password')) {
+            errorMessage = responseData['password'][0] ?? 'Password error';
+          } else if (responseData.containsKey('message')) {
+            errorMessage = responseData['message'];
+          }
+        }
+
+        Get.snackbar(
+          'Error',
+          errorMessage,
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
       } else {
-        // Handle error response
         Get.snackbar(
           'Error',
           responseData['message'] ?? 'Failed to create account',
@@ -287,8 +320,6 @@ class SignUpController extends GetxController {
           backgroundColor: Colors.red,
           colorText: Colors.white,
         );
-
-
       }
     } catch (e) {
       Get.snackbar(
@@ -302,8 +333,6 @@ class SignUpController extends GetxController {
       isLoading.value = false;
     }
   }
-
-
 
   @override
   void onClose() {
