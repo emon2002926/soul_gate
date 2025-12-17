@@ -23,7 +23,7 @@ class LoginController extends GetxController {
   final isLoading = false.obs;
   final isPasswordVisible = false.obs;
 
-  static final String baseUrl = 'https://sofiapi.dsrt321.online/api';
+  // static final String baseUrl = 'https://sofiapi.dsrt321.online/api';
 
   @override
   void onClose() {
@@ -63,7 +63,7 @@ class LoginController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('$baseUrl/auth/login/');
+      final url = Uri.parse('${AppConstant.instance.baseUrl}/auth/login/');
 
       final response = await http.post(
         url,
@@ -96,13 +96,7 @@ class LoginController extends GetxController {
         //   await StorageService.saveUserEmail(user['email']);
         // }
 
-        Get.snackbar(
-          'Success',
-          responseData['message'] ?? 'Login successful',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+
 
         // All users navigate to onboarding serving selection
         AppNavigation.pushAndClear(Get.context!, SubscriptionPage());

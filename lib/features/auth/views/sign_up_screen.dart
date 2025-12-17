@@ -50,6 +50,7 @@ class SignUpScreen extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       color: AppColors.instance.titleTextColor,
                       height: 1.0,
+
                     ),
                     SizedBox(height: 28.h),
 
@@ -65,6 +66,7 @@ class SignUpScreen extends StatelessWidget {
                       hintTextColor: Colors.white,
                       borderColor: AppColors.instance.primaryBtnColor,
                       fillColor: Colors.transparent,
+                      inputTextColor: Colors.white,
                     ),
 
                     SizedBox(height: 20.h),
@@ -81,6 +83,7 @@ class SignUpScreen extends StatelessWidget {
                       hintTextColor: Colors.white,
                       borderColor: AppColors.instance.primaryBtnColor,
                       fillColor: Colors.transparent,
+                      inputTextColor: Colors.white,
                     )),
 
                     SizedBox(height: 20.h),
@@ -95,6 +98,7 @@ class SignUpScreen extends StatelessWidget {
                       hintTextColor: Colors.white,
                       borderColor: AppColors.instance.primaryBtnColor,
                       fillColor: Colors.transparent,
+                      inputTextColor: Colors.white,
                     )),
 
                     SizedBox(height: 20.h),

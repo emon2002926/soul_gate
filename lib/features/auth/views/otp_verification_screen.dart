@@ -72,8 +72,9 @@ class OtpVerificationScreen extends StatelessWidget {
                             width: 50,
                             height: 60,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Colors.transparent,
                               borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.yellow),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withOpacity(0.1),

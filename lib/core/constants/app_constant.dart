@@ -10,7 +10,7 @@ class AppConstant {
   final String freeTour = "Free Tour";
   final double DEAFULT_CAMERA_ZOOM = 15;
 
-   String baseUrl = 'https://sofiapi.dsrt321.online';
+   String baseUrl = 'https://sofiapi.dsrt321.online/api';
     String loginEndpoint = '${instance.baseUrl}/api/auth/login/';
   static const String signUpEndpoint = '/api/auth/signup/';
   static const String forgotPasswordEndpoint = '/api/auth/forgot-password/';

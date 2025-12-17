@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:soul_gate/core/constants/app_constant.dart';
 import '../../../core/routes/app_routes.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -28,7 +29,7 @@ class SignUpController extends GetxController {
   final selectedGender = ''.obs;
 
   // Updated Base URL
-  static final String baseUrl = 'https://sofiapi.dsrt321.online/api';
+  // static final String baseUrl = 'https://sofiapi.dsrt321.online/api';
 
   void togglePasswordVisibility() {
     isPasswordVisible.value = !isPasswordVisible.value;
@@ -261,7 +262,7 @@ class SignUpController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('$baseUrl/auth/signup/');
+      final url = Uri.parse('${AppConstant.instance.baseUrl}/auth/signup/');
 
       final response = await http.post(
         url,

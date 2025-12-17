@@ -19,7 +19,6 @@ class EmailVerificationController extends GetxController {
   final hasCodeBeenSent = false.obs;
 
   // Updated Base URL
-  static final String baseUrl = 'https://sofiapi.dsrt321.online/api';
 
   void startResendCountdown(int seconds) {
     resendCountdown.value = seconds;
@@ -59,7 +58,7 @@ class EmailVerificationController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('$baseUrl/auth/forgot-password/');
+      final url = Uri.parse('${AppConstant.instance.baseUrl}/auth/forgot-password/');
 
       final response = await http.post(
         url,
@@ -128,7 +127,7 @@ class EmailVerificationController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('$baseUrl/auth/forgot-password/');
+      final url = Uri.parse('${AppConstant.instance.baseUrl}/auth/forgot-password/');
 
       final response = await http.post(
         url,

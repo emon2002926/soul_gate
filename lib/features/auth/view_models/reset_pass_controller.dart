@@ -17,7 +17,7 @@ class ResetPassController extends GetxController {
   final otp = ''.obs;
 
   // Updated Base URL
-  static final String baseUrl = 'https://sofiapi.dsrt321.online/api';
+  // static final String baseUrl = 'https://sofiapi.dsrt321.online/api';
 
   @override
   void onInit() {
@@ -118,7 +118,7 @@ class ResetPassController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('$baseUrl/auth/reset-password/');
+      final url = Uri.parse('${AppConstant.instance.baseUrl}/auth/reset-password/');
 
       final response = await http.post(
         url,

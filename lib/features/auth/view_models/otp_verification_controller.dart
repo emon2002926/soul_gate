@@ -24,7 +24,7 @@ class OtpVerificationController extends GetxController {
   Timer? resendTimer;
 
   // Updated Base URL
-  static final String baseUrl = 'https://sofiapi.dsrt321.online/api';
+  // static final String baseUrl = 'https://sofiapi.dsrt321.online/api';
 
   @override
   void onInit() {
@@ -101,7 +101,7 @@ class OtpVerificationController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('$baseUrl/auth/verify-otp/');
+      final url = Uri.parse('${AppConstant.instance.baseUrl}/auth/verify-otp/');
 
       final response = await http.post(
         url,
@@ -193,7 +193,7 @@ class OtpVerificationController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('$baseUrl/auth/verify-otp/');
+      final url = Uri.parse('${AppConstant.instance.baseUrl}/auth/verify-otp/');
 
       final response = await http.post(
         url,
@@ -289,7 +289,7 @@ class OtpVerificationController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('$baseUrl/auth/signup/');
+      final url = Uri.parse('${AppConstant.instance.baseUrl}/auth/signup/');
 
       final response = await http.post(
         url,
@@ -371,7 +371,7 @@ class OtpVerificationController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('$baseUrl/auth/forgot-password/');
+      final url = Uri.parse('${AppConstant.instance.baseUrl}/auth/forgot-password/');
 
       final response = await http.post(
         url,
