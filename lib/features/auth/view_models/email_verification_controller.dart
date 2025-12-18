@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:soul_gate/core/util/app_navigation.dart';
-import '../../../core/constants/app_constant.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../../../core/routes/app_routes.dart';
-import '../views/otp_verification_screen.dart';
+
+
 
 class EmailVerificationController extends GetxController {
   final TextEditingController emailController = TextEditingController();
@@ -19,6 +18,7 @@ class EmailVerificationController extends GetxController {
   final hasCodeBeenSent = false.obs;
 
   // Updated Base URL
+  static final String baseUrl = 'https://sofiapi.dsrt321.online/api';
 
   void startResendCountdown(int seconds) {
     resendCountdown.value = seconds;
@@ -58,7 +58,7 @@ class EmailVerificationController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('${AppConstant.instance.baseUrl}/auth/forgot-password/');
+      final url = Uri.parse('$baseUrl/auth/forgot-password/');
 
       final response = await http.post(
         url,
@@ -127,7 +127,7 @@ class EmailVerificationController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('${AppConstant.instance.baseUrl}/auth/forgot-password/');
+      final url = Uri.parse('$baseUrl/auth/forgot-password/');
 
       final response = await http.post(
         url,

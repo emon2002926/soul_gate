@@ -16,7 +16,12 @@ class ShuffleScreen extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: AppText(data: "Choose", fontSize: 24, fontWeight: FontWeight.w600, color: Colors.white,),
+        title: AppText(
+          data: "Choose",
+          fontSize: 24,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -26,8 +31,7 @@ class ShuffleScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.account_circle_outlined, color: Colors.white),
-            onPressed: () {
-            },
+            onPressed: () {},
           ),
         ],
       ),
@@ -36,7 +40,6 @@ class ShuffleScreen extends StatelessWidget {
           image: DecorationImage(
             image: AssetImage(AppAssertImage.instance.appBackground),
             fit: BoxFit.cover,
-            // Optional: Add a dark overlay for better text readability
             colorFilter: ColorFilter.mode(
               Colors.black.withOpacity(0.3),
               BlendMode.darken,
@@ -48,7 +51,7 @@ class ShuffleScreen extends StatelessWidget {
             if (!controller.hasShuffled.value) {
               return _buildShuffleView(context);
             } else {
-              return _buildCombinedView(context); // Show both arc + Celtic Cross
+              return _buildCombinedView(context);
             }
           }),
         ),
@@ -56,7 +59,6 @@ class ShuffleScreen extends StatelessWidget {
     );
   }
 
-  // Initial shuffle view with circular card spread
   Widget _buildShuffleView(BuildContext context) {
     return Column(
       children: [
@@ -67,26 +69,16 @@ class ShuffleScreen extends StatelessWidget {
           fontWeight: FontWeight.w600,
           color: Colors.white,
         ),
-
         Spacer(),
-        // Circular card spread
-        Obx(() {
-          return _buildCircularCardSpread(context);
-        }),
-
-        // Spacer(),
-
+        Obx(() => _buildCircularCardSpread(context)),
         Obx(() {
           final isShuffling = controller.isShuffling.value;
-
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: 40),
             child: ElevatedButton(
               onPressed: isShuffling
                   ? null
-                  : () {
-                controller.shuffleAndDivideCards();
-              },
+                  : () => controller.shuffleAndDivideCards(),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFFD4A574),
                 padding: EdgeInsets.symmetric(vertical: 18),
@@ -99,17 +91,16 @@ class ShuffleScreen extends StatelessWidget {
                 width: double.infinity,
                 child: Center(
                   child: AppText(
-                    data:isShuffling ? 'Shuffling...' : 'Draw Cards',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                    data: isShuffling ? 'Shuffling...' : 'Draw Cards',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
                   ),
                 ),
               ),
             ),
           );
         }),
-
         SizedBox(height: 40),
       ],
     );
@@ -141,10 +132,8 @@ class ShuffleScreen extends StatelessWidget {
                   builder: (context) {
                     final progress = i / (cardCount - 1);
                     final angle = startAngle + (sweepAngle * progress);
-
                     final x = radius * math.cos(angle);
                     final y = radius * math.sin(angle);
-
                     final cardRotation = angle + math.pi / 2;
 
                     return AnimatedPositioned(
@@ -173,8 +162,7 @@ class ShuffleScreen extends StatelessWidget {
                           onTap: hasShuffled && !isShuffling
                               ? () => _onStackSelected(i)
                               : null,
-                          child: buildTarotCard(
-                              highlighted: i == 6), // Highlight middle card
+                          child: buildTarotCard(highlighted: i == 6),
                         ),
                       ),
                     );
@@ -187,116 +175,210 @@ class ShuffleScreen extends StatelessWidget {
     );
   }
 
-  // NEW: Combined view showing both arc and Celtic Cross
   Widget _buildCombinedView(BuildContext context) {
     return Column(
       children: [
         SizedBox(height: 20),
-        // Two reading type buttons
+        // Reading type buttons
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    // 7 card reading selected
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFD4A574),
-                    padding: EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: AppText(
-                    data: '7 card Reading',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+          child: Obx(() {
+            final isShuffling = controller.isShuffling.value;
+            final selected = controller.readingCardCount.value;
+
+            return Row(
+              children: [
+                Expanded(
+                  child: _buildReadingTypeButton(
+                    label: '7 card Reading',
+                    isSelected: selected == 7,
+                    isDisabled: isShuffling,
+                    onPressed: () async {
+                      await controller.setReadingType(7);
+                    },
                   ),
                 ),
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    // 3 card reading selected
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFD4A574),
-                    padding: EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: AppText(
-                    data: '3 card reading',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                SizedBox(width: 12),
+                Expanded(
+                  child: _buildReadingTypeButton(
+                    label: '3 card Reading',
+                    isSelected: selected == 3,
+                    isDisabled: isShuffling,
+                    onPressed: () async {
+                      await controller.setReadingType(3);
+                    },
                   ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            );
+          }),
         ),
 
-
-        // Arc of cards at the top
+        // Rest of the view...
         Obx(() {
           return Transform.translate(
-            offset: Offset(0, 130), // Positive value moves it down, adjust as needed
+            offset: Offset(0, 130),
             child: _buildCircularCardSpread(context),
           );
         }),
+
         Expanded(
           child: Transform.translate(
-            offset: Offset(0, -10), // Negative Y value moves it up
-            child: _buildCelticCrossLayout(context),
+            offset: Offset(0, -10),
+            child: Obx(() {
+              if (controller.isShuffling.value) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(Color(0xFFD4A574)),
+                      ),
+                      SizedBox(height: 16),
+                      AppText(
+                        data: 'Shuffling cards...',
+                        fontSize: 16,
+                        color: Colors.white70,
+                      ),
+                    ],
+                  ),
+                );
+              }
+              return controller.readingCardCount.value == 7
+                  ? _build7CardLayout(context)
+                  : _build3CardLayout(context);
+            }),
           ),
         ),
 
-        // Bottom Continue button
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: AppButton(
             buttonText: "Continue to Reading",
-            onPressed: () {
-              // Navigate to reading screen
-              Get.to(() => RevealScreen());
-            },
+            onPressed: () => Get.to(() => RevealScreen()),
           ),
         ),
-
         SizedBox(height: 30),
       ],
     );
   }
+  Widget _buildReadingTypeButton({
+    required String label,
+    required bool isSelected,
+    required bool isDisabled,
+    required VoidCallback onPressed,
+  }) {
+    return Opacity(
+      opacity: isDisabled ? 0.6 : 1.0,
+      child: ElevatedButton(
+        onPressed: isDisabled ? null : onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isSelected ? Color(0xFFD4A574) : Color(0xFF8B7355),
+          padding: EdgeInsets.symmetric(vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: isSelected
+                ? BorderSide(color: Colors.white, width: 2)
+                : BorderSide.none,
+          ),
+          elevation: 0,
+        ),
+        child: AppText(
+          data: label,
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
 
-
-  // Celtic Cross card layout pattern
-
-  Widget _buildCelticCrossLayout(BuildContext context) {
+  // 7-card Celtic Cross layout
+  Widget _build7CardLayout(BuildContext context) {
     return Stack(
       alignment: Alignment.center,
       children: [
-        // Top card
         _buildPositionedCard(0, top: 0, left: 140, index: 0),
-
-        // Middle row - 3 cards
-        _buildPositionedCard(1, top: 120, left: 20, index: 1),  // Left
-        _buildPositionedCard(2, top: 120, left: 105, index: 2), // Center
-        _buildPositionedCard(3, top: 120, right: 155, index: 3),  // Right
-        // Bottom row - 3 cards
-        _buildPositionedCard(4, top: 240, left: 140, index: 4),  // Bottom center
-        _buildPositionedCard(5, top: 200, right: 60, index: 5),   // Bottom right
-        _buildPositionedCard(6, top: 80, right: 60, index: 6),     // Top right
+        _buildPositionedCard(1, top: 120, left: 20, index: 1),
+        _buildPositionedCard(2, top: 120, left: 105, index: 2),
+        _buildPositionedCard(3, top: 120, right: 155, index: 3),
+        _buildPositionedCard(4, top: 240, left: 140, index: 4),
+        _buildPositionedCard(5, top: 200, right: 60, index: 5),
+        _buildPositionedCard(6, top: 80, right: 60, index: 6),
       ],
     );
   }
+
+  // 3-card layout (Past - Present - Future)
+  Widget _build3CardLayout(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // Labels
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 30),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildCardLabel(''),
+              _buildCardLabel(''),
+              _buildCardLabel(''),
+            ],
+          ),
+        ),
+        SizedBox(height: 12),
+        // Cards
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _buildAnimatedCard(index: 0),
+            SizedBox(width: 20),
+            _buildAnimatedCard(index: 1),
+            SizedBox(width: 20),
+            _buildAnimatedCard(index: 2),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCardLabel(String label) {
+    return SizedBox(
+      width: 80,
+      child: AppText(
+        data: label,
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: Colors.white70,
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  Widget _buildAnimatedCard({required int index}) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.0, end: 1.0),
+      duration: Duration(milliseconds: 600 + (index * 150)),
+      curve: Curves.easeOutBack,
+      builder: (context, value, child) {
+        return Transform.scale(
+          scale: value,
+          child: Transform.translate(
+            offset: Offset(0, 30 * (1 - value)),
+            child: Opacity(
+              opacity: value.clamp(0.0, 1.0),
+              child: child,
+            ),
+          ),
+        );
+      },
+      child: GestureDetector(
+        onTap: () => _onStackSelected(index),
+        child: _buildRevealCard(),
+      ),
+    );
+  }
+
   Widget _buildPositionedCard(
       int stackIndex, {
         double? top,
@@ -350,10 +432,9 @@ class ShuffleScreen extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(6),
         child: Image.asset(
-         AppAssertImage.instance.deck1, // Your card back image path
+          AppAssertImage.instance.deck1,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            // Fallback to gradient if image fails to load
             return Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -377,56 +458,6 @@ class ShuffleScreen extends StatelessWidget {
     );
   }
 
-
-
-
-  Widget buildBottomActions(BuildContext context) {
-    return Column(
-      children: [
-        // Reshuffle button
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 40),
-          child: ElevatedButton(
-            onPressed: () {
-              controller.resetReading();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFFD4A574),
-              padding: EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-              ),
-              elevation: 0,
-            ),
-            child: SizedBox(
-              width: double.infinity,
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.shuffle, color: Colors.white, size: 20),
-                    SizedBox(width: 8),
-                    AppText(
-                      data:'Reshuffle Cards',
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // Handle stack selection
-  void _onStackSelected(int stackIndex) {
-    controller.selectStack(stackIndex);
-    Get.to(() => RevealScreen());
-  }
   Widget buildTarotCard({bool highlighted = false}) {
     return Container(
       width: 60,
@@ -448,10 +479,9 @@ class ShuffleScreen extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(6),
         child: Image.asset(
-          AppAssertImage.instance.deck1, // Your card back image path
+          AppAssertImage.instance.deck1,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            // Fallback to gradient if image fails to load
             return Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -477,7 +507,10 @@ class ShuffleScreen extends StatelessWidget {
     );
   }
 
+  void _onStackSelected(int stackIndex) {
+    controller.selectStack(stackIndex);
+    Get.to(() => RevealScreen());
+  }
 }
-
 
 

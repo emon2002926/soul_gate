@@ -6,7 +6,6 @@ import '../../../core/constants/app_assert_image.dart';
 import '../controller/card_controller.dart';
 import '../../home/data/tarot_card.dart';
 import 'full_reading_screen.dart';
-
 class RevealScreen extends StatefulWidget {
   const RevealScreen({super.key});
 
@@ -22,18 +21,15 @@ class _RevealScreenState extends State<RevealScreen> {
   @override
   void initState() {
     super.initState();
-    // Initialize all cards as face down
-    isFlipped = List.generate(7, (index) => false);
+    final cardCount = controller.readingCardCount.value;
+    isFlipped = List.generate(cardCount, (index) => false);
   }
 
-  // Check if all cards are revealed
   void _checkAllCardsRevealed() {
     bool allRevealed = isFlipped.every((flipped) => flipped == true);
 
     if (allRevealed) {
-      // Wait a moment before navigating
       Future.delayed(Duration(milliseconds: 2000), () {
-        // Navigate to next page
         AppNavigation.push(context, FullReadingScreen());
       });
     }
@@ -49,9 +45,7 @@ class _RevealScreenState extends State<RevealScreen> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
         title: AppText(
           data: 'Result',
@@ -81,7 +75,6 @@ class _RevealScreenState extends State<RevealScreen> {
         child: SafeArea(
           child: Stack(
             children: [
-              // Celtic Cross card layout
               Padding(
                 padding: EdgeInsets.only(
                   top: 20,
@@ -89,10 +82,11 @@ class _RevealScreenState extends State<RevealScreen> {
                   right: 20,
                   bottom: selectedCardIndex != null ? 280 : 20,
                 ),
-                child: _buildCelticCrossLayout(context),
+                child: controller.readingCardCount.value == 7
+                    ? _build7CardLayout(context)
+                    : _build3CardLayout(context),
               ),
 
-              // Bottom dialog for card details
               if (selectedCardIndex != null)
                 Positioned(
                   bottom: 0,
@@ -109,69 +103,117 @@ class _RevealScreenState extends State<RevealScreen> {
     );
   }
 
-  // Celtic Cross layout with positioned cards
-  Widget _buildCelticCrossLayout(BuildContext context) {
+  Widget _build7CardLayout(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Calculate card dimensions based on available space
         double cardWidth = (constraints.maxWidth - 60) / 4;
         double cardHeight = cardWidth * 1.5;
 
         return Stack(
           alignment: Alignment.center,
           children: [
-            // Top card (index 0)
-            _buildPositionedCard(0,
+            _buildPositionedCard(
+              0,
               top: 0,
               left: constraints.maxWidth / 2 - cardWidth / 2,
               cardWidth: cardWidth,
               cardHeight: cardHeight,
             ),
-
-            // Middle row - 3 cards
-            _buildPositionedCard(1,
+            _buildPositionedCard(
+              1,
               top: cardHeight + 20,
               left: 0,
               cardWidth: cardWidth,
               cardHeight: cardHeight,
-            ), // Left
-            _buildPositionedCard(2,
+            ),
+            _buildPositionedCard(
+              2,
               top: cardHeight + 20,
               left: cardWidth + 20,
               cardWidth: cardWidth,
               cardHeight: cardHeight,
-            ), // Center
-            _buildPositionedCard(3,
+            ),
+            _buildPositionedCard(
+              3,
               top: cardHeight + 20,
               left: (cardWidth + 20) * 2,
               cardWidth: cardWidth,
               cardHeight: cardHeight,
-            ), // Right
-
-            // Bottom center card (index 4)
-            _buildPositionedCard(4,
+            ),
+            _buildPositionedCard(
+              4,
               top: (cardHeight + 20) * 2,
               left: constraints.maxWidth / 2 - cardWidth / 2,
               cardWidth: cardWidth,
               cardHeight: cardHeight,
             ),
-
-            // Right column - 2 cards
-            _buildPositionedCard(5,
+            _buildPositionedCard(
+              5,
               top: (cardHeight + 20) * 1.7,
               right: 0,
               cardWidth: cardWidth,
               cardHeight: cardHeight,
-            ), // Bottom right
-            _buildPositionedCard(6,
-              top: cardHeight + -20,
+            ),
+            _buildPositionedCard(
+              6,
+              top: cardHeight - 20,
               right: 0,
               cardWidth: cardWidth,
               cardHeight: cardHeight,
-            ), // Top right
+            ),
           ],
         );
       },
+    );
+  }
+
+  Widget _build3CardLayout(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double cardWidth = (constraints.maxWidth - 60) / 3.5;
+        double cardHeight = cardWidth * 1.5;
+
+        return Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildAnimatedCard(0, cardWidth, cardHeight),
+              SizedBox(width: 20),
+              _buildAnimatedCard(1, cardWidth, cardHeight),
+              SizedBox(width: 20),
+              _buildAnimatedCard(2, cardWidth, cardHeight),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildAnimatedCard(int index, double cardWidth, double cardHeight) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.0, end: 1.0),
+      duration: Duration(milliseconds: 600 + (index * 150)),
+      curve: Curves.easeOutBack,
+      builder: (context, value, child) {
+        return Transform.scale(
+          scale: value,
+          child: Transform.translate(
+            offset: Offset(0, 30 * (1 - value)),
+            child: Opacity(
+              opacity: value.clamp(0.0, 1.0),
+              child: child,
+            ),
+          ),
+        );
+      },
+      child: SizedBox(
+        width: cardWidth,
+        height: cardHeight,
+        child: _buildCardWidget(
+          controller.selectedCards[index],
+          index,
+        ),
+      ),
     );
   }
 
@@ -215,7 +257,6 @@ class _RevealScreenState extends State<RevealScreen> {
     );
   }
 
-  // Individual card widget with flip animation
   Widget _buildCardWidget(TarotCard card, int index) {
     return GestureDetector(
       onTap: () => _flipCard(index),
@@ -246,7 +287,6 @@ class _RevealScreenState extends State<RevealScreen> {
     );
   }
 
-  // Card back (face down)
   Widget _buildCardBack(int index) {
     return Container(
       key: ValueKey(false),
@@ -290,7 +330,6 @@ class _RevealScreenState extends State<RevealScreen> {
     );
   }
 
-  // Card front (face up with card image)
   Widget _buildCardFront(TarotCard card, int index) {
     return Container(
       key: ValueKey(true),
@@ -334,7 +373,6 @@ class _RevealScreenState extends State<RevealScreen> {
     );
   }
 
-  // Flip card animation
   void _flipCard(int index) {
     setState(() {
       isFlipped[index] = !isFlipped[index];
@@ -343,11 +381,9 @@ class _RevealScreenState extends State<RevealScreen> {
       }
     });
 
-    // Check if all cards are now revealed
     _checkAllCardsRevealed();
   }
 
-  // Bottom card details dialog
   Widget _buildCardDetailsDialog(TarotCard card) {
     return AnimatedContainer(
       duration: Duration(milliseconds: 300),
@@ -369,7 +405,6 @@ class _RevealScreenState extends State<RevealScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Handle bar
           Container(
             margin: EdgeInsets.only(top: 12),
             width: 40,
@@ -382,13 +417,11 @@ class _RevealScreenState extends State<RevealScreen> {
 
           SizedBox(height: 20),
 
-          // Content
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Card title
                 Text(
                   '${card.name} tell us about.....',
                   style: TextStyle(
@@ -400,9 +433,8 @@ class _RevealScreenState extends State<RevealScreen> {
 
                 SizedBox(height: 16),
 
-                // Card description title
                 Text(
-                  'This cards talk about.....',
+                  'This card talks about.....',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -412,7 +444,6 @@ class _RevealScreenState extends State<RevealScreen> {
 
                 SizedBox(height: 8),
 
-                // Card meaning/description
                 RichText(
                   text: TextSpan(
                     style: TextStyle(
@@ -433,12 +464,10 @@ class _RevealScreenState extends State<RevealScreen> {
                         ),
                       ),
                       TextSpan(
-                        text:
-                        'during moments when something has reached its absolute limit.\n\n',
+                        text: 'during moments when something has reached its absolute limit.\n\n',
                       ),
                       TextSpan(
-                        text:
-                        'A cycle is ending — often sharply, suddenly, or with emotional weight.',
+                        text: 'A cycle is ending — often sharply, suddenly, or with emotional weight.',
                       ),
                     ],
                   ),
@@ -446,11 +475,9 @@ class _RevealScreenState extends State<RevealScreen> {
 
                 SizedBox(height: 20),
 
-                // Action buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    // Speaker button
                     Container(
                       decoration: BoxDecoration(
                         color: Color(0xFFD4A574),
@@ -458,14 +485,10 @@ class _RevealScreenState extends State<RevealScreen> {
                       ),
                       child: IconButton(
                         icon: Icon(Icons.volume_up, color: Colors.white),
-                        onPressed: () {
-                          // Text to speech functionality
-                        },
+                        onPressed: () {},
                       ),
                     ),
                     SizedBox(width: 12),
-
-                    // Share button
                     Container(
                       decoration: BoxDecoration(
                         color: Color(0xFFD4A574),
@@ -479,7 +502,6 @@ class _RevealScreenState extends State<RevealScreen> {
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          // Share functionality
                           AppNavigation.push(context, FullReadingScreen());
                         },
                       ),

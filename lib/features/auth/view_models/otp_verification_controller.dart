@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
-import '../../../core/constants/app_constant.dart';
 import '../../../core/onboarding/splash/views/subscription_page.dart';
 import '../../../core/routes/app_routes.dart';
 import 'package:http/http.dart' as http;
@@ -10,7 +9,10 @@ import 'dart:convert';
 import 'dart:async';
 
 import '../../../core/util/storage_service.dart';
-import '../views/reset_password_screen.dart';
+
+
+
+
 
 
 class OtpVerificationController extends GetxController {
@@ -24,7 +26,7 @@ class OtpVerificationController extends GetxController {
   Timer? resendTimer;
 
   // Updated Base URL
-  // static final String baseUrl = 'https://sofiapi.dsrt321.online/api';
+  static final String baseUrl = 'https://sofiapi.dsrt321.online/api';
 
   @override
   void onInit() {
@@ -101,7 +103,7 @@ class OtpVerificationController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('${AppConstant.instance.baseUrl}/auth/verify-otp/');
+      final url = Uri.parse('$baseUrl/auth/verify-otp/');
 
       final response = await http.post(
         url,
@@ -193,7 +195,7 @@ class OtpVerificationController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('${AppConstant.instance.baseUrl}/auth/verify-otp/');
+      final url = Uri.parse('$baseUrl/auth/verify-otp/');
 
       final response = await http.post(
         url,
@@ -289,7 +291,7 @@ class OtpVerificationController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('${AppConstant.instance.baseUrl}/auth/signup/');
+      final url = Uri.parse('$baseUrl/auth/signup/');
 
       final response = await http.post(
         url,
@@ -371,7 +373,7 @@ class OtpVerificationController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('${AppConstant.instance.baseUrl}/auth/forgot-password/');
+      final url = Uri.parse('$baseUrl/auth/forgot-password/');
 
       final response = await http.post(
         url,
@@ -437,3 +439,8 @@ class OtpVerificationController extends GetxController {
     super.onClose();
   }
 }
+
+
+
+
+

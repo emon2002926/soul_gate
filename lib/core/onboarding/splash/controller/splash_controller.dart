@@ -5,7 +5,6 @@ import 'package:soul_gate/core/util/app_navigation.dart';
 import '../../../../core/util/storage_service.dart';
 import 'package:get_storage/get_storage.dart';
 
-import '../../../../features/auth/views/sing_in_screen.dart';
 import '../views/onboarding_screen.dart';
 
 class SplashController extends GetxController {

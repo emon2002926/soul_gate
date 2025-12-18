@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import '../../../core/constants/app_constant.dart';
 import '../../../core/routes/app_routes.dart';
+
+
 
 class ResetPassController extends GetxController {
   final newPasswordController = TextEditingController();
@@ -17,7 +18,7 @@ class ResetPassController extends GetxController {
   final otp = ''.obs;
 
   // Updated Base URL
-  // static final String baseUrl = 'https://sofiapi.dsrt321.online/api';
+  static final String baseUrl = 'https://sofiapi.dsrt321.online/api';
 
   @override
   void onInit() {
@@ -118,7 +119,7 @@ class ResetPassController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('${AppConstant.instance.baseUrl}/auth/reset-password/');
+      final url = Uri.parse('$baseUrl/auth/reset-password/');
 
       final response = await http.post(
         url,

@@ -3,11 +3,7 @@ import 'package:get/get.dart';
 import '../../../constants/app_assert_image.dart';
 import '../../../util/app_navigation.dart';
 import '../../../widgets/buttons/app_button.dart';
-import '../../../widgets/text/app_text.dart';
-import '../controller/subscription_controller.dart';
 
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 import 'onboarding_screen.dart';
 

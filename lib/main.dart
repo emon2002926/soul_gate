@@ -7,11 +7,6 @@ import 'core/onboarding/splash/views/splash_screen.dart';
 import 'core/routes/app_routes_file.dart';
 import 'package:get/get.dart';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Future<void> main() async {
   await GetStorage.init();
