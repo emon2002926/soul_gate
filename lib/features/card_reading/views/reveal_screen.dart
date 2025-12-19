@@ -1,53 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:soul_gate/core/util/app_navigation.dart';
 import 'package:soul_gate/core/widgets/text/app_text.dart';
 import '../../../core/constants/app_assert_image.dart';
-import '../controller/card_controller.dart';
 import '../../home/data/tarot_card.dart';
-import 'full_reading_screen.dart';
-class RevealScreen extends StatefulWidget {
+import '../controller/reveal_controller.dart';
+
+
+class RevealScreen extends StatelessWidget {
   const RevealScreen({super.key});
 
   @override
-  _RevealScreenState createState() => _RevealScreenState();
-}
-
-class _RevealScreenState extends State<RevealScreen> {
-  final CardController controller = Get.find<CardController>();
-  List<bool> isFlipped = [];
-  int? selectedCardIndex;
-
-  @override
-  void initState() {
-    super.initState();
-    final cardCount = controller.readingCardCount.value;
-    isFlipped = List.generate(cardCount, (index) => false);
-  }
-
-  void _checkAllCardsRevealed() {
-    bool allRevealed = isFlipped.every((flipped) => flipped == true);
-
-    if (allRevealed) {
-      Future.delayed(Duration(milliseconds: 2000), () {
-        AppNavigation.push(context, FullReadingScreen());
-      });
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
+    // Initialize RevealController
+    final controller = Get.put(RevealController());
+
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: Color(0xFFF5F3EE),
+      backgroundColor: const Color(0xFFF5F3EE),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Get.back(),
         ),
-        title: AppText(
+        title: const AppText(
           data: 'Result',
           color: Colors.white,
           fontWeight: FontWeight.w600,
@@ -56,7 +33,8 @@ class _RevealScreenState extends State<RevealScreen> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.account_circle_outlined, color: Colors.white, size: 24),
+            icon: const Icon(Icons.account_circle_outlined,
+                color: Colors.white, size: 24),
             onPressed: () {},
           ),
         ],
@@ -73,37 +51,52 @@ class _RevealScreenState extends State<RevealScreen> {
           ),
         ),
         child: SafeArea(
-          child: Stack(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(
-                  top: 20,
-                  left: 20,
-                  right: 20,
-                  bottom: selectedCardIndex != null ? 280 : 20,
-                ),
-                child: controller.readingCardCount.value == 7
-                    ? _build7CardLayout(context)
-                    : _build3CardLayout(context),
-              ),
+          child: Obx(() {
+            final hasSelectedCard = controller.selectedCardIndex.value != null;
 
-              if (selectedCardIndex != null)
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: _buildCardDetailsDialog(
-                    controller.selectedCards[selectedCardIndex!],
+            return Stack(
+              children: [
+                // Card layout
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: 20,
+                    left: 20,
+                    right: 20,
+                    bottom: hasSelectedCard ? 280 : 20,
                   ),
+                  child: controller.is7CardReading
+                      ? _Build7CardLayout(controller: controller)
+                      : _Build3CardLayout(controller: controller),
                 ),
-            ],
-          ),
+
+                // Card details panel
+                if (hasSelectedCard)
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: _CardDetailsPanel(
+                      card: controller.currentSelectedCard!,
+                      controller: controller,
+                    ),
+                  ),
+              ],
+            );
+          }),
         ),
       ),
     );
   }
+}
 
-  Widget _build7CardLayout(BuildContext context) {
+// 7-Card Celtic Cross Layout Widget
+class _Build7CardLayout extends StatelessWidget {
+  final RevealController controller;
+
+  const _Build7CardLayout({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         double cardWidth = (constraints.maxWidth - 60) / 4;
@@ -112,50 +105,57 @@ class _RevealScreenState extends State<RevealScreen> {
         return Stack(
           alignment: Alignment.center,
           children: [
-            _buildPositionedCard(
-              0,
+            _PositionedCard(
+              controller: controller,
+              index: 0,
               top: 0,
               left: constraints.maxWidth / 2 - cardWidth / 2,
               cardWidth: cardWidth,
               cardHeight: cardHeight,
             ),
-            _buildPositionedCard(
-              1,
+            _PositionedCard(
+              controller: controller,
+              index: 1,
               top: cardHeight + 20,
               left: 0,
               cardWidth: cardWidth,
               cardHeight: cardHeight,
             ),
-            _buildPositionedCard(
-              2,
+            _PositionedCard(
+              controller: controller,
+              index: 2,
               top: cardHeight + 20,
               left: cardWidth + 20,
               cardWidth: cardWidth,
               cardHeight: cardHeight,
             ),
-            _buildPositionedCard(
-              3,
+            _PositionedCard(
+              controller: controller,
+              index: 3,
               top: cardHeight + 20,
               left: (cardWidth + 20) * 2,
               cardWidth: cardWidth,
               cardHeight: cardHeight,
             ),
-            _buildPositionedCard(
-              4,
+            _PositionedCard(
+              controller: controller,
+              index: 4,
               top: (cardHeight + 20) * 2,
               left: constraints.maxWidth / 2 - cardWidth / 2,
               cardWidth: cardWidth,
               cardHeight: cardHeight,
             ),
-            _buildPositionedCard(
-              5,
+            _PositionedCard(
+              controller: controller,
+              index: 5,
               top: (cardHeight + 20) * 1.7,
               right: 0,
               cardWidth: cardWidth,
               cardHeight: cardHeight,
             ),
-            _buildPositionedCard(
-              6,
+            _PositionedCard(
+              controller: controller,
+              index: 6,
               top: cardHeight - 20,
               right: 0,
               cardWidth: cardWidth,
@@ -166,8 +166,16 @@ class _RevealScreenState extends State<RevealScreen> {
       },
     );
   }
+}
 
-  Widget _build3CardLayout(BuildContext context) {
+// 3-Card Layout Widget
+class _Build3CardLayout extends StatelessWidget {
+  final RevealController controller;
+
+  const _Build3CardLayout({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         double cardWidth = (constraints.maxWidth - 60) / 3.5;
@@ -177,54 +185,56 @@ class _RevealScreenState extends State<RevealScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildAnimatedCard(0, cardWidth, cardHeight),
-              SizedBox(width: 20),
-              _buildAnimatedCard(1, cardWidth, cardHeight),
-              SizedBox(width: 20),
-              _buildAnimatedCard(2, cardWidth, cardHeight),
+              _AnimatedCard(
+                controller: controller,
+                index: 0,
+                cardWidth: cardWidth,
+                cardHeight: cardHeight,
+              ),
+              const SizedBox(width: 20),
+              _AnimatedCard(
+                controller: controller,
+                index: 1,
+                cardWidth: cardWidth,
+                cardHeight: cardHeight,
+              ),
+              const SizedBox(width: 20),
+              _AnimatedCard(
+                controller: controller,
+                index: 2,
+                cardWidth: cardWidth,
+                cardHeight: cardHeight,
+              ),
             ],
           ),
         );
       },
     );
   }
+}
 
-  Widget _buildAnimatedCard(int index, double cardWidth, double cardHeight) {
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0.0, end: 1.0),
-      duration: Duration(milliseconds: 600 + (index * 150)),
-      curve: Curves.easeOutBack,
-      builder: (context, value, child) {
-        return Transform.scale(
-          scale: value,
-          child: Transform.translate(
-            offset: Offset(0, 30 * (1 - value)),
-            child: Opacity(
-              opacity: value.clamp(0.0, 1.0),
-              child: child,
-            ),
-          ),
-        );
-      },
-      child: SizedBox(
-        width: cardWidth,
-        height: cardHeight,
-        child: _buildCardWidget(
-          controller.selectedCards[index],
-          index,
-        ),
-      ),
-    );
-  }
+// Positioned Card for 7-card layout
+class _PositionedCard extends StatelessWidget {
+  final RevealController controller;
+  final int index;
+  final double? top;
+  final double? left;
+  final double? right;
+  final double cardWidth;
+  final double cardHeight;
 
-  Widget _buildPositionedCard(
-      int index, {
-        double? top,
-        double? left,
-        double? right,
-        required double cardWidth,
-        required double cardHeight,
-      }) {
+  const _PositionedCard({
+    required this.controller,
+    required this.index,
+    this.top,
+    this.left,
+    this.right,
+    required this.cardWidth,
+    required this.cardHeight,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Positioned(
       top: top,
       left: left,
@@ -248,56 +258,124 @@ class _RevealScreenState extends State<RevealScreen> {
         child: SizedBox(
           width: cardWidth,
           height: cardHeight,
-          child: _buildCardWidget(
-            controller.selectedCards[index],
-            index,
+          child: _FlipCard(
+            controller: controller,
+            index: index,
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildCardWidget(TarotCard card, int index) {
-    return GestureDetector(
-      onTap: () => _flipCard(index),
-      child: AnimatedSwitcher(
-        duration: Duration(milliseconds: 500),
-        transitionBuilder: (Widget child, Animation<double> animation) {
-          final rotate = Tween(begin: 0.0, end: 1.0).animate(animation);
-          return AnimatedBuilder(
-            animation: rotate,
-            child: child,
-            builder: (context, child) {
-              final isUnder = (ValueKey(isFlipped[index]) != child!.key);
-              var tilt = ((animation.value - 0.5).abs() - 0.5) * 0.003;
-              tilt *= isUnder ? -1.0 : 1.0;
-              final value = isUnder ? animation.value : 1.0 - animation.value;
-              return Transform(
-                transform: Matrix4.rotationY(value * 3.14159),
-                alignment: Alignment.center,
-                child: child,
-              );
-            },
-          );
-        },
-        child: isFlipped[index]
-            ? _buildCardFront(card, index)
-            : _buildCardBack(index),
+// Animated Card for 3-card layout
+class _AnimatedCard extends StatelessWidget {
+  final RevealController controller;
+  final int index;
+  final double cardWidth;
+  final double cardHeight;
+
+  const _AnimatedCard({
+    required this.controller,
+    required this.index,
+    required this.cardWidth,
+    required this.cardHeight,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.0, end: 1.0),
+      duration: Duration(milliseconds: 600 + (index * 150)),
+      curve: Curves.easeOutBack,
+      builder: (context, value, child) {
+        return Transform.scale(
+          scale: value,
+          child: Transform.translate(
+            offset: Offset(0, 30 * (1 - value)),
+            child: Opacity(
+              opacity: value.clamp(0.0, 1.0),
+              child: child,
+            ),
+          ),
+        );
+      },
+      child: SizedBox(
+        width: cardWidth,
+        height: cardHeight,
+        child: _FlipCard(
+          controller: controller,
+          index: index,
+        ),
       ),
     );
   }
+}
 
-  Widget _buildCardBack(int index) {
+// Flip Card Widget with animation
+class _FlipCard extends StatelessWidget {
+  final RevealController controller;
+  final int index;
+
+  const _FlipCard({
+    required this.controller,
+    required this.index,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final card = controller.getCardAt(index);
+    if (card == null) return const SizedBox.shrink();
+
+    return GestureDetector(
+      onTap: () => controller.flipCard(index),
+      child: Obx(() {
+        final isFlipped = controller.isCardFlipped(index);
+
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 500),
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            final rotate = Tween(begin: 0.0, end: 1.0).animate(animation);
+            return AnimatedBuilder(
+              animation: rotate,
+              child: child,
+              builder: (context, child) {
+                final isUnder = (ValueKey(isFlipped) != child!.key);
+                var tilt = ((animation.value - 0.5).abs() - 0.5) * 0.003;
+                tilt *= isUnder ? -1.0 : 1.0;
+                final value = isUnder ? animation.value : 1.0 - animation.value;
+                return Transform(
+                  transform: Matrix4.rotationY(value * 3.14159),
+                  alignment: Alignment.center,
+                  child: child,
+                );
+              },
+            );
+          },
+          child: isFlipped
+              ? _CardFront(key: const ValueKey(true), card: card)
+              : _CardBack(key: const ValueKey(false)),
+        );
+      }),
+    );
+  }
+}
+
+// Card Back Widget
+class _CardBack extends StatelessWidget {
+  const _CardBack({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      key: ValueKey(false),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Color(0xFFE5D4C1), width: 2),
+        border: Border.all(color: const Color(0xFFE5D4C1), width: 2),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.3),
             blurRadius: 8,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -309,14 +387,14 @@ class _RevealScreenState extends State<RevealScreen> {
           errorBuilder: (context, error, stackTrace) {
             return Container(
               decoration: BoxDecoration(
-                gradient: LinearGradient(
+                gradient: const LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [Color(0xFFD4A574), Color(0xFFB8956A)],
                 ),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Center(
+              child: const Center(
                 child: Icon(
                   Icons.auto_awesome,
                   color: Color(0xFFE5D4C1),
@@ -329,19 +407,26 @@ class _RevealScreenState extends State<RevealScreen> {
       ),
     );
   }
+}
 
-  Widget _buildCardFront(TarotCard card, int index) {
+// Card Front Widget
+class _CardFront extends StatelessWidget {
+  final TarotCard card;
+
+  const _CardFront({super.key, required this.card});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      key: ValueKey(true),
       decoration: BoxDecoration(
-        color: Color(0xFFE5D4C1),
+        color: const Color(0xFFE5D4C1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Color(0xFFD4AF37), width: 2),
+        border: Border.all(color: const Color(0xFFD4AF37), width: 2),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.3),
             blurRadius: 8,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -362,8 +447,8 @@ class _RevealScreenState extends State<RevealScreen> {
 
   Widget _buildCardPlaceholder() {
     return Container(
-      color: Color(0xFFF5F3EE),
-      child: Center(
+      color: const Color(0xFFF5F3EE),
+      child: const Center(
         child: Icon(
           Icons.auto_awesome,
           color: Color(0xFF8B7BA8),
@@ -372,25 +457,26 @@ class _RevealScreenState extends State<RevealScreen> {
       ),
     );
   }
+}
 
-  void _flipCard(int index) {
-    setState(() {
-      isFlipped[index] = !isFlipped[index];
-      if (isFlipped[index]) {
-        selectedCardIndex = index;
-      }
-    });
+// Card Details Panel Widget
+class _CardDetailsPanel extends StatelessWidget {
+  final TarotCard card;
+  final RevealController controller;
 
-    _checkAllCardsRevealed();
-  }
+  const _CardDetailsPanel({
+    required this.card,
+    required this.controller,
+  });
 
-  Widget _buildCardDetailsDialog(TarotCard card) {
+  @override
+  Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
       curve: Curves.easeOut,
       decoration: BoxDecoration(
-        color: Color(0xFFF5EFE7),
-        borderRadius: BorderRadius.only(
+        color: const Color(0xFFF5EFE7),
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(24),
           topRight: Radius.circular(24),
         ),
@@ -398,42 +484,45 @@ class _RevealScreenState extends State<RevealScreen> {
           BoxShadow(
             color: Colors.black.withOpacity(0.2),
             blurRadius: 12,
-            offset: Offset(0, -4),
+            offset: const Offset(0, -4),
           ),
         ],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // Drag handle
           Container(
-            margin: EdgeInsets.only(top: 12),
+            margin: const EdgeInsets.only(top: 12),
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: Color(0xFFD4C5B9),
+              color: const Color(0xFFD4C5B9),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
 
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
 
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Card title
                 Text(
                   '${card.name} tell us about.....',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF3C2A21),
                   ),
                 ),
 
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-                Text(
+                // Section title
+                const Text(
                   'This card talks about.....',
                   style: TextStyle(
                     fontSize: 16,
@@ -442,11 +531,12 @@ class _RevealScreenState extends State<RevealScreen> {
                   ),
                 ),
 
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
 
+                // Card meaning
                 RichText(
                   text: TextSpan(
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 14,
                       color: Color(0xFF5C4A42),
                       height: 1.5,
@@ -454,44 +544,49 @@ class _RevealScreenState extends State<RevealScreen> {
                     children: [
                       TextSpan(
                         text: 'The ${card.name} ',
-                        style: TextStyle(fontWeight: FontWeight.normal),
+                        style: const TextStyle(fontWeight: FontWeight.normal),
                       ),
                       TextSpan(
                         text: '${card.meaning ?? "appears"} ',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           decoration: TextDecoration.underline,
                         ),
                       ),
-                      TextSpan(
-                        text: 'during moments when something has reached its absolute limit.\n\n',
+                      const TextSpan(
+                        text:
+                        'during moments when something has reached its absolute limit.\n\n',
                       ),
-                      TextSpan(
-                        text: 'A cycle is ending — often sharply, suddenly, or with emotional weight.',
+                      const TextSpan(
+                        text:
+                        'A cycle is ending — often sharply, suddenly, or with emotional weight.',
                       ),
                     ],
                   ),
                 ),
 
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
+                // Action buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    // TTS button
                     Container(
                       decoration: BoxDecoration(
-                        color: Color(0xFFD4A574),
+                        color: const Color(0xFFD4A574),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: IconButton(
-                        icon: Icon(Icons.volume_up, color: Colors.white),
-                        onPressed: () {},
+                        icon: const Icon(Icons.volume_up, color: Colors.white),
+                        onPressed: () => controller.speakCardMeaning(card),
                       ),
                     ),
-                    SizedBox(width: 12),
+                    const SizedBox(width: 12),
+                    // Share button
                     Container(
                       decoration: BoxDecoration(
-                        color: Color(0xFFD4A574),
+                        color: const Color(0xFFD4A574),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: IconButton(
@@ -500,16 +595,17 @@ class _RevealScreenState extends State<RevealScreen> {
                           width: 24,
                           height: 24,
                           color: Colors.white,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Icon(Icons.share, color: Colors.white);
+                          },
                         ),
-                        onPressed: () {
-                          AppNavigation.push(context, FullReadingScreen());
-                        },
+                        onPressed: () => controller.navigateToFullReading(),
                       ),
                     ),
                   ],
                 ),
 
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
               ],
             ),
           ),
