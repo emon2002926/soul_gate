@@ -8,77 +8,6 @@ import '../controller/card_controller.dart';
 import 'package:get/get.dart';
 import 'reveal_screen.dart';
 
-
-
-import 'dart:math' as math;
-import 'package:flutter/material.dart';
-import 'package:soul_gate/core/widgets/buttons/app_button.dart';
-import 'package:soul_gate/core/widgets/text/app_text.dart';
-import '../../../core/constants/app_assert_image.dart';
-import '../../../core/widgets/app_bar/build_app_bar.dart';
-import '../controller/card_controller.dart';
-import 'package:get/get.dart';
-import 'reveal_screen.dart';
-
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'dart:math' as math;
-
-
-
-
-
-
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'dart:math' as math;
-
-
-
-
-
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'dart:math' as math;
-
-
-
-import 'dart:math' as math;
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
-import 'dart:math' as math;
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'dart:math' as math;
-
-// Import your project files
-// import 'card_controller.dart';
-// import 'reveal_screen.dart';
-// import 'app_text.dart';
-// import 'app_button.dart';
-// import 'build_app_bar.dart';
-// import 'app_assert_image.dart';
-
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'dart:math' as math;
-
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'dart:math' as math;
-
-// Import your project files
-// import 'card_controller.dart';
-// import 'reveal_screen.dart';
-// import 'app_text.dart';
-// import 'app_button.dart';
-// import 'build_app_bar.dart';
-// import 'app_assert_image.dart';
-
 class ShuffleScreen extends StatelessWidget {
   final CardController controller = Get.put(CardController());
   ShuffleScreen({super.key});
@@ -169,24 +98,38 @@ class ShuffleScreen extends StatelessWidget {
     final selectedIndex = controller.selectedStackIndex.value;
     final screenWidth = MediaQuery.of(context).size.width;
     final cardCount = 13;
-    final radius = screenWidth * 0.45;
+    final radius = screenWidth * 0.43;
 
     final startAngle = math.pi * 1.15;
     final sweepAngle = math.pi * 0.7;
 
-    // Card sizes - bigger when stacked
-    const double stackedCardWidth = 100.0;
-    const double stackedCardHeight = 150.0;
-    const double spreadCardWidth = 60.0;
-    const double spreadCardHeight = 90.0;
+    const double stackedCardWidth = 90.0;
+    const double stackedCardHeight = 135.0;
+    const double spreadCardWidth = 54.0;
+    const double spreadCardHeight = 81.0;
 
-    // Container dimensions
-    const double containerHeight = 300.0;
+    const double containerHeight = 280.0;
     final containerWidth = screenWidth * 0.9;
 
-    // True center position for stacked cards
     final stackCenterX = (containerWidth / 2) - (stackedCardWidth / 2);
     final stackCenterY = (containerHeight / 2) - (stackedCardHeight / 2);
+
+    print('=== Card Spread Debug ===');
+    print('isSpread: $isSpread');
+    print('hasShuffled: $hasShuffled');
+    print('isShuffling: $isShuffling');
+    print('selectedIndex: $selectedIndex');
+
+    // Create list with reversed order for spread state (middle cards on top)
+    List<int> cardIndices = List.generate(cardCount, (i) => i);
+    if (isSpread) {
+      cardIndices.sort((a, b) {
+        int distanceA = (a - 6).abs();
+        int distanceB = (b - 6).abs();
+        return distanceB.compareTo(distanceA);
+      });
+      print('Z-order (furthest to closest): $cardIndices');
+    }
 
     return SizedBox(
       height: containerHeight,
@@ -198,84 +141,85 @@ class ShuffleScreen extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             clipBehavior: Clip.none,
-            children: [
-              for (int i = 0; i < cardCount; i++)
-                Builder(
-                  builder: (context) {
-                    final progress = i / (cardCount - 1);
-                    final angle = startAngle + (sweepAngle * progress);
+            children: cardIndices.map((i) {
+              final progress = i / (cardCount - 1);
+              final angle = startAngle + (sweepAngle * progress);
 
-                    // Final spread position (for smaller cards)
-                    final spreadX = radius * math.cos(angle);
-                    final spreadY = radius * math.sin(angle);
-                    final spreadLeft = (containerWidth / 2) + spreadX - (spreadCardWidth / 2);
-                    final spreadTop = (containerHeight / 2) + spreadY - (spreadCardHeight / 2);
+              final spreadX = radius * math.cos(angle);
+              final spreadY = radius * math.sin(angle);
+              final spreadLeft = (containerWidth / 2) + spreadX - (spreadCardWidth / 2);
+              final spreadTop = (containerHeight / 2) + spreadY - (spreadCardHeight / 2);
 
-                    // Stack position (centered, with slight offset for depth effect)
-                    final stackLeft = stackCenterX + (i * 1.2);
-                    final stackTop = stackCenterY - (i * 1.0);
+              final stackLeft = stackCenterX + (i * 1.1);
+              final stackTop = stackCenterY - (i * 0.9);
 
-                    // Card rotation (only when spread)
-                    final cardRotation = angle + math.pi / 2;
+              final cardRotation = angle + math.pi / 2;
 
-                    // Current card dimensions based on state
-                    final currentWidth = isSpread ? spreadCardWidth : stackedCardWidth;
-                    final currentHeight = isSpread ? spreadCardHeight : stackedCardHeight;
+              final currentWidth = isSpread ? spreadCardWidth : stackedCardWidth;
+              final currentHeight = isSpread ? spreadCardHeight : stackedCardHeight;
 
-                    // Check if this card is selected
-                    final isSelected = selectedIndex == i;
+              final isSelected = selectedIndex == i;
 
-                    return AnimatedPositioned(
-                      duration: Duration(milliseconds: 600 + (i * 50)),
-                      curve: Curves.easeOutBack,
-                      left: isSpread ? spreadLeft : stackLeft,
-                      top: isSpread ? spreadTop : stackTop,
-                      child: TweenAnimationBuilder<double>(
-                        tween: Tween(
-                          begin: 0.0,
-                          end: isSpread ? cardRotation : 0.0,
-                        ),
-                        duration: Duration(milliseconds: 600 + (i * 50)),
-                        curve: Curves.easeOutBack,
-                        builder: (context, rotationValue, child) {
-                          return Transform.rotate(
-                            angle: rotationValue,
-                            child: child,
-                          );
-                        },
-                        child: GestureDetector(
-                          // Arc cards only select/highlight - no navigation
-                          onTap: hasShuffled && !isShuffling
-                              ? () => _onArcCardSelected(i)
-                              : null,
-                          child: _AnimatedCard(
-                            index: i,
-                            width: currentWidth,
-                            height: currentHeight,
-                            isSpread: isSpread,
-                            isSelected: isSelected,
-                            isHighlighted: isSpread && i == 6,
-                          ),
-                        ),
-                      ),
+              return AnimatedPositioned(
+                key: ValueKey('card_$i'), // Add key for debugging
+                duration: Duration(milliseconds: 600 + (i * 50)),
+                curve: Curves.easeOutBack,
+                left: isSpread ? spreadLeft : stackLeft,
+                top: isSpread ? spreadTop : stackTop,
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween(
+                    begin: 0.0,
+                    end: isSpread ? cardRotation : 0.0,
+                  ),
+                  duration: Duration(milliseconds: 600 + (i * 50)),
+                  curve: Curves.easeOutBack,
+                  builder: (context, rotationValue, child) {
+                    return Transform.rotate(
+                      angle: rotationValue,
+                      child: child,
                     );
                   },
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                      print('>>> CARD $i TAPPED <<<');
+                      print('hasShuffled: $hasShuffled, isShuffling: $isShuffling');
+
+                      if (hasShuffled && !isShuffling) {
+                        print('Calling _onArcCardSelected($i)');
+                        _onArcCardSelected(i);
+                      } else {
+                        print('Tap ignored - hasShuffled: $hasShuffled, isShuffling: $isShuffling');
+                      }
+                    },
+                    child: Container(
+                      color: Colors.transparent, // Ensure hit test area
+                      child: _AnimatedCard(
+                        index: i,
+                        width: currentWidth,
+                        height: currentHeight,
+                        isSpread: isSpread,
+                        isSelected: isSelected,
+                        isHighlighted: isSpread && i == 6,
+                      ),
+                    ),
+                  ),
                 ),
-            ],
+              );
+            }).toList(),
           ),
         ),
       ),
     );
   }
 
-  // Arc card selection - only highlights, no navigation
+
+
   void _onArcCardSelected(int stackIndex) {
     controller.selectStackForHighlight(stackIndex);
   }
 
-  // Celtic Cross card selection - this triggers navigation
   void _onLayoutCardSelected(int stackIndex) {
-    // If no arc card is selected, show message
     if (controller.selectedStackIndex.value == null) {
       Get.snackbar(
         'Select a Card',
@@ -290,10 +234,7 @@ class ShuffleScreen extends StatelessWidget {
       return;
     }
 
-    // Prepare selected cards using the highlighted arc card
     controller.prepareSelectedCards();
-
-    // Navigate to reveal screen
     Get.to(() => RevealScreen());
   }
 
@@ -336,33 +277,15 @@ class ShuffleScreen extends StatelessWidget {
           }),
         ),
 
-        // Instruction text
-        Obx(() {
-          final hasSelected = controller.selectedStackIndex.value != null;
-          return Padding(
-            padding: const EdgeInsets.only(top: 16),
-            child: AppText(
-              data: hasSelected
-                  ? 'Now tap a card below to reveal your reading'
-                  : 'Tap a card from the arc to select',
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: hasSelected ? const Color(0xFFD4A574) : Colors.white70,
-            ),
-          );
-        }),
-
         // Card spread
-        Obx(() {
-          return Transform.translate(
-            offset: const Offset(0, 130),
-            child: _buildCircularCardSpread(context),
-          );
-        }),
+        Transform.translate(
+          offset: const Offset(0, 120),
+          child: Obx(() => _buildCircularCardSpread(context)),
+        ),
 
         Expanded(
           child: Transform.translate(
-            offset: const Offset(0, -10),
+            offset: const Offset(0, -15),
             child: Obx(() {
               if (controller.isShuffling.value) {
                 return const Center(
@@ -438,7 +361,7 @@ class ShuffleScreen extends StatelessWidget {
     );
   }
 
-  // 7-card Celtic Cross layout - these cards trigger navigation
+  // 7-card Celtic Cross layout - MEDIUM cards
   Widget _build7CardLayout(BuildContext context) {
     return Obx(() {
       final hasSelected = controller.selectedStackIndex.value != null;
@@ -446,19 +369,19 @@ class ShuffleScreen extends StatelessWidget {
       return Stack(
         alignment: Alignment.center,
         children: [
-          _buildPositionedCard(0, top: 0, left: 140, index: 0, enabled: hasSelected),
-          _buildPositionedCard(1, top: 120, left: 20, index: 1, enabled: hasSelected),
-          _buildPositionedCard(2, top: 120, left: 105, index: 2, enabled: hasSelected),
-          _buildPositionedCard(3, top: 120, right: 155, index: 3, enabled: hasSelected),
-          _buildPositionedCard(4, top: 240, left: 140, index: 4, enabled: hasSelected),
-          _buildPositionedCard(5, top: 200, right: 60, index: 5, enabled: hasSelected),
-          _buildPositionedCard(6, top: 80, right: 60, index: 6, enabled: hasSelected),
+          _buildPositionedCard(0, top: 0, left: 142, index: 0, enabled: hasSelected),
+          _buildPositionedCard(1, top: 110, left: 25, index: 1, enabled: hasSelected),
+          _buildPositionedCard(2, top: 110, left: 108, index: 2, enabled: hasSelected),
+          _buildPositionedCard(3, top: 110, right: 158, index: 3, enabled: hasSelected),
+          _buildPositionedCard(4, top: 220, left: 142, index: 4, enabled: hasSelected),
+          _buildPositionedCard(5, top: 182, right: 62, index: 5, enabled: hasSelected),
+          _buildPositionedCard(6, top: 75, right: 62, index: 6, enabled: hasSelected),
         ],
       );
     });
   }
 
-  // 3-card layout - these cards trigger navigation
+  // 3-card layout - MEDIUM cards
   Widget _build3CardLayout(BuildContext context) {
     return Obx(() {
       final hasSelected = controller.selectedStackIndex.value != null;
@@ -482,9 +405,9 @@ class ShuffleScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _buildAnimatedLayoutCard(index: 0, enabled: hasSelected),
-              const SizedBox(width: 20),
+              const SizedBox(width: 18),
               _buildAnimatedLayoutCard(index: 1, enabled: hasSelected),
-              const SizedBox(width: 20),
+              const SizedBox(width: 18),
               _buildAnimatedLayoutCard(index: 2, enabled: hasSelected),
             ],
           ),
@@ -495,7 +418,7 @@ class ShuffleScreen extends StatelessWidget {
 
   Widget _buildCardLabel(String label) {
     return SizedBox(
-      width: 80,
+      width: 75,
       child: AppText(
         data: label,
         fontSize: 14,
@@ -568,7 +491,7 @@ class ShuffleScreen extends StatelessWidget {
 }
 
 // ============================================================================
-// ANIMATED CARD - Arc cards with selection feedback
+// ANIMATED CARD - Arc cards with selection feedback (MEDIUM)
 // ============================================================================
 
 class _AnimatedCard extends StatelessWidget {
@@ -591,7 +514,7 @@ class _AnimatedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedScale(
-      scale: isSelected ? 1.3 : 1.0,
+      scale: isSelected ? 1.28 : 1.0,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeOutBack,
       child: AnimatedContainer(
@@ -599,50 +522,49 @@ class _AnimatedCard extends StatelessWidget {
         width: width,
         height: height,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(isSpread ? 8 : 12),
+          borderRadius: BorderRadius.circular(isSpread ? 7 : 11),
           border: Border.all(
             color: isSelected
-                ? const Color(0xFFFFD700) // Gold when selected
+                ? const Color(0xFFFFD700)
                 : (isHighlighted ? Colors.white : const Color(0xFFE5D4C1)),
-            width: isSelected ? 3 : (isHighlighted ? 3 : 2),
+            width: isSelected ? 2.5 : (isHighlighted ? 2.5 : 1.8),
           ),
           boxShadow: isSelected
               ? [
-            // Strong glow effect when selected
             BoxShadow(
               color: const Color(0xFFFFD700).withOpacity(0.6),
-              blurRadius: 20,
-              spreadRadius: 5,
+              blurRadius: 18,
+              spreadRadius: 4,
             ),
             BoxShadow(
               color: const Color(0xFFD4A574).withOpacity(0.8),
-              blurRadius: 30,
-              spreadRadius: 8,
+              blurRadius: 26,
+              spreadRadius: 7,
             ),
             BoxShadow(
               color: Colors.black.withOpacity(0.3),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
+              blurRadius: 7,
+              offset: const Offset(0, 3),
             ),
           ]
               : isSpread
               ? [
             BoxShadow(
               color: Colors.black.withOpacity(0.3),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
+              blurRadius: 7,
+              offset: const Offset(0, 3),
             ),
           ]
               : [
             BoxShadow(
               color: Colors.black.withOpacity(0.5),
-              blurRadius: 15,
-              offset: const Offset(3, 5),
+              blurRadius: 13,
+              offset: const Offset(2, 4),
             ),
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(isSpread ? 6 : 10),
+          borderRadius: BorderRadius.circular(isSpread ? 5 : 9),
           child: Stack(
             children: [
               // Card image
@@ -662,13 +584,13 @@ class _AnimatedCard extends StatelessWidget {
                               ? [const Color(0xFFD4A574), const Color(0xFFB8956A)]
                               : [const Color(0xFFB8956A), const Color(0xFF9B7B5E)],
                         ),
-                        borderRadius: BorderRadius.circular(isSpread ? 6 : 10),
+                        borderRadius: BorderRadius.circular(isSpread ? 5 : 9),
                       ),
                       child: Center(
                         child: Icon(
                           Icons.auto_awesome,
                           color: const Color(0xFFE5D4C1),
-                          size: isSpread ? 24 : 40,
+                          size: isSpread ? 20 : 36,
                         ),
                       ),
                     );
@@ -680,7 +602,7 @@ class _AnimatedCard extends StatelessWidget {
                 Positioned.fill(
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(isSpread ? 6 : 10),
+                      borderRadius: BorderRadius.circular(isSpread ? 5 : 9),
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -694,7 +616,7 @@ class _AnimatedCard extends StatelessWidget {
                       child: Icon(
                         Icons.check_circle,
                         color: Colors.white.withOpacity(0.9),
-                        size: isSpread ? 28 : 40,
+                        size: isSpread ? 24 : 36,
                       ),
                     ),
                   ),
@@ -708,7 +630,7 @@ class _AnimatedCard extends StatelessWidget {
 }
 
 // ============================================================================
-// LAYOUT CARD - Celtic Cross / 3-card layout cards
+// LAYOUT CARD - Celtic Cross / 3-card layout cards (MEDIUM)
 // ============================================================================
 
 class _LayoutCard extends StatelessWidget {
@@ -720,25 +642,25 @@ class _LayoutCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
-      width: 70,
-      height: 105,
+      width: 64,
+      height: 96,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(7),
         border: Border.all(
           color: enabled ? const Color(0xFFD4A574) : const Color(0xFFE5D4C1),
-          width: enabled ? 2.5 : 2,
+          width: enabled ? 2.2 : 1.8,
         ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+            blurRadius: 7,
+            offset: const Offset(0, 3),
           ),
           if (enabled)
             BoxShadow(
               color: const Color(0xFFD4A574).withOpacity(0.4),
-              blurRadius: 12,
-              spreadRadius: 2,
+              blurRadius: 11,
+              spreadRadius: 1.5,
             ),
         ],
       ),
@@ -746,7 +668,7 @@ class _LayoutCard extends StatelessWidget {
         duration: const Duration(milliseconds: 300),
         opacity: enabled ? 1.0 : 0.5,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(5),
           child: Image.asset(
             AppAssertImage.instance.deck1,
             fit: BoxFit.cover,
@@ -760,13 +682,13 @@ class _LayoutCard extends StatelessWidget {
                         ? [const Color(0xFFD4A574), const Color(0xFFB8956A)]
                         : [const Color(0xFFB8956A), const Color(0xFF9B7B5E)],
                   ),
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(5),
                 ),
                 child: const Center(
                   child: Icon(
                     Icons.auto_awesome,
                     color: Color(0xFFE5D4C1),
-                    size: 32,
+                    size: 28,
                   ),
                 ),
               );
@@ -781,6 +703,12 @@ class _LayoutCard extends StatelessWidget {
 
 
 
+
+
+
+
+
+////////////////////////////////////////////////////////////////
 
 
 // class ShuffleScreen extends StatelessWidget {
@@ -1287,11 +1215,11 @@ class _LayoutCard extends StatelessWidget {
 
 
 
-// // ============================================================================
-// // CARD SWAP SHUFFLE ANIMATION
-// // Cards visually swap positions with each other like a real shuffle
-// // ============================================================================
-//
+// ============================================================================
+// CARD SWAP SHUFFLE ANIMATION
+// Cards visually swap positions with each other like a real shuffle
+// ============================================================================
+
 // class ShuffleScreen extends StatelessWidget {
 //   final CardController controller = Get.put(CardController());
 //
@@ -2002,17 +1930,17 @@ class _LayoutCard extends StatelessWidget {
 //     );
 //   }
 // }
-// // ============================================================================
-// // SWAP CARD - Individual card widget with swap effects
-// // ============================================================================
+// ============================================================================
+// SWAP CARD - Individual card widget with swap effects
+// ============================================================================
+
+
+
+
+
+
+
 //
-
-
-
-
-
-
-
 // // ============================================================================
 // // SHUFFLE CARD SPREAD - Expressive Animation Widget
 // // ============================================================================

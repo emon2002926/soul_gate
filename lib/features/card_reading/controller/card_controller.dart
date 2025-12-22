@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:soul_gate/core/widgets/text/app_text.dart';
 import '../../home/data/cards_data.dart';
 import '../../home/data/tarot_card.dart';
 import 'dart:convert';
@@ -7,14 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
-// Import your project files
-// import 'tarot_card.dart';
-// import 'cards_data.dart';
 
 class CardController extends GetxController {
   // Base URL for API
@@ -50,16 +41,16 @@ class CardController extends GetxController {
     allCards = CardsData.getAllCards();
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-    // Don't auto-shuffle - wait for user to click shuffle button
-  }
-
   // Set reading type and call shuffle API
   Future<void> setReadingType(int cardCount) async {
-    readingCardCount.value = cardCount;
-    await shuffleAndDivideCards();
+    // Only shuffle if reading type actually changed
+    if (readingCardCount.value != cardCount) {
+      readingCardCount.value = cardCount;
+      // Clear selection when changing reading type
+      selectedStackIndex.value = null;
+      selectedCards.clear();
+      await shuffleAndDivideCards();
+    }
   }
 
   // Shuffle deck via API + divide into stacks locally
@@ -114,9 +105,7 @@ class CardController extends GetxController {
   // API call to shuffle endpoint
   Future<Map<String, dynamic>?> _callShuffleApi() async {
     try {
-      final uri = Uri.parse('$baseUrl/shuffle').replace(
-        queryParameters: {'Content-Type': 'application/json'},
-      );
+      final uri = Uri.parse('$baseUrl/shuffle');
 
       final response = await http.post(
         uri,
@@ -124,9 +113,10 @@ class CardController extends GetxController {
       ).timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
-        print("response: ${response.body}");
+        print("Shuffle response: ${response.body}");
         return json.decode(response.body);
       } else {
+        print('Shuffle API error: ${response.statusCode}');
         return null;
       }
     } catch (e) {
@@ -236,25 +226,21 @@ class CardController extends GetxController {
   void selectStackForHighlight(int stackIndex) {
     if (stackIndex < 0 || stackIndex >= cardStacks.length) return;
 
-    // Just set the highlight index
-    selectedStackIndex.value = stackIndex;
-  }
-
-  // Select cards for reading (called when layout card is tapped)
-  void selectStack(int stackIndex) {
-    if (stackIndex < 0 || stackIndex >= cardStacks.length) return;
-
-    if (readingCardCount.value == 7) {
-      _select7Cards(stackIndex);
+    // Toggle selection - if same card clicked, deselect
+    if (selectedStackIndex.value == stackIndex) {
+      selectedStackIndex.value = null;
     } else {
-      _select3Cards(stackIndex);
+      selectedStackIndex.value = stackIndex;
     }
   }
 
   // Prepare cards using the highlighted arc card index
   void prepareSelectedCards() {
     final stackIndex = selectedStackIndex.value;
-    if (stackIndex == null || stackIndex < 0 || stackIndex >= cardStacks.length) return;
+    if (stackIndex == null || stackIndex < 0 || stackIndex >= cardStacks.length) {
+      _showSelectionError();
+      return;
+    }
 
     if (readingCardCount.value == 7) {
       _select7Cards(stackIndex);
@@ -289,6 +275,26 @@ class CardController extends GetxController {
     selectedCards.value = chosenStack.take(3).toList();
   }
 
+  void _showSelectionError() {
+    Get.snackbar(
+      'Select a Card',
+      'Please tap a card from the arc above first',
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: const Color(0xFFD4A574).withOpacity(0.9),
+      colorText: Colors.white,
+      duration: const Duration(seconds: 2),
+      margin: const EdgeInsets.all(16),
+      borderRadius: 12,
+    );
+  }
+
+  // Check if user can proceed to reveal
+  bool canProceedToReveal() {
+    return selectedStackIndex.value != null &&
+        hasShuffled.value &&
+        !isShuffling.value;
+  }
+
   void resetReading() {
     cardStacks.clear();
     selectedCards.clear();
@@ -306,7 +312,6 @@ class CardController extends GetxController {
     super.onClose();
   }
 }
-
 
 // class CardController extends GetxController {
 //   // Base URL for API
