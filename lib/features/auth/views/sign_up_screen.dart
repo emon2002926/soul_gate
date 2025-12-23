@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../core/constants/app_assert_image.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/text/app_text.dart';
 import '../../../core/widgets/text/text_field/AppTextFiled.dart';
@@ -13,6 +14,8 @@ class SignUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(SignUpController());
+    final appStrings = AppStrings.instance;
+
 
     return Scaffold(
       extendBodyBehindAppBar: true, // Allow body to extend behind AppBar
@@ -45,7 +48,7 @@ class SignUpScreen extends StatelessWidget {
                   children: [
                     SizedBox(height: 20.h),
                     AppText(
-                      data: 'Sign UP',
+                      data: appStrings.signUp,
                       fontSize: 50,
                       fontWeight: FontWeight.bold,
                       color: AppColors.instance.titleTextColor,
@@ -59,7 +62,7 @@ class SignUpScreen extends StatelessWidget {
 
                     // Email field
                     AppTextField(
-                      label: 'Email',
+                      label: appStrings.email,
                       controller: controller.emailController,
                       keyboardType: TextInputType.emailAddress,
                       validator: controller.validateEmail,
@@ -72,7 +75,7 @@ class SignUpScreen extends StatelessWidget {
                     SizedBox(height: 20.h),
 
                     Obx(() => AppTextField(
-                      label: 'Password',
+                      label: appStrings.password,
                       controller: controller.passwordController,
                       obscureText: !controller.isPasswordVisible.value,
                       suffixIcon: controller.isPasswordVisible.value
@@ -89,7 +92,7 @@ class SignUpScreen extends StatelessWidget {
                     SizedBox(height: 20.h),
 
                     Obx(() => AppTextField(
-                      label: 'Confirm Password',
+                      label: appStrings.confirmPassword,
                       obscureText: !controller.isPasswordVisible.value,
                       suffixIcon: controller.isPasswordVisible.value
                           ? Icons.visibility_outlined
@@ -118,8 +121,8 @@ class SignUpScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 12),
-                        const AppText(
-                          data: 'I agree to terms & conditions',
+                         AppText(
+                          data: appStrings.termsOfServiceAgreement,
                           fontSize: 16,
                           color: Colors.white,
                         ),
@@ -131,8 +134,8 @@ class SignUpScreen extends StatelessWidget {
                     // Create account button
                     Obx(() => AppButton(
                       buttonText: controller.isLoading.value
-                          ? 'Creating account...'
-                          : 'Create account',
+                          ? appStrings.createAccountBtn
+                          : appStrings.creatingAccountBtn,
                       onPressed: controller.isLoading.value
                           ? null
                           : controller.submitProfile,
@@ -149,8 +152,8 @@ class SignUpScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const AppText(
-                          data: 'Already have an account? ',
+                         AppText(
+                          data: appStrings.alreadyHaveAccount,
                           fontSize: 16,
                           color: Colors.white,
                         ),
@@ -158,8 +161,8 @@ class SignUpScreen extends StatelessWidget {
                           onTap: () {
                             Get.back();
                           },
-                          child: const AppText(
-                            data: 'Sign in',
+                          child:  AppText(
+                            data:appStrings.login,
                             fontSize: 16,
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
