@@ -2,15 +2,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
-import 'package:soul_gate/features/card_reading/views/question_screen.dart';
+import 'package:soul_gate/features/card_shuffle/views/question_screen.dart';
 import '../../../core/constants/app_assert_image.dart';
 import '../../../core/widgets/text/app_text.dart';
 import '../controller/card_controller.dart';
 
 class FullReadingScreen extends StatelessWidget {
+
+  final String finalMessage;
   final CardController controller = Get.find<CardController>();
 
-  FullReadingScreen({super.key});
+  FullReadingScreen({super.key, required this.finalMessage});
 
   @override
   Widget build(BuildContext context) {
@@ -107,14 +109,12 @@ class FullReadingScreen extends StatelessWidget {
           SizedBox(height: 24),
 
           // Reading content
-          Text(
-            'You\'re still in the inner, conceptual and energetic alignment stage (High Priestess), but the structure is already forming with stability and joy (Four of Wands), and the result will be elegant, successful, and profitable (Nine of Pentacles).',
+          AppText(
+            data: finalMessage!,
             textAlign: TextAlign.center,
-            style: TextStyle(
               fontSize: 15,
               color: Color(0xFF5C4A42),
               height: 1.6,
-            ),
           ),
 
           SizedBox(height: 24),

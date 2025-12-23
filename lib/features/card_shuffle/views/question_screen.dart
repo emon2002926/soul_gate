@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:soul_gate/features/card_reading/views/shuffle_screen.dart';
+import 'package:soul_gate/features/card_shuffle/views/shuffle_screen.dart';
 
 import '../../../core/constants/app_assert_image.dart';
 import '../../../core/util/app_navigation.dart';
-import 'closing_screen.dart';
+import '../../card_reveal/views/closing_screen.dart';
 
 class QuestionScreen extends StatelessWidget {
   final QuestionController controller = Get.put(QuestionController());

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
 
 import '../../../constants/app_assert_image.dart';
-import '../../../../features/card_reading/views/portal_entrance_screen.dart';
+import '../../../../features/card_shuffle/views/portal_entrance_screen.dart';
 // ==================== Models ====================
 
 enum OnboardingPageType {

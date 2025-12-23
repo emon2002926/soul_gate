@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
-import '../../../../features/card_reading/views/shuffle_screen.dart';
+import '../../../../features/card_shuffle/views/shuffle_screen.dart';
 import '../../../../features/profile/views/profile_page.dart';
 import '../../../constants/app_assert_image.dart';
 
