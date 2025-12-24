@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:soul_gate/core/widgets/text/app_text.dart';
 import 'package:soul_gate/features/card_shuffle/views/shuffle_screen.dart';
 
 import '../../../core/constants/app_assert_image.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/util/app_navigation.dart';
 import '../../card_reveal/views/closing_screen.dart';
 
 class QuestionScreen extends StatelessWidget {
   final QuestionController controller = Get.put(QuestionController());
   final TextEditingController textController = TextEditingController();
+  AppStrings appStrings = AppStrings.instance;
 
   QuestionScreen({super.key});
 
@@ -45,7 +48,7 @@ class QuestionScreen extends StatelessWidget {
 
                         // Title with elegant styling
                         Text(
-                          'DO YOU HAVE ANY\nQUESTION OR DOUBTS?',
+                          appStrings.anyQuestionsPrompt,
                           textAlign: TextAlign.center,
                           style: GoogleFonts.cinzel(
                             fontSize: 32,
@@ -80,7 +83,7 @@ class QuestionScreen extends StatelessWidget {
                               textInputAction: TextInputAction.done,
                               decoration: InputDecoration(
                                 hintText:
-                                'What do I most need to understand about my\ncurrent situation?',
+                                appStrings.currentSituationQuestion,
                                 hintStyle: TextStyle(
                                   color: Colors.white.withOpacity(0.7),
                                   fontSize: 16,
@@ -138,14 +141,11 @@ class QuestionScreen extends StatelessWidget {
                             ),
                             elevation: 0,
                           ),
-                          child: Text(
-                            'Yes, continue',
-                            style: TextStyle(
+                          child: AppText(
+                            data: appStrings.yesContinueButton,
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
-                              letterSpacing: 0.5,
-                            ),
                           ),
                         ),
                       ),
@@ -171,14 +171,11 @@ class QuestionScreen extends StatelessWidget {
                               width: 2,
                             ),
                           ),
-                          child: Text(
-                            'No, Thanks',
-                            style: TextStyle(
+                          child: AppText(
+                            data: appStrings.noThanks,
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                               color: Color(0xFFD4A574),
-                              letterSpacing: 0.5,
-                            ),
                           ),
                         ),
                       ),

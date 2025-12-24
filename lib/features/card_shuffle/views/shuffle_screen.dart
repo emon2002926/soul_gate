@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:soul_gate/core/widgets/buttons/app_button.dart';
 import 'package:soul_gate/core/widgets/text/app_text.dart';
 import '../../../core/constants/app_assert_image.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/widgets/app_bar/build_app_bar.dart';
 import '../controller/card_controller.dart';
 import 'package:get/get.dart';
@@ -11,6 +12,8 @@ import '../../card_reveal/views/reveal_screen.dart';
 class ShuffleScreen extends StatelessWidget {
   final CardController controller = Get.put(CardController());
   ShuffleScreen({super.key});
+  AppStrings appStrings = AppStrings.instance;
+
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +50,8 @@ class ShuffleScreen extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(height: 20),
-        const AppText(
-          data: 'Preparing Your Reading',
+         AppText(
+          data: appStrings.preparingYourReading,
           fontSize: 24,
           fontWeight: FontWeight.w600,
           color: Colors.white,
@@ -76,7 +79,7 @@ class ShuffleScreen extends StatelessWidget {
                 width: double.infinity,
                 child: Center(
                   child: AppText(
-                    data: isShuffling ? 'Shuffling...' : 'Shuffle',
+                    data: isShuffling ? appStrings.shufflingBtn : appStrings.shuffleBtn,
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
@@ -256,7 +259,7 @@ class ShuffleScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: _buildReadingTypeButton(
-                    label: '7 card Reading',
+                    label: appStrings.sevenCardReading,
                     isSelected: selected == 7,
                     isDisabled: isShuffling,
                     onPressed: () async {
@@ -267,7 +270,7 @@ class ShuffleScreen extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: _buildReadingTypeButton(
-                    label: '3 card Reading',
+                    label: appStrings.threeCardReading,
                     isSelected: selected == 3,
                     isDisabled: isShuffling,
                     onPressed: () async {

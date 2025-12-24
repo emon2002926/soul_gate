@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
+import 'package:soul_gate/core/util/storage_service.dart';
 import '../../card_shuffle/views/full_reading_screen.dart';
 import '../models/tarot_response.dart';
 import '../views/widgets/reveal_dialogs.dart';
@@ -14,7 +15,7 @@ class RevealController extends GetxController {
   static const String baseUrl = 'https://sofiapi.dsrt321.online/tarot/api';
 
   // Add your Bearer token here
-  static const String bearerToken ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY2NDkwODgzLCJpYXQiOjE3NjY0ODcyODMsImp0aSI6ImQyYzhlMDQxYmI4YTQ3M2E4YWM0OTE2YzA1NGQyYjc1IiwidXNlcl9pZCI6MjksImlzX3N1YnNjcmliZWQiOnRydWV9.T5XIJDfzsu3KAm6Dx5ycC3ypghGV_9_7D4JKtVfA6Jg"  ; // Replace with actual token
+  static  String? bearerToken =StorageService.accessToken  ; // Replace with actual token
 
   static const int maxRetries = 3;
 

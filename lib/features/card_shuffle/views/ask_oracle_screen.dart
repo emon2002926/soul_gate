@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
 import '../../../core/constants/app_assert_image.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/onboarding/splash/views/short_blessing_screen.dart';
 import '../../../core/widgets/buttons/app_button.dart';
 
@@ -32,7 +33,7 @@ class AskOracleScreen extends StatelessWidget {
                Padding(
                 padding: EdgeInsets.symmetric(horizontal: 32.0),
                 child: Text(
-                  'Ask the Oracle',
+                  AppStrings.instance.askTheOracle,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.cinzel(
                     fontSize: 32,
@@ -126,6 +127,7 @@ class QuestionConfirmationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(QuestionConfirmationController());
+    AppStrings appStrings = AppStrings.instance;
 
     return Scaffold(
       body: Container(
@@ -148,7 +150,7 @@ class QuestionConfirmationScreen extends StatelessWidget {
                  Padding(
                   padding: EdgeInsets.symmetric(horizontal: 32.0),
                   child: Text(
-                    'Is this the question\nyou want to explore?',
+                    appStrings.exploreQuestionPrompt,
                     textAlign: TextAlign.center,
                     style: GoogleFonts.cinzel(
                       fontSize: 28,
@@ -201,7 +203,7 @@ class QuestionConfirmationScreen extends StatelessWidget {
                         ),
                       ),
                       contentPadding: const EdgeInsets.all(24),
-                      hintText: 'Type your question here...',
+                      hintText: appStrings.typeYourQuestionHint,
                       hintStyle: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
@@ -218,7 +220,7 @@ class QuestionConfirmationScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: AppButton(
-                    buttonText: 'Yes, continue',
+                    buttonText: appStrings.yesContinueButton,
                     onPressed: () {
                       controller.continueToReading();
                     },

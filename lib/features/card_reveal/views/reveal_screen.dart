@@ -5,12 +5,14 @@ import 'package:soul_gate/core/widgets/app_bar/build_app_bar.dart';
 import 'package:soul_gate/core/widgets/text/app_text.dart';
 import '../../../core/constants/app_assert_image.dart';
 import 'dart:math' as math;
+import '../../../core/constants/app_strings.dart';
 import '../controllers/reveal_controller.dart';
 import '../models/tarot_response.dart';
 
 
 class RevealScreen extends StatelessWidget {
-  const RevealScreen({super.key});
+   RevealScreen({super.key});
+  AppStrings appStrings = AppStrings();
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,7 @@ class RevealScreen extends StatelessWidget {
       backgroundColor: const Color(0xFFF5F3EE),
       appBar: BuildAppBar(
         showSideButton: false,
-        title: 'Your Reading',
+        title: appStrings.yourReading,
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -89,7 +91,7 @@ class RevealScreen extends StatelessWidget {
   }
 
   Widget _buildLoadingView() {
-    return const Center(
+    return  Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -99,7 +101,7 @@ class RevealScreen extends StatelessWidget {
           ),
           SizedBox(height: 20),
           AppText(
-            data: 'Consulting the cards...',
+            data: appStrings.consultingTheCards,
               fontSize: 16,
               fontWeight: FontWeight.w500,
               color: Colors.white70,
@@ -119,12 +121,8 @@ class _LoadingWidgetState extends State<_LoadingWidget>
   int _messageIndex = 0;
   Timer? _timer;
 
-  final List<String> _messages = [
-    'Reading the cards...',
-    'Consulting the universe...',
-    'Interpreting your path...',
-    'Channeling wisdom...',
-  ];
+  final List<String> _messages = AppStrings.instance.messages;
+  AppStrings appStrings = AppStrings.instance;
 
   @override
   void initState() {
@@ -206,8 +204,8 @@ class _LoadingWidgetState extends State<_LoadingWidget>
             ),
           ),
           const SizedBox(height: 12),
-          const AppText(
-            data: 'This may take up to 30 seconds...',
+           AppText(
+            data: appStrings.loadingTimeoutMessage,
             textAlign: TextAlign.center,
               fontSize: 13,
               color: Color(0xFF8B7355),
@@ -761,8 +759,8 @@ class _CardDetailsPanel extends StatelessWidget {
                             color: Color(0xFF8B7355),
                             size: 22,
                           ),
-                          label: const AppText(
-                            data: 'Close',
+                          label:  AppText(
+                            data: AppStrings.instance.close,
                             fontSize: 15,
                             fontWeight: FontWeight.w500,
                             color: Color(0xFF8B7355),

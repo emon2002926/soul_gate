@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
+import 'package:soul_gate/core/widgets/text/app_text.dart';
 import '../../../../features/card_shuffle/views/shuffle_screen.dart';
 import '../../../../features/profile/views/profile_page.dart';
 import '../../../constants/app_assert_image.dart';
+import '../../../constants/app_strings.dart';
 
 
 class ShortBlessingController extends GetxController
@@ -19,11 +21,7 @@ class ShortBlessingController extends GetxController
   late List<Animation<double>> speakingAnimations;
 
   final String blessingText =
-      "In this moment, I open this session with clarity and intention. "
-      "Archangel Michael surrounds us with his light and protects this space. "
-      "Guides of light, reveal only what serves the highest good. "
-      "May every message bring truth, peace, and alignment. "
-      "Thank you, thank you, thank you. And so it is.";
+       AppStrings.instance.saintMichaelsBlessingTextSH;
 
   @override
   void onInit() {
@@ -127,6 +125,8 @@ class ShortBlessingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ShortBlessingController());
+    AppStrings appStrings = AppStrings.instance;
+
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -153,15 +153,13 @@ class ShortBlessingScreen extends StatelessWidget {
             ),
           ),
         ),
-        title: const Text(
-          'Saint Michael\'s Blessing',
-          style: TextStyle(
+        title:  AppText(
+          data: appStrings.saintMichaelsBlessingTitle,
             fontSize: 18,
             fontWeight: FontWeight.w500,
             color: Colors.white,
-            letterSpacing: 0.5,
-          ),
         ),
+
         centerTitle: true,
         actions: [
           Padding(
@@ -225,7 +223,7 @@ class ShortBlessingScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          'IN THIS MOMENT, I OPEN THIS SESSION\nWITH CLARITY AND INTENTION.\nARCHANGEL MICHAEL SURROUNDS US\nWITH HIS LIGHT AND PROTECTS THIS\nSPACE.\nGUIDES OF LIGHT, REVEAL ONLY WHAT\nSERVES THE HIGHEST GOOD.\nMAY EVERY MESSAGE BRING TRUTH, PEACE,\nAND ALIGNMENT.\nTHANK YOU, THANK YOU, THANK YOU.\nAND SO IT IS',
+                          AppStrings.instance.saintMichaelsBlessingText,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 16,
@@ -285,7 +283,7 @@ class ShortBlessingScreen extends StatelessWidget {
               TextButton(
                 onPressed: controller.skipBlessing,
                 child: Text(
-                  'Skip',
+                  appStrings.skip,
                   style: TextStyle(
                     fontSize: 15,
                     color: Colors.white,

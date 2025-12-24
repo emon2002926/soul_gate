@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
 import 'package:soul_gate/features/card_shuffle/views/question_screen.dart';
 import '../../../core/constants/app_assert_image.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/widgets/text/app_text.dart';
 import '../controller/card_controller.dart';
 
@@ -13,6 +14,7 @@ class FullReadingScreen extends StatelessWidget {
   final CardController controller = Get.find<CardController>();
 
   FullReadingScreen({super.key, required this.finalMessage});
+  AppStrings appStrings = AppStrings.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class FullReadingScreen extends StatelessWidget {
           },
         ),
         title: AppText(
-          data: 'Message',
+          data: appStrings.appProgressMessage,
           color: Colors.white,
           fontWeight: FontWeight.w600,
           fontSize: 24,
@@ -95,14 +97,12 @@ class FullReadingScreen extends StatelessWidget {
         children: [
           // Title
           Center(
-            child: Text(
-              'Your app is progressing beautifully.',
+            child: AppText(
+              data: appStrings.appProgressTitle,
               textAlign: TextAlign.center,
-              style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF3C2A21),
-              ),
             ),
           ),
 
@@ -146,7 +146,7 @@ class FullReadingScreen extends StatelessWidget {
                 ),
                 child: IconButton(
                   icon: Image.asset(
-                    'assets/images/share_icon.png', // Your asset path
+                    AppAssertImage.instance.shareIcon, // Your asset path
                     width: 24,
                     height: 24,
                     color: Colors.white, // This applies color filter to the image

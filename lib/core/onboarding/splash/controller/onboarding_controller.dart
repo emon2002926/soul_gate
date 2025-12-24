@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:soul_gate/core/constants/app_strings.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
 
 import '../../../constants/app_assert_image.dart';
@@ -51,40 +52,55 @@ class FeatureItem {
 // ==================== Data ====================
 
 final List<OnboardingData> onboardingPages = [
-  // Page 1: Welcome
+  // Page 1
   OnboardingData(
-    title: 'Welcome to\nSoulGate',
-    subtitle: 'To the realm of the soul',
-    centerImage: AppAssertImage.instance.onboardingImage1, // Tarot book image
-    description: 'A space of clarity, guidance, and light',
-    buttonText: 'Continue',
+    title: AppStrings.instance.welcomeTitle,
+    subtitle: AppStrings.instance.welcomeSubtitle,
+    description: AppStrings.instance.welcomeDescription,
+    centerImage: AppAssertImage.instance.onboardingImage1,
+    buttonText: AppStrings.instance.continueText,
   ),
 
-  // Page 2: Combined Reading Preference & Deck Selection
+  // Page 2
   OnboardingData(
-    title: 'Customize Your Experience',
-    buttonText: 'Continue',
+    title: AppStrings.instance.customizeExperience,
+    buttonText: AppStrings.instance.continueText,
     type: OnboardingPageType.selectionPage,
   ),
 
-  // Page 3: Features
+  // Page 3
   OnboardingData(
-    title: 'Your inner\nworld,\nilluminated.',
+    title: AppStrings.instance.innerWorldTitle,
     features: [
-      FeatureItem(icon: Icons.auto_awesome, text: 'Personalized tarot readings'),
-      FeatureItem(icon: Icons.graphic_eq, text: 'Voice or text guidance'),
-      FeatureItem(icon: Icons.chat_bubble_outline, text: 'Messages from your guides'),
-      FeatureItem(icon: Icons.all_inclusive, text: 'Insights for love, purpose, money & spiritual path'),
-      FeatureItem(icon: Icons.verified_user_outlined, text: 'Secure, private, sacred space'),
+      FeatureItem(
+        icon: Icons.auto_awesome,
+        text: AppStrings.instance.personalizedReadings,
+      ),
+      FeatureItem(
+        icon: Icons.graphic_eq,
+        text: AppStrings.instance.voiceOrText,
+      ),
+      FeatureItem(
+        icon: Icons.chat_bubble_outline,
+        text: AppStrings.instance.guideMessages,
+      ),
+      FeatureItem(
+        icon: Icons.all_inclusive,
+        text: AppStrings.instance.lifeInsights,
+      ),
+      FeatureItem(
+        icon: Icons.verified_user_outlined,
+        text: AppStrings.instance.secureSpace,
+      ),
     ],
-    buttonText: 'Continue',
+    buttonText: AppStrings.instance.continueText,
   ),
 
-  // Page 4: Free Readings
+  // Page 4
   OnboardingData(
-    title: 'Your first\nreadings\nare a gift.',
-    description: 'To help you experience the depth of SoulGate, you receive 5 free readings. Each one is unique, channeled, and designed to bring clarity.',
-    buttonText: 'Continue',
+    title: AppStrings.instance.freeReadingsTitle,
+    description: AppStrings.instance.freeReadingsDescription,
+    buttonText: AppStrings.instance.continueText,
   ),
 ];
 

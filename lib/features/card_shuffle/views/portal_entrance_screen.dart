@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
 import '../../../core/constants/app_assert_image.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/widgets/buttons/app_button.dart';
 import 'ask_oracle_screen.dart';
 
@@ -11,6 +12,7 @@ class PortalEntranceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppStrings appStrings = AppStrings.instance;
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -30,7 +32,7 @@ class PortalEntranceScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32.0),
                 child: Text(
-                  'Step into\nthe portal.',
+                  appStrings.stepIntoThePortal,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.cinzel(
                     fontSize: 36, // Reduced from 38
@@ -60,7 +62,7 @@ class PortalEntranceScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: AppButton(
-                  buttonText: 'Enter the Portal',
+                  buttonText: appStrings.enterThePortal,
                   onPressed: () {
                     // Navigate to main app or home screen
                     AppNavigation.push(context, AskOracleScreen());

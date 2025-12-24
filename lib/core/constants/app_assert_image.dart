@@ -20,6 +20,7 @@
     final String portalImage = "assets/images/portalImage.png";
     final String cardBg = "assets/images/dialog_bg.jpg";
     final String saintMichaelImage = "assets/images/saintMichaelImage.png";
+    final String shareIcon = "assets/images/share_icon.png";
 
 
   }

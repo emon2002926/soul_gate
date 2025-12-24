@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_assert_image.dart';
+import '../../../core/constants/app_strings.dart';
 
 class ClosingScreen extends StatelessWidget {
   const ClosingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final AppStrings appStrings = AppStrings.instance;
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: Container(
@@ -33,7 +35,7 @@ class ClosingScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'THANK YOU FOR THE GUIDANCE RECEIVED IN THIS SESSION.',
+                        appStrings.thankYouGuidance,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.cinzel(
                           fontSize: 20,
@@ -47,7 +49,7 @@ class ClosingScreen extends StatelessWidget {
                       SizedBox(height: 24),
 
                       Text(
-                        'I CLOSE THIS READING WITH GRATITUDE, CLARITY, AND PEACE.',
+                        appStrings.closeReadingWithGratitude,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.cinzel(
                           fontSize: 20,
@@ -61,7 +63,7 @@ class ClosingScreen extends StatelessWidget {
                       SizedBox(height: 24),
 
                       Text(
-                        'MAY THE INSIGHTS OFFERED CONTINUE SUPPORTING MY HIGHEST GOOD.',
+                        appStrings.insightsSupportHighestGood,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.cinzel(
                           fontSize: 20,
@@ -75,7 +77,7 @@ class ClosingScreen extends StatelessWidget {
                       SizedBox(height: 24),
 
                       Text(
-                        'SO BE IT.',
+                        appStrings.soBeIt,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.cinzel(
                           fontSize: 20,

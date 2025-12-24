@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:soul_gate/core/widgets/text/app_text.dart';
 import '../../../constants/app_assert_image.dart';
+import '../../../constants/app_strings.dart';
 import '../../../util/app_navigation.dart';
 import '../../../widgets/buttons/app_button.dart';
 
 
+import '../../../widgets/snakbar/custom_snackbar.dart';
 import 'onboarding_screen.dart';
 
 class SubscriptionPage extends StatelessWidget {
@@ -13,6 +17,7 @@ class SubscriptionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(SubscriptionController());
+    final appStrings = AppStrings.instance;
 
     return Scaffold(
       body: Stack(
@@ -29,28 +34,7 @@ class SubscriptionPage extends StatelessWidget {
           SafeArea(
             child: Column(
               children: [
-                // Skip Button
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: GestureDetector(
-                      onTap: controller.onSkip,
-                      child: const Text(
-                        'SKIP',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                          letterSpacing: 1,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-
+                 SizedBox(height: 30.h),
                 // Main Content
                 Expanded(
                   child: Padding(
@@ -58,30 +42,25 @@ class SubscriptionPage extends StatelessWidget {
                     child: Column(
                       children: [
                         // Title
-                        const Text(
-                          'UNLOCK YOUR FULL\nSOUL PATH',
+                         AppText(
+                          data: appStrings.unlockSoulPath,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.w800,
                             color: Colors.white,
                             height: 1.2,
-                            letterSpacing: 0.5,
-                          ),
                         ),
 
                         const SizedBox(height: 16),
 
                         // Subtitle
-                        Text(
-                          'Access Unlimited Readings, Voice Guidance, And\nDeeper Spiritual Clarity.',
+                        AppText(
+                          data: appStrings.accessUnlimitedReadings,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
                             color: Colors.white.withOpacity(0.9),
                             height: 1.5,
-                          ),
                         ),
 
                         const SizedBox(height: 32),
@@ -121,14 +100,12 @@ class SubscriptionPage extends StatelessWidget {
                         const SizedBox(height: 32),
 
                         // Free Readings Section
-                        const Text(
-                          'These are your free readings',
+                         AppText(
+                          data: appStrings.freeReadings,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
-                          ),
                         ),
 
                         const SizedBox(height: 16),
@@ -167,7 +144,7 @@ class SubscriptionPage extends StatelessWidget {
                     children: [
                       // Start Trial Button
                       Obx(() =>AppButton(
-                        buttonText: 'Start Your 7-Day Free Trial',
+                        buttonText: appStrings.startFreeTrial,
                         onPressed: controller.isLoading.value
                             ? null
                             : controller.onStartTrial,
@@ -182,15 +159,13 @@ class SubscriptionPage extends StatelessWidget {
                       const SizedBox(height: 12),
 
                       // Disclaimer
-                      Text(
-                        "You won't be charged until the end of the trial. Cancel\nanytime.",
+                      AppText(
+                        data: appStrings.trialNoChargeInfo,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w400,
                           color: Colors.white.withOpacity(0.8),
                           height: 1.4,
-                        ),
                       ),
                     ],
                   ),
@@ -268,24 +243,20 @@ class _SubscriptionPlanCard extends StatelessWidget {
 
                 // Plan Name
                 Expanded(
-                  child: Text(
-                    name,
-                    style: const TextStyle(
+                  child: AppText(
+                    data: name,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
-                    ),
                   ),
                 ),
 
                 // Price
-                Text(
-                  price,
-                  style: const TextStyle(
+                AppText(
+                  data: price,
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                     color: Colors.white,
-                  ),
                 ),
               ],
             ),
@@ -312,13 +283,11 @@ class _SubscriptionPlanCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: Text(
-                  badge!,
-                  style: const TextStyle(
+                child: AppText(
+                  data:badge!,
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF2D2D2D),
-                  ),
                 ),
               ),
             ),
@@ -351,14 +320,16 @@ class SubscriptionController extends GetxController {
 
     isLoading.value = false;
 
-    // Navigate to next screen or show success
-    Get.snackbar(
-      'Success',
-      'Trial started successfully!',
-      backgroundColor: const Color(0xFFD4A574),
-      colorText: Colors.white,
-      snackPosition: SnackPosition.BOTTOM,
-    );
+    // // Navigate to next screen or show success
+    // Get.snackbar(
+    //   'Success',
+    //   'Trial started successfully!',
+    //   backgroundColor: const Color(0xFFD4A574),
+    //   colorText: Colors.white,
+    //   snackPosition: SnackPosition.BOTTOM,
+    // );
+
+
 
     // Navigate to home or main screen
     // Get.offAll(() => HomeScreen());

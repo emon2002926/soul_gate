@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
+import '../text/app_text.dart';
+
 
 
 class AppButton extends StatelessWidget {
@@ -114,13 +116,11 @@ class AppButton extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                 ],
-                Text(
-                  buttonText,
-                  style: TextStyle(
+                AppText(
+                  data:buttonText,
                     color: textColor ?? Colors.white,
                     fontSize: fontSize ?? 16,
                     fontWeight: fontWeight ?? FontWeight.w600,
-                  ),
                 ),
                 if (suffixIcon != null) ...[
                   const SizedBox(width: 8),

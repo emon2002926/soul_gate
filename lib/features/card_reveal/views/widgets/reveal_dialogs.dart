@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/constants/app_strings.dart';
+import '../../../../core/widgets/text/app_text.dart';
+
 /// Dialog widgets for Reveal Screen
 class RevealDialogs {
   /// Show retry dialog with automatic retry option
@@ -81,6 +84,7 @@ class _RetryDialogContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appStrings = AppStrings.instance;
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -103,32 +107,26 @@ class _RetryDialogContent extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          const Text(
-            'Connection Issue',
-            style: TextStyle(
+           AppText(
+            data:appStrings.connectionIssue,
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Color(0xFF3C2A21),
-            ),
           ),
           const SizedBox(height: 12),
-          Text(
-            message,
+          AppText(
+            data: message,
             textAlign: TextAlign.center,
-            style: const TextStyle(
               fontSize: 14,
               color: Color(0xFF5C4A42),
               height: 1.5,
-            ),
           ),
           const SizedBox(height: 8),
-          Text(
-            'Attempt $currentAttempt of $maxRetries',
-            style: const TextStyle(
+          AppText(
+            data:appStrings.attemptOfMaxRetries,
               fontSize: 12,
               color: Color(0xFF8B7355),
               fontWeight: FontWeight.w500,
-            ),
           ),
           const SizedBox(height: 24),
           SizedBox(
@@ -143,13 +141,11 @@ class _RetryDialogContent extends StatelessWidget {
                 ),
                 elevation: 0,
               ),
-              child: const Text(
-                'Retry',
-                style: TextStyle(
+              child:  AppText(
+                data: appStrings.retry,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Colors.white,
-                ),
               ),
             ),
           ),
@@ -158,16 +154,14 @@ class _RetryDialogContent extends StatelessWidget {
             width: double.infinity,
             child: TextButton(
               onPressed: onGoBack,
-              child: const Text(
-                'Go Back',
-                style: TextStyle(
+              child: AppText(
+                data: appStrings.goBack,
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                   color: Color(0xFF8B7355),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );
@@ -188,6 +182,7 @@ class _ErrorDialogContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appStrings = AppStrings.instance;
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -210,13 +205,11 @@ class _ErrorDialogContent extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          const Text(
-            'Reading Error',
-            style: TextStyle(
+           AppText(
+            data: appStrings.readingError,
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Color(0xFF3C2A21),
-            ),
           ),
           const SizedBox(height: 12),
           Text(
@@ -241,13 +234,11 @@ class _ErrorDialogContent extends StatelessWidget {
                 ),
                 elevation: 0,
               ),
-              child: const Text(
-                'Try Again',
-                style: TextStyle(
+              child: AppText(
+                data: appStrings.tryAgain,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Colors.white,
-                ),
               ),
             ),
           ),
@@ -256,16 +247,14 @@ class _ErrorDialogContent extends StatelessWidget {
             width: double.infinity,
             child: TextButton(
               onPressed: onGoBack,
-              child: const Text(
-                'Go Back',
-                style: TextStyle(
+              child: AppText(
+                data: appStrings.goBack,
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                   color: Color(0xFF8B7355),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );
@@ -284,6 +273,7 @@ class _FinalInterpretationContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appStrings = AppStrings.instance;
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -293,13 +283,11 @@ class _FinalInterpretationContent extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
-            'Your Reading',
-            style: TextStyle(
+           AppText(
+            data: appStrings.yourReading,
               fontSize: 22,
               fontWeight: FontWeight.bold,
               color: Color(0xFF3C2A21),
-            ),
           ),
           const SizedBox(height: 16),
           Container(
@@ -323,13 +311,11 @@ class _FinalInterpretationContent extends StatelessWidget {
                 child: ElevatedButton.icon(
                   onPressed: onListen,
                   icon: const Icon(Icons.volume_up, color: Colors.white),
-                  label: const Text(
-                    'Listen',
-                    style: TextStyle(
+                  label: AppText(
+                    data: appStrings.listen,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
-                    ),
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFD4A574),
@@ -345,16 +331,14 @@ class _FinalInterpretationContent extends StatelessWidget {
               Expanded(
                 child: TextButton(
                   onPressed: () => Get.back(),
-                  child: const Text(
-                    'Close',
-                    style: TextStyle(
+                  child: AppText(
+                    data: appStrings.close,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: Color(0xFF8B7355),
                     ),
                   ),
                 ),
-              ),
             ],
           ),
         ],

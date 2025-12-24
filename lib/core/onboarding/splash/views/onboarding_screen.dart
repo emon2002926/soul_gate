@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../constants/app_assert_image.dart';
 import 'package:get/get.dart';
+import '../../../constants/app_strings.dart';
 import '../../../widgets/buttons/app_button.dart';
 import '../controller/onboarding_controller.dart';
 
@@ -231,7 +232,7 @@ class _SelectionPage extends StatelessWidget {
 
           // Reading Preference Section
            Text(
-            'How would you like\nyour reading?',
+            AppStrings.instance.howWouldYouLikeYourReading,
             textAlign: TextAlign.center,
             style: GoogleFonts.cinzel(
               fontSize: 22, // Reduced from 24
@@ -274,7 +275,7 @@ class _SelectionPage extends StatelessWidget {
 
           // Deck Selection Section
            Text(
-            'Select Deck of Cards',
+            AppStrings.instance.selectDeckOfCards,
             textAlign: TextAlign.center,
             style: GoogleFonts.cinzel(
               fontSize: 19, // Reduced from 20
