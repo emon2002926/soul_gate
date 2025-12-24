@@ -12,9 +12,10 @@ import '../../card_reveal/views/closing_screen.dart';
 class QuestionScreen extends StatelessWidget {
   final QuestionController controller = Get.put(QuestionController());
   final TextEditingController textController = TextEditingController();
+  // final String questionText;
   AppStrings appStrings = AppStrings.instance;
 
-  QuestionScreen({super.key});
+  QuestionScreen({super.key, });
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +132,7 @@ class QuestionScreen extends StatelessWidget {
                         height: 56,
                         child: ElevatedButton(
                           onPressed: () {
-                            AppNavigation.push(context, ShuffleScreen());
+                            AppNavigation.push(context, ShuffleScreen(questionText: textController.text, readingTypeIndex: 0, deckIndex: 0));
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFFD4A574),

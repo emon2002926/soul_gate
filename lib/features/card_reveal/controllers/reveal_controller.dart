@@ -1,25 +1,34 @@
 import 'dart:async';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
 import 'package:soul_gate/core/util/storage_service.dart';
 import '../../card_shuffle/views/full_reading_screen.dart';
 import '../models/tarot_response.dart';
 import '../views/widgets/reveal_dialogs.dart';
 
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:audioplayers/audioplayers.dart';
+import 'package:path_provider/path_provider.dart';
+
 class RevealController extends GetxController {
   // Updated base URL
   static const String baseUrl = 'https://sofiapi.dsrt321.online/tarot/api';
 
-  // Add your Bearer token here
-  static  String? bearerToken =StorageService.accessToken  ; // Replace with actual token
+  // Bearer token
+  static String? bearerToken = StorageService.accessToken;
 
   static const int maxRetries = 3;
 
-  final FlutterTts flutterTts = FlutterTts();
+  final audioPlayer = AudioPlayer();
 
   // Flip states for each card
   var isFlipped = <bool>[].obs;
@@ -28,19 +37,15 @@ class RevealController extends GetxController {
 
   var allCardsRevealed = false.obs;
 
-  // Animation states
   var isAnimating = false.obs;
 
   var isLoadingInterpretation = true.obs;
   var tarotReading = Rxn<TarotReading>();
 
-  // Question for the reading
-  var question = 'What truth do you need to see today about your love life?'.obs;
-
-  // Retry state
   var retryCount = 0.obs;
 
   var isSpeaking = false.obs;
+  var isDownloadingAudio = false.obs;
 
   @override
   void onInit() {
@@ -48,12 +53,7 @@ class RevealController extends GetxController {
 
     try {
       _initializeController();
-      _initializeTts();
-
-      // Delay API call slightly to ensure UI is ready
-      Future.delayed(const Duration(milliseconds: 100), () {
-        _fetchInterpretation();
-      });
+      _initializeAudioPlayer();
     } catch (e) {
       debugPrint('❌ RevealController initialization error: $e');
       isLoadingInterpretation.value = false;
@@ -63,6 +63,7 @@ class RevealController extends GetxController {
   @override
   void onClose() {
     stopSpeaking();
+    audioPlayer.dispose();
     super.onClose();
   }
 
@@ -76,18 +77,41 @@ class RevealController extends GetxController {
     }
   }
 
-  void _initializeTts() {
-    flutterTts.setLanguage('en-US');
-    flutterTts.setSpeechRate(0.5);
-    flutterTts.setVolume(1.0);
-    flutterTts.setPitch(1.0);
-
-    flutterTts.setCompletionHandler(() {
-      isSpeaking.value = false;
+  void _initializeAudioPlayer() {
+    audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
+      if (state == PlayerState.playing) {
+        isSpeaking.value = true;
+      } else if (state == PlayerState.completed || state == PlayerState.stopped) {
+        isSpeaking.value = false;
+      }
     });
   }
 
-  Future<void> _fetchInterpretation() async {
+  void delayedFetchInterpretation(String question, int cardCount) {
+    Future.delayed(const Duration(milliseconds: 100), () {
+      _fetchInterpretation(question, cardCount);
+    });
+  }
+
+  Future<void> fetchInterpretation(String question, int cardCount) async {
+    try {
+      isLoadingInterpretation.value = true;
+      await _fetchInterpretation(question, cardCount);
+    } catch (e) {
+      debugPrint('❌ Failed to fetch interpretation: $e');
+      isLoadingInterpretation.value = false;
+
+      Get.snackbar(
+        'Error',
+        'Failed to load interpretation. Please try again.',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red.withOpacity(0.8),
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  Future<void> _fetchInterpretation(String question, int cardCount) async {
     isLoadingInterpretation.value = true;
 
     try {
@@ -99,14 +123,14 @@ class RevealController extends GetxController {
         uri,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $bearerToken', // Added Bearer token
+          'Authorization': 'Bearer $bearerToken',
         },
         body: json.encode({
-          'question': question.value,
+          'question': question,
           'custom_question': '',
-          'language': 'en',
+          'language': StorageService.language,
           'generate_audio': true,
-          'card_count': 3,
+          'card_count': cardCount,
         }),
       ).timeout(
         const Duration(seconds: 70),
@@ -124,10 +148,8 @@ class RevealController extends GetxController {
         final data = json.decode(response.body);
 
         if (data['success'] == true) {
-          // Parse using TarotReading model
           tarotReading.value = TarotReading.fromJson(data);
 
-          // Initialize flip states based on actual card count from API
           final actualCardCount = tarotReading.value!.cardCount;
           isFlipped.value = List.generate(actualCardCount, (index) => false);
 
@@ -137,40 +159,39 @@ class RevealController extends GetxController {
           debugPrint('✅ Interpretation loaded successfully');
           debugPrint('📊 Cards: ${tarotReading.value!.interpretations.length}');
           debugPrint('📝 Final interpretation length: ${tarotReading.value!.finalInterpretation.length}');
+          debugPrint('🔊 Final audio URL: ${tarotReading.value!.finalAudioUrl}');
         } else {
           debugPrint('❌ API returned success=false');
           isLoadingInterpretation.value = false;
-          _handleApiError('Server returned an error');
+          _handleApiError('Server returned an error', cardCount, question);
         }
       } else {
         debugPrint('❌ API error: ${response.statusCode}');
         debugPrint('📄 Response body: ${response.body}');
         isLoadingInterpretation.value = false;
-        _handleApiError('Server error (${response.statusCode})');
+        _handleApiError('Server error (${response.statusCode})', cardCount, question);
       }
     } on TimeoutException catch (e) {
       debugPrint('⏱️ Timeout: $e');
       isLoadingInterpretation.value = false;
-      _handleApiError('Request timed out. The AI is taking longer than expected.');
+      _handleApiError('Request timed out. The AI is taking longer than expected.', cardCount, question);
     } catch (e) {
       debugPrint('❌ API error: $e');
       isLoadingInterpretation.value = false;
-      _handleApiError('An unexpected error occurred');
+      _handleApiError('An unexpected error occurred', cardCount, question);
     }
   }
 
-  /// Handle API errors with retry option
-  void _handleApiError(String message) {
+  void _handleApiError(String message, int cardCount, String question) {
     if (retryCount.value < maxRetries - 1) {
-      _showRetryDialog(message);
+      _showRetryDialog(message, cardCount, question);
     } else {
-      _showErrorDialog(message);
+      _showErrorDialog(message, cardCount, question);
       retryCount.value = 0;
     }
   }
 
-  /// Show retry dialog
-  void _showRetryDialog(String message) {
+  void _showRetryDialog(String message, int cardCount, String question) {
     RevealDialogs.showRetryDialog(
       message: message,
       currentAttempt: retryCount.value + 1,
@@ -178,7 +199,7 @@ class RevealController extends GetxController {
       onRetry: () {
         Get.back();
         retryCount.value++;
-        _fetchInterpretation();
+        _fetchInterpretation(question, cardCount);
       },
       onGoBack: () {
         Get.back();
@@ -188,14 +209,13 @@ class RevealController extends GetxController {
     );
   }
 
-  /// Show final error dialog after all retries
-  void _showErrorDialog(String message) {
+  void _showErrorDialog(String message, int cardCount, String question) {
     RevealDialogs.showErrorDialog(
       message: message,
       onTryAgain: () {
         Get.back();
         retryCount.value = 0;
-        _fetchInterpretation();
+        _fetchInterpretation(question, cardCount);
       },
       onGoBack: () {
         Get.back();
@@ -204,14 +224,13 @@ class RevealController extends GetxController {
     );
   }
 
-  /// Show final interpretation dialog
   void _showFinalInterpretation() {
     final reading = tarotReading.value;
     if (reading == null || reading.finalInterpretation.isEmpty) return;
 
     RevealDialogs.showFinalInterpretation(
       interpretation: reading.finalInterpretation,
-      onListen: () => speakText(reading.finalInterpretation),
+      onListen: () => playFinalAudio(),
     );
   }
 
@@ -221,7 +240,6 @@ class RevealController extends GetxController {
 
     isAnimating.value = true;
 
-    // Toggle flip state
     isFlipped[index] = !isFlipped[index];
 
     if (isFlipped[index]) {
@@ -235,7 +253,6 @@ class RevealController extends GetxController {
     });
   }
 
-  /// Check if all cards have been flipped
   void _checkAllCardsRevealed() {
     final allRevealed = isFlipped.every((flipped) => flipped == true);
 
@@ -245,28 +262,29 @@ class RevealController extends GetxController {
     }
   }
 
-  /// Called when all cards are revealed
   void _onAllCardsRevealed() {
-    // Show final interpretation after all cards revealed
     Future.delayed(const Duration(milliseconds: 1000), () {
       _showFinalInterpretation();
     });
   }
 
-  /// Navigate to full reading screen
-  void navigateToFullReading() {
-    // Show final interpretation instead of navigating
+  void navigateToFullReading( String message ) {
     _showFinalInterpretation();
-    AppNavigation.push(Get.context!, FullReadingScreen(finalMessage: tarotReading.value!.finalInterpretation,));
+    AppNavigation.push(
+      Get.context!,
+      FullReadingScreen(
+        finalMessage: tarotReading.value!.finalInterpretation,
+        audioUrl: tarotReading.value!.finalAudioUrl,
+        questionText: message,
+      ),
+    );
   }
 
-  /// Close card details panel
   void closeCardDetails() {
     selectedCardIndex.value = null;
     stopSpeaking();
   }
 
-  /// Reset reveal state (useful for re-reading)
   void resetReveal() {
     final reading = tarotReading.value;
     final cardCount = reading?.cardCount ?? 3;
@@ -278,31 +296,142 @@ class RevealController extends GetxController {
     stopSpeaking();
   }
 
-  /// Text-to-speech for any text
-  Future<void> speakText(String text) async {
-    if (isSpeaking.value) {
-      await stopSpeaking();
+  /// Download and play audio from URL
+  Future<void> playAudioFromUrl(String audioUrl) async {
+    if (audioUrl.isEmpty) {
+      debugPrint('❌ No audio URL provided');
+      Get.snackbar(
+        'Audio Unavailable',
+        'No audio available for this content',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.orange.withOpacity(0.8),
+        colorText: Colors.white,
+      );
       return;
     }
 
-    isSpeaking.value = true;
-    await flutterTts.speak(text);
+    try {
+      if (isSpeaking.value) {
+        await stopSpeaking();
+        return;
+      }
+
+      debugPrint('🔊 Downloading audio from: $audioUrl');
+      isDownloadingAudio.value = true;
+
+      // Construct full URL
+      String fullUrl;
+      if (audioUrl.startsWith('http')) {
+        fullUrl = audioUrl;
+      } else {
+        fullUrl = '$baseUrl$audioUrl';
+      }
+
+      // Add timestamp parameter
+      if (!fullUrl.contains('?t=')) {
+        final timestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+        fullUrl = '$fullUrl?t=$timestamp';
+      }
+
+      debugPrint('🔊 Full audio URL: $fullUrl');
+
+      // Download the file
+      final response = await http.get(
+        Uri.parse(fullUrl),
+        headers: {
+          'Authorization': 'Bearer $bearerToken',
+        },
+      ).timeout(const Duration(seconds: 30));
+
+      if (response.statusCode == 200) {
+        // Get temporary directory
+        final tempDir = await getTemporaryDirectory();
+        final fileName = 'tarot_audio_${DateTime.now().millisecondsSinceEpoch}.mp3';
+        final filePath = '${tempDir.path}/$fileName';
+
+        // Write file
+        final file = File(filePath);
+        await file.writeAsBytes(response.bodyBytes);
+
+        debugPrint('✅ Audio downloaded to: $filePath');
+        debugPrint('📦 File size: ${response.bodyBytes.length} bytes');
+
+        isDownloadingAudio.value = false;
+
+        // Play from local file
+        await audioPlayer.play(DeviceFileSource(filePath));
+        isSpeaking.value = true;
+
+        // Clean up file after playing
+        audioPlayer.onPlayerComplete.listen((_) async {
+          try {
+            if (await file.exists()) {
+              await file.delete();
+              debugPrint('🗑️ Cleaned up audio file: $filePath');
+            }
+          } catch (e) {
+            debugPrint('⚠️ Could not delete temp file: $e');
+          }
+        });
+      } else {
+        debugPrint('❌ Failed to download audio: ${response.statusCode}');
+        isDownloadingAudio.value = false;
+        Get.snackbar(
+          'Download Failed',
+          'Could not download audio (${response.statusCode})',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red.withOpacity(0.8),
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      debugPrint('❌ Audio download/playback error: $e');
+      isDownloadingAudio.value = false;
+      isSpeaking.value = false;
+
+      Get.snackbar(
+        'Audio Error',
+        'Failed to play audio: ${e.toString()}',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red.withOpacity(0.8),
+        colorText: Colors.white,
+      );
+    }
   }
 
-  /// Text-to-speech for card meaning
-  Future<void> speakCardMeaning(TarotCard card) async {
+  Future<void> playFinalAudio() async {
+    final audioUrl = finalAudioUrl;
+    if (audioUrl.isEmpty) {
+      debugPrint('❌ No final audio URL available');
+      return;
+    }
+    await playAudioFromUrl(audioUrl);
+  }
+
+  Future<void> playCardAudio() async {
     final interpretation = currentCardInterpretation;
     if (interpretation == null) {
-      debugPrint('No interpretation available for: ${card.name}');
+      debugPrint('❌ No interpretation available');
       return;
     }
 
-    await speakText(interpretation.interpretation);
+    final audioUrl = interpretation.audioUrl;
+    if (audioUrl.isEmpty) {
+      debugPrint('❌ No audio URL for this card');
+      return;
+    }
+
+    await playAudioFromUrl(audioUrl);
+  }
+
+  Future<void> speakCardMeaning(TarotCard card) async {
+    await playCardAudio();
   }
 
   Future<void> stopSpeaking() async {
-    await flutterTts.stop();
+    await audioPlayer.stop();
     isSpeaking.value = false;
+    isDownloadingAudio.value = false;
   }
 
   int get cardCount {
@@ -361,7 +490,6 @@ class RevealController extends GetxController {
     return reading.interpretations[index].interpretation;
   }
 
-  /// Get card symbol/emoji for card
   String getCardSymbol(int index) {
     final reading = tarotReading.value;
     if (reading == null) return '';
@@ -377,7 +505,6 @@ class RevealController extends GetxController {
     return tarotReading.value?.finalInterpretation ?? '';
   }
 
-  /// Get final audio URL
   String get finalAudioUrl {
     return tarotReading.value?.finalAudioUrl ?? '';
   }

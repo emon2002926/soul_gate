@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
-import '../../../core/onboarding/splash/views/subscription_page.dart';
+import '../../subscription/views/subscription_page.dart';
 import '../../../core/routes/app_routes.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';

@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import '../../../core/onboarding/splash/views/subscription_page.dart';
+import '../../subscription/views/subscription_page.dart';
 import '../../../core/util/app_navigation.dart';
 import '../../../core/util/storage_service.dart';
 import 'dart:convert';

@@ -4,6 +4,7 @@ import 'package:soul_gate/core/widgets/buttons/app_button.dart';
 import 'package:soul_gate/core/widgets/text/app_text.dart';
 import '../../../core/constants/app_assert_image.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/util/app_navigation.dart';
 import '../../../core/widgets/app_bar/build_app_bar.dart';
 import '../controller/card_controller.dart';
 import 'package:get/get.dart';
@@ -11,7 +12,12 @@ import '../../card_reveal/views/reveal_screen.dart';
 
 class ShuffleScreen extends StatelessWidget {
   final CardController controller = Get.put(CardController());
-  ShuffleScreen({super.key});
+
+  final String questionText;
+  final int readingTypeIndex;
+  final int deckIndex;
+  final int? questionId;
+  ShuffleScreen({super.key, required this.questionText, required this.readingTypeIndex, required this.deckIndex, this.questionId});
   AppStrings appStrings = AppStrings.instance;
 
 
@@ -241,7 +247,16 @@ class ShuffleScreen extends StatelessWidget {
       return;
     }
 
-    Get.to(() => RevealScreen());
+    AppNavigation.push(
+      Get.context!,
+      RevealScreen(
+        deckIndex: deckIndex,
+        readingTypeIndex: readingTypeIndex,
+        questionText: questionText,
+        cardCount: controller.readingCardCount.value, // Pass selected card count (3 or 7)
+        questionId: questionId,
+      ),
+    );
   }
 
   Widget _buildCombinedView(BuildContext context) {

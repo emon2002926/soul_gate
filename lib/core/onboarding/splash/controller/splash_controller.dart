@@ -5,6 +5,7 @@ import 'package:soul_gate/core/util/app_navigation.dart';
 import '../../../../core/util/storage_service.dart';
 import 'package:get_storage/get_storage.dart';
 
+import '../../../../features/subscription/views/subscription_page.dart';
 import '../views/onboarding_screen.dart';
 
 class SplashController extends GetxController {
@@ -23,6 +24,8 @@ class SplashController extends GetxController {
       if (accessToken != null && accessToken.isNotEmpty) {
         // AppNavigation.pushAndClear(Get.context!, ShuffleScreen());
         AppNavigation.pushAndClear(Get.context!, OnboardingScreen());
+        // AppNavigation.pushAndClear(Get.context!, SubscriptionPage());
+
 
       } else {
         // No token, navigate to onboarding

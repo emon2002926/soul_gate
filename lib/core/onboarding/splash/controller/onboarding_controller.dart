@@ -130,12 +130,21 @@ class OnboardingController extends GetxController {
   }
 
   void completeOnboarding() {
-    // Save preferences to local storage or state management
-    print('Reading Type: ${selectedReadingType.value}');
-    print('Selected Deck: ${selectedDeck.value}');
+    // Convert enum to index
+    final readingTypeIndex = selectedReadingType.value?.index ?? 0;
+    final deckIndex = selectedDeck.value?.index ?? 0;
 
-    // Navigate to next screen
-    AppNavigation.push(Get.context!, PortalEntranceScreen());
+    print('Reading Type Index: $readingTypeIndex');
+    print('Deck Index: $deckIndex');
+
+    // Navigate with parameters
+    AppNavigation.push(
+      Get.context!,
+      PortalEntranceScreen(
+        readingTypeIndex: readingTypeIndex,
+        deckIndex: deckIndex,
+      ),
+    );
   }
 
   @override

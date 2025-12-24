@@ -11,12 +11,19 @@ import '../models/tarot_response.dart';
 
 
 class RevealScreen extends StatelessWidget {
-   RevealScreen({super.key});
+
+  final String questionText;
+  final int readingTypeIndex;
+  final int deckIndex;
+  final int? questionId;
+  final int cardCount;
+   RevealScreen({super.key, required this.questionText, required this.readingTypeIndex, required this.deckIndex, this.questionId, required this.cardCount});
   AppStrings appStrings = AppStrings();
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(RevealController());
+    controller.delayedFetchInterpretation(questionText, cardCount);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -69,6 +76,7 @@ class RevealScreen extends StatelessWidget {
                       card: controller.currentSelectedCard!,
                       interpretation: controller.currentCardInterpretation,
                       controller: controller,
+                      questionText: questionText,
                     ),
                   ),
 
@@ -642,11 +650,12 @@ class _CardDetailsPanel extends StatelessWidget {
   final TarotCard card;
   final CardInterpretation? interpretation;
   final RevealController controller;
+  final String questionText;
 
   const _CardDetailsPanel({
     required this.card,
     required this.interpretation,
-    required this.controller,
+    required this.controller, required this.questionText,
   });
 
   @override
@@ -794,11 +803,15 @@ class _CardDetailsPanel extends StatelessWidget {
                               ),
                               child: IconButton(
                                 iconSize: 26,
-                                icon: const Icon(
-                                  Icons.article_outlined,
+                                icon: Image.asset(
+                                  AppAssertImage.instance.shareIcon,
+                                  width: 26,
+                                  height: 26,
                                   color: Colors.white,
                                 ),
-                                onPressed: () => controller.navigateToFullReading(),
+                                onPressed: () {
+                                  controller.navigateToFullReading(questionText);
+                                },
                               ),
                             ),
                           ],

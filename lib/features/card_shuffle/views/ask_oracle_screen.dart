@@ -1,14 +1,25 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 import 'package:soul_gate/core/util/app_navigation.dart';
 import '../../../core/constants/app_assert_image.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/onboarding/splash/views/short_blessing_screen.dart';
+import '../../../core/util/storage_service.dart';
 import '../../../core/widgets/buttons/app_button.dart';
+import '../controller/question_confirmation_controller.dart';
+
+
+
+
 
 class AskOracleScreen extends StatelessWidget {
-  const AskOracleScreen({super.key});
+  final int readingTypeIndex;
+  final int deckIndex;
+  const AskOracleScreen({super.key, required this.readingTypeIndex, required this.deckIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +41,8 @@ class AskOracleScreen extends StatelessWidget {
               const SizedBox(height: 40),
 
               // Title
-               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 32.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32.0),
                 child: Text(
                   AppStrings.instance.askTheOracle,
                   textAlign: TextAlign.center,
@@ -48,17 +59,39 @@ class AskOracleScreen extends StatelessWidget {
 
               // Questions List
               Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  itemCount: oracleQuestions.length,
-                  itemBuilder: (context, index) {
-                    final question = oracleQuestions[index];
-                    return _QuestionTile(
-                      question: question,
-                      onTap: () => controller.selectQuestion(question),
+                child: Obx(() {
+                  if (controller.isLoading.value) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(Color(0xFFD4AF37)),
+                      ),
                     );
-                  },
-                ),
+                  }
+
+                  if (controller.questions.isEmpty) {
+                    return Center(
+                      child: Text(
+                        'No questions available',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.7),
+                          fontSize: 16,
+                        ),
+                      ),
+                    );
+                  }
+
+                  return ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    itemCount: controller.questions.length,
+                    itemBuilder: (context, index) {
+                      final question = controller.questions[index];
+                      return _QuestionTile(
+                        question: question.question,
+                        onTap: () => controller.selectQuestion(question, readingTypeIndex, deckIndex),
+                      );
+                    },
+                  );
+                }),
               ),
             ],
           ),
@@ -108,9 +141,9 @@ class _QuestionTile extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-            Icon(
+            const Icon(
               Icons.arrow_forward_ios,
-              color: const Color(0xFFD4AF37),
+              color: Color(0xFFD4AF37),
               size: 16,
             ),
           ],
@@ -120,9 +153,12 @@ class _QuestionTile extends StatelessWidget {
   }
 }
 
-// ==================== SCREEN 2: Question Confirmation with Editable TextField ====================
+// ==================== SCREEN 2: Question Confirmation ====================
+
 class QuestionConfirmationScreen extends StatelessWidget {
-  const QuestionConfirmationScreen({super.key});
+  final int readingTypeIndex;
+  final int deckIndex;
+  const QuestionConfirmationScreen({super.key, required this.readingTypeIndex, required this.deckIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -142,174 +178,110 @@ class QuestionConfirmationScreen extends StatelessWidget {
         child: SafeArea(
           child: GestureDetector(
             onTap: () => FocusScope.of(context).unfocus(),
-            child: Column(
-              children: [
-                const SizedBox(height: 60),
-
-                // Title
-                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 32.0),
-                  child: Text(
-                    appStrings.exploreQuestionPrompt,
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.cinzel(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white,
-                      height: 1.3,
-                      letterSpacing: 1.5,
-                    ),
-                  ),
+            child: SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top - MediaQuery.of(context).padding.bottom,
                 ),
+                child: IntrinsicHeight(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 60),
 
-                const SizedBox(height: 60),
-
-                // Editable Question TextField
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                  child: TextField(
-                    controller: controller.questionController,
-                    maxLines: 5,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white.withOpacity(0.95),
-                      height: 1.6,
-                      letterSpacing: 0.5,
-                    ),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white.withOpacity(0.1),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(
-                          color: Colors.white.withOpacity(0.3),
-                          width: 1,
+                      // Title
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                        child: Text(
+                          appStrings.exploreQuestionPrompt,
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.cinzel(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white,
+                            height: 1.3,
+                            letterSpacing: 1.5,
+                          ),
                         ),
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(
-                          color: Colors.white.withOpacity(0.3),
-                          width: 1,
+
+                      const SizedBox(height: 60),
+
+                      // Editable Question TextField
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                        child: TextField(
+                          controller: controller.questionController,
+                          maxLines: 5,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white.withOpacity(0.95),
+                            height: 1.6,
+                            letterSpacing: 0.5,
+                          ),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white.withOpacity(0.1),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(
+                                color: Colors.white.withOpacity(0.3),
+                                width: 1,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(
+                                color: Colors.white.withOpacity(0.3),
+                                width: 1,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: const BorderSide(
+                                color: Color(0xFFD4AF37),
+                                width: 1.5,
+                              ),
+                            ),
+                            contentPadding: const EdgeInsets.all(24),
+                            hintText: appStrings.typeYourQuestionHint,
+                            hintStyle: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white.withOpacity(0.5),
+                              height: 1.6,
+                            ),
+                          ),
                         ),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: const BorderSide(
-                          color: Color(0xFFD4AF37),
-                          width: 1.5,
+
+                      const Spacer(),
+
+                      // Continue Button
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: AppButton(
+                          buttonText: appStrings.yesContinueButton,
+                          onPressed: () {
+                            controller.continueToReading(readingTypeIndex, deckIndex);
+                          },
+                          fillColor: const Color(0xFFD4AF37).withOpacity(0.85),
+                          buttonHeight: 56,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      contentPadding: const EdgeInsets.all(24),
-                      hintText: appStrings.typeYourQuestionHint,
-                      hintStyle: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white.withOpacity(0.5),
-                        height: 1.6,
-                      ),
-                    ),
+
+                      const SizedBox(height: 40),
+                    ],
                   ),
                 ),
-
-                const Spacer(),
-
-                // Continue Button
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: AppButton(
-                    buttonText: appStrings.yesContinueButton,
-                    onPressed: () {
-                      controller.continueToReading();
-                    },
-                    fillColor: const Color(0xFFD4AF37).withOpacity(0.85),
-                    buttonHeight: 56,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-
-                const SizedBox(height: 40),
-              ],
+              ),
             ),
           ),
         ),
       ),
     );
-  }
-}
-
-// ==================== Data ====================
-
-final List<String> oracleQuestions = [
-  'What truth do you need to see today about your love life or an important relationship?',
-  'What do you need to understand about your financial situation or your relationship with money?',
-  'In what area of your life purpose do you need greater clarity or direction?',
-  'Which part of your emotional world is asking for light and balance at this moment?',
-  'Which pending decision needs clarity, perspective, or confirmation?',
-  'What do you need to understand about a family dynamic or a meaningful connection?',
-  'Which aspect of your work or project requires guidance or a strategic adjustment?',
-  'What message are your guides trying to give you today about your spiritual growth?',
-  'What blockage do you need to identify in order to move forward with greater strength and authenticity?',
-  'What is the most important thing you need to know about the next 30 days of your life?',
-  'What direction is life encouraging me to move toward next?',
-];
-
-// ==================== Controllers ====================
-
-class AskOracleController extends GetxController {
-  void selectQuestion(String question) {
-    // Navigate to confirmation screen with selected question
-    Get.to(
-          () => const QuestionConfirmationScreen(),
-      arguments: question, // Pass the question as argument
-    );
-  }
-}
-
-class QuestionConfirmationController extends GetxController {
-  final questionController = TextEditingController();
-
-  @override
-  void onInit() {
-    super.onInit();
-    // Get the question from the previous screen
-    final selectedQuestion = Get.arguments as String?;
-    if (selectedQuestion != null) {
-      questionController.text = selectedQuestion;
-    }
-  }
-
-  void continueToReading() {
-    final question = questionController.text.trim();
-
-    if (question.isEmpty) {
-      Get.snackbar(
-        'Empty Question',
-        'Please enter a question before continuing',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red.withOpacity(0.8),
-        colorText: Colors.white,
-        margin: const EdgeInsets.all(16),
-        borderRadius: 12,
-      );
-      return;
-    }
-
-    // Save the question and navigate to the next screen
-    print('Selected Question: $question');
-
-    // Navigate to shuffle screen or next step
-    AppNavigation.push(Get.context!, ShortBlessingScreen());
-    // Or if you want to pass the question to the next screen:
-    // Get.to(() => ShuffleScreen(question: question));
-  }
-
-  @override
-  void onClose() {
-    questionController.dispose();
-    super.onClose();
   }
 }

@@ -8,7 +8,14 @@ import 'ask_oracle_screen.dart';
 
 
 class PortalEntranceScreen extends StatelessWidget {
-  const PortalEntranceScreen({super.key});
+  final int readingTypeIndex;
+  final int deckIndex;
+
+  const PortalEntranceScreen({super.key, required this.readingTypeIndex, required this.deckIndex});
+
+  // Use readingTypeIndex and deckIndex here
+  // 0 = audioAndText, 1 = textOnly
+  // 0 = classic, 1 = mystical, 2 = celestial
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +72,7 @@ class PortalEntranceScreen extends StatelessWidget {
                   buttonText: appStrings.enterThePortal,
                   onPressed: () {
                     // Navigate to main app or home screen
-                    AppNavigation.push(context, AskOracleScreen());
+                    AppNavigation.push(context, AskOracleScreen(readingTypeIndex: readingTypeIndex, deckIndex: deckIndex));
                   },
                   fillColor: const Color(0xFFD4AF37).withOpacity(0.85),
                   buttonHeight: 52, // Reduced from 56
