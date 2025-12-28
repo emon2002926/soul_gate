@@ -4,6 +4,9 @@ import 'package:soul_gate/core/widgets/text/app_text.dart';
 
 import '../../../constants/app_colors.dart';
 
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 class AppTextField extends StatelessWidget {
   final String? label;
   final String? label2;
@@ -23,6 +26,7 @@ class AppTextField extends StatelessWidget {
   final Color? fillColor;
   final Color? inputTextColor;
   final Color? hintTextColor;
+  final bool useResponsiveSize;
 
   const AppTextField({
     super.key,
@@ -44,11 +48,35 @@ class AppTextField extends StatelessWidget {
     this.fillColor,
     this.inputTextColor,
     this.hintTextColor,
+    this.useResponsiveSize = true,
   });
 
   @override
   Widget build(BuildContext context) {
     final effectiveSuffixTap = suffixIconOnTap ?? onSuffixIconTap;
+
+    // Responsive calculations
+    final double labelFontSize = useResponsiveSize
+        ? _getResponsiveFontSize(context, 14)
+        : 14;
+    final double inputFontSize = useResponsiveSize
+        ? _getResponsiveFontSize(context, 14)
+        : 14;
+    final double iconSize = useResponsiveSize
+        ? _getResponsiveSize(context, 20)
+        : 20;
+    final double borderRadius = useResponsiveSize
+        ? _getResponsiveSize(context, 10)
+        : 10;
+    final double verticalPadding = useResponsiveSize
+        ? _getResponsiveSize(context, 14)
+        : 14;
+    final double horizontalPadding = useResponsiveSize
+        ? _getResponsiveSize(context, 16)
+        : 16;
+    final double spacing = useResponsiveSize
+        ? _getResponsiveSize(context, 8)
+        : 8;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,9 +87,10 @@ class AppTextField extends StatelessWidget {
             children: [
               AppText(
                 data: label!,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.instance.titleTextColor,
-                  fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppColors.instance.titleTextColor,
+                fontSize: 14,
+                useResponsiveFontSize: useResponsiveSize,
               ),
               if (label2 != null)
                 GestureDetector(
@@ -70,14 +99,14 @@ class AppTextField extends StatelessWidget {
                     label2!,
                     style: GoogleFonts.inter(
                       fontWeight: FontWeight.w600,
-                      color:  Colors.blue,
-                      fontSize: 14,
+                      color: Colors.blue,
+                      fontSize: labelFontSize,
                     ),
                   ),
                 ),
             ],
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: spacing),
         ],
         TextFormField(
           controller: controller,
@@ -88,43 +117,43 @@ class AppTextField extends StatelessWidget {
           enabled: enabled,
           style: GoogleFonts.poppins(
             color: inputTextColor,
-            fontSize: 14,
+            fontSize: inputFontSize,
           ),
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: GoogleFonts.inter(
-              color: hintTextColor?? Colors.grey,
-              fontSize: 14,
+              color: hintTextColor ?? Colors.grey,
+              fontSize: inputFontSize,
               fontWeight: FontWeight.w400,
             ),
             filled: true,
-            fillColor: enabled ?  fillColor : Colors.grey.shade300,
+            fillColor: enabled ? fillColor : Colors.grey.shade300,
             prefixIcon: prefixIcon != null
-                ? Icon(prefixIcon, color: Colors.grey[700], size: 20)
+                ? Icon(prefixIcon, color: Colors.grey[700], size: iconSize)
                 : null,
             suffixIcon: suffixIcon != null
                 ? GestureDetector(
                 onTap: effectiveSuffixTap,
-                child: Icon(suffixIcon, color: Colors.grey[700], size: 20))
+                child: Icon(suffixIcon, color: Colors.grey[700], size: iconSize))
                 : null,
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 14,
-              horizontal: 16,
+            contentPadding: EdgeInsets.symmetric(
+              vertical: verticalPadding,
+              horizontal: horizontalPadding,
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(borderRadius),
               borderSide: borderColor != null
                   ? BorderSide(color: borderColor!)
                   : BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(borderRadius),
               borderSide: borderColor != null
                   ? BorderSide(color: borderColor!)
                   : BorderSide.none,
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(borderRadius),
               borderSide: borderColor != null
                   ? BorderSide(color: borderColor!)
                   : BorderSide.none,
@@ -133,5 +162,17 @@ class AppTextField extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  // Responsive size calculation (based on 375px standard width)
+  double _getResponsiveSize(BuildContext context, double size) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return screenWidth * (size / 375);
+  }
+
+  // Responsive font size calculation
+  double _getResponsiveFontSize(BuildContext context, double size) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return screenWidth * (size / 375);
   }
 }

@@ -8,6 +8,10 @@ import '../controller/onboarding_controller.dart';
 
 
 
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
 
@@ -50,21 +54,27 @@ class OnboardingScreen extends StatelessWidget {
 
               // Page Indicator
               Obx(() => Padding(
-                padding: const EdgeInsets.only(bottom: 12), // Reduced from 20
+                padding: EdgeInsets.only(bottom: _getResponsiveSize(context, 12)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(
                     onboardingPages.length,
                         (index) => AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      width: controller.currentPage.value == index ? 24 : 8,
-                      height: 8,
+                      margin: EdgeInsets.symmetric(
+                        horizontal: _getResponsiveSize(context, 4),
+                      ),
+                      width: controller.currentPage.value == index
+                          ? _getResponsiveSize(context, 24)
+                          : _getResponsiveSize(context, 8),
+                      height: _getResponsiveSize(context, 8),
                       decoration: BoxDecoration(
                         color: controller.currentPage.value == index
                             ? const Color(0xFFD4AF37)
                             : Colors.white.withOpacity(0.4),
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(
+                          _getResponsiveSize(context, 4),
+                        ),
                       ),
                     ),
                   ),
@@ -73,7 +83,9 @@ class OnboardingScreen extends StatelessWidget {
 
               // Bottom Button
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                padding: EdgeInsets.symmetric(
+                  horizontal: _getResponsiveSize(context, 24),
+                ),
                 child: Obx(() {
                   final isLastPage = controller.currentPage.value == onboardingPages.length - 1;
                   final currentPageData = onboardingPages[controller.currentPage.value];
@@ -88,19 +100,24 @@ class OnboardingScreen extends StatelessWidget {
                       }
                     },
                     fillColor: const Color(0xFFD4AF37).withOpacity(0.85),
-                    buttonHeight: 52, // Reduced from 56
+                    buttonHeight: 52,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   );
                 }),
               ),
 
-              const SizedBox(height: 20), // Reduced from 40
+              SizedBox(height: _getResponsiveSize(context, 20)),
             ],
           ),
         ),
       ),
     );
+  }
+
+  double _getResponsiveSize(BuildContext context, double size) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return screenWidth * (size / 375);
   }
 }
 
@@ -112,18 +129,20 @@ class _OnboardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView( // Added ScrollView
+    return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+        padding: EdgeInsets.symmetric(
+          horizontal: _getResponsiveSize(context, 32),
+        ),
         child: Column(
           children: [
-            const SizedBox(height: 60), // Reduced from 80
+            SizedBox(height: _getResponsiveSize(context, 60)),
 
             Text(
               data.title,
               textAlign: TextAlign.center,
               style: GoogleFonts.cinzel(
-                fontSize: 32, // Reduced from 34
+                fontSize: _getResponsiveFontSize(context, 32),
                 fontWeight: FontWeight.w400,
                 color: Colors.white,
                 height: 1.2,
@@ -133,12 +152,12 @@ class _OnboardingPage extends StatelessWidget {
 
             // Subtitle (if exists)
             if (data.subtitle != null) ...[
-              const SizedBox(height: 14), // Reduced from 16
+              SizedBox(height: _getResponsiveSize(context, 14)),
               Text(
                 data.subtitle!.toUpperCase(),
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 14, // Reduced from 15
+                style: TextStyle(
+                  fontSize: _getResponsiveFontSize(context, 14),
                   fontWeight: FontWeight.w500,
                   color: Colors.white,
                   letterSpacing: 2.5,
@@ -146,37 +165,39 @@ class _OnboardingPage extends StatelessWidget {
               ),
             ],
 
-            const SizedBox(height: 50), // Reduced from 60
+            SizedBox(height: _getResponsiveSize(context, 50)),
 
             // Center Image (if exists)
             if (data.centerImage != null) ...[
               Image.asset(
                 data.centerImage!,
-                width: 240, // Reduced from 260
-                height: 240, // Reduced from 260
+                width: _getResponsiveSize(context, 240),
+                height: _getResponsiveSize(context, 240),
                 fit: BoxFit.contain,
               ),
-              const SizedBox(height: 30), // Reduced from 40
+              SizedBox(height: _getResponsiveSize(context, 30)),
             ],
 
             // Features List (if exists)
             if (data.features != null) ...[
               ...data.features!.map((feature) => Padding(
-                padding: const EdgeInsets.only(bottom: 20), // Reduced from 24
+                padding: EdgeInsets.only(
+                  bottom: _getResponsiveSize(context, 20),
+                ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Icon(
                       feature.icon,
                       color: Colors.white.withOpacity(0.9),
-                      size: 20, // Reduced from 22
+                      size: _getResponsiveSize(context, 20),
                     ),
-                    const SizedBox(width: 14), // Reduced from 16
+                    SizedBox(width: _getResponsiveSize(context, 14)),
                     Expanded(
                       child: Text(
                         feature.text.toUpperCase(),
                         style: GoogleFonts.cinzel(
-                          fontSize: 13, // Reduced from 14
+                          fontSize: _getResponsiveFontSize(context, 13),
                           fontWeight: FontWeight.w500,
                           color: Colors.white.withOpacity(0.95),
                           letterSpacing: 1.3,
@@ -195,7 +216,7 @@ class _OnboardingPage extends StatelessWidget {
                 data.description!,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.cinzel(
-                  fontSize: 17, // Reduced from 18
+                  fontSize: _getResponsiveFontSize(context, 17),
                   fontWeight: FontWeight.w500,
                   color: Colors.white.withOpacity(0.95),
                   height: 1.6,
@@ -204,11 +225,21 @@ class _OnboardingPage extends StatelessWidget {
               ),
             ],
 
-            const SizedBox(height: 100), // Extra bottom space for button area
+            SizedBox(height: _getResponsiveSize(context, 100)),
           ],
         ),
       ),
     );
+  }
+
+  double _getResponsiveSize(BuildContext context, double size) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return screenWidth * (size / 375);
+  }
+
+  double _getResponsiveFontSize(BuildContext context, double size) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return screenWidth * (size / 375);
   }
 }
 
@@ -225,17 +256,19 @@ class _SelectionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      padding: EdgeInsets.symmetric(
+        horizontal: _getResponsiveSize(context, 24),
+      ),
       child: Column(
         children: [
-          const SizedBox(height: 30), // Reduced from 40
+          SizedBox(height: _getResponsiveSize(context, 30)),
 
           // Reading Preference Section
-           Text(
+          Text(
             AppStrings.instance.howWouldYouLikeYourReading,
             textAlign: TextAlign.center,
             style: GoogleFonts.cinzel(
-              fontSize: 22, // Reduced from 24
+              fontSize: _getResponsiveFontSize(context, 22),
               fontWeight: FontWeight.w400,
               color: Colors.white,
               height: 1.3,
@@ -243,7 +276,7 @@ class _SelectionPage extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 20), // Reduced from 24
+          SizedBox(height: _getResponsiveSize(context, 20)),
 
           // Reading Type Selection Cards
           Obx(() => Row(
@@ -257,7 +290,7 @@ class _SelectionPage extends StatelessWidget {
                   onTap: () => controller.selectReadingType(ReadingType.audioAndText),
                 ),
               ),
-              const SizedBox(width: 12), // Reduced from 16
+              SizedBox(width: _getResponsiveSize(context, 12)),
 
               // Text Reading
               Expanded(
@@ -271,21 +304,21 @@ class _SelectionPage extends StatelessWidget {
             ],
           )),
 
-          const SizedBox(height: 30), // Reduced from 35
+          SizedBox(height: _getResponsiveSize(context, 30)),
 
           // Deck Selection Section
-           Text(
+          Text(
             AppStrings.instance.selectDeckOfCards,
             textAlign: TextAlign.center,
             style: GoogleFonts.cinzel(
-              fontSize: 19, // Reduced from 20
+              fontSize: _getResponsiveFontSize(context, 19),
               fontWeight: FontWeight.w600,
               color: Colors.white,
               letterSpacing: 1.5,
             ),
           ),
 
-          const SizedBox(height: 18), // Reduced from 20
+          SizedBox(height: _getResponsiveSize(context, 18)),
 
           // Deck Cards
           Obx(() => Row(
@@ -297,14 +330,14 @@ class _SelectionPage extends StatelessWidget {
                 isSelected: controller.selectedDeck.value == DeckType.classic,
                 onTap: () => controller.selectDeck(DeckType.classic),
               ),
-              const SizedBox(width: 10), // Reduced from 12
+              SizedBox(width: _getResponsiveSize(context, 10)),
               _DeckCard(
                 deckType: DeckType.mystical,
                 imagePath: AppAssertImage.instance.deck2,
                 isSelected: controller.selectedDeck.value == DeckType.mystical,
                 onTap: () => controller.selectDeck(DeckType.mystical),
               ),
-              const SizedBox(width: 10), // Reduced from 12
+              SizedBox(width: _getResponsiveSize(context, 10)),
               _DeckCard(
                 deckType: DeckType.celestial,
                 imagePath: AppAssertImage.instance.deck3,
@@ -314,10 +347,20 @@ class _SelectionPage extends StatelessWidget {
             ],
           )),
 
-          const SizedBox(height: 100), // Bottom padding
+          SizedBox(height: _getResponsiveSize(context, 100)),
         ],
       ),
     );
+  }
+
+  double _getResponsiveSize(BuildContext context, double size) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return screenWidth * (size / 375);
+  }
+
+  double _getResponsiveFontSize(BuildContext context, double size) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return screenWidth * (size / 375);
   }
 }
 
@@ -342,11 +385,13 @@ class _SelectionCard extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
-        height: 100, // Reduced from 110
-        padding: const EdgeInsets.all(10), // Reduced from 12
+        height: _getResponsiveSize(context, 100),
+        padding: EdgeInsets.all(_getResponsiveSize(context, 10)),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(
+            _getResponsiveSize(context, 16),
+          ),
           border: Border.all(
             color: isSelected
                 ? const Color(0xFFD4AF37)
@@ -362,16 +407,16 @@ class _SelectionCard extends StatelessWidget {
                 top: 0,
                 right: 0,
                 child: Container(
-                  width: 18, // Reduced from 20
-                  height: 18,
+                  width: _getResponsiveSize(context, 18),
+                  height: _getResponsiveSize(context, 18),
                   decoration: const BoxDecoration(
                     color: Color(0xFFD4AF37),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.check,
                     color: Colors.white,
-                    size: 11, // Reduced from 12
+                    size: _getResponsiveSize(context, 11),
                   ),
                 ),
               ),
@@ -383,18 +428,18 @@ class _SelectionCard extends StatelessWidget {
                 // Icon
                 Icon(
                   icon,
-                  size: 28, // Reduced from 30
+                  size: _getResponsiveSize(context, 28),
                   color: Colors.white,
                 ),
 
-                const SizedBox(height: 6), // Reduced from 8
+                SizedBox(height: _getResponsiveSize(context, 6)),
 
                 // Label
                 Text(
                   label,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 10, // Reduced from 11
+                  style: TextStyle(
+                    fontSize: _getResponsiveFontSize(context, 10),
                     fontWeight: FontWeight.w500,
                     color: Colors.white,
                     height: 1.2,
@@ -407,8 +452,19 @@ class _SelectionCard extends StatelessWidget {
       ),
     );
   }
+
+  double _getResponsiveSize(BuildContext context, double size) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return screenWidth * (size / 375);
+  }
+
+  double _getResponsiveFontSize(BuildContext context, double size) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return screenWidth * (size / 375);
+  }
 }
 
+// Deck Card Widget
 // Deck Card Widget
 class _DeckCard extends StatelessWidget {
   final DeckType deckType;
@@ -430,10 +486,12 @@ class _DeckCard extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
-        width: 80, // Reduced from 85
-        height: 110, // Reduced from 120
+        width: _getResponsiveSize(context, 95),  // Increased from 80
+        height: _getResponsiveSize(context, 135), // Increased from 110
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(
+            _getResponsiveSize(context, 12),
+          ),
           border: Border.all(
             color: isSelected
                 ? const Color(0xFFD4AF37)
@@ -454,7 +512,9 @@ class _DeckCard extends StatelessWidget {
           children: [
             // Deck Image
             ClipRRect(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(
+                _getResponsiveSize(context, 10),
+              ),
               child: Image.asset(
                 imagePath,
                 width: double.infinity,
@@ -466,19 +526,19 @@ class _DeckCard extends StatelessWidget {
             // Checkmark Overlay (if selected)
             if (isSelected)
               Positioned(
-                top: 5, // Reduced from 6
-                right: 5,
+                top: _getResponsiveSize(context, 6),  // Increased from 5
+                right: _getResponsiveSize(context, 6), // Increased from 5
                 child: Container(
-                  width: 18, // Reduced from 20
-                  height: 18,
+                  width: _getResponsiveSize(context, 22),  // Increased from 18
+                  height: _getResponsiveSize(context, 22), // Increased from 18
                   decoration: const BoxDecoration(
                     color: Color(0xFFD4AF37),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.check,
                     color: Colors.white,
-                    size: 11, // Reduced from 12
+                    size: _getResponsiveSize(context, 14), // Increased from 11
                   ),
                 ),
               ),
@@ -486,5 +546,10 @@ class _DeckCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  double _getResponsiveSize(BuildContext context, double size) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return screenWidth * (size / 375);
   }
 }

@@ -1,6 +1,5 @@
 import 'package:get_storage/get_storage.dart';
 
-import '../user_profile.dart';
 
 import 'package:get_storage/get_storage.dart';
 

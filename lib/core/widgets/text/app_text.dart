@@ -3,6 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'dart:ui';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 class AppText extends StatelessWidget {
   const AppText({
     super.key,
@@ -21,6 +26,7 @@ class AppText extends StatelessWidget {
     this.fontFamily,
     this.frosted = false,
     this.latterSpacing,
+    this.useResponsiveFontSize = true, // New parameter
   });
 
   final String data;
@@ -38,23 +44,28 @@ class AppText extends StatelessWidget {
   final String? fontFamily;
   final bool frosted;
   final double? latterSpacing;
-
+  final bool useResponsiveFontSize; // Toggle responsive sizing
 
   @override
   Widget build(BuildContext context) {
     final baseStyle = Theme.of(context).textTheme.displaySmall ?? const TextStyle();
 
+    // Calculate responsive font size
+    final responsiveFontSize = useResponsiveFontSize && fontSize != null
+        ? _getResponsiveFontSize(context, fontSize!)
+        : fontSize;
+
     final textWidget = Text(
       translate ? data.tr : data,
-      maxLines: maxLines??20,
+      maxLines: maxLines ?? 20,
       overflow: overflow ?? TextOverflow.ellipsis,
       textAlign: textAlign,
       style: baseStyle.copyWith(
         height: height,
-        fontSize: fontSize,
+        fontSize: responsiveFontSize,
         color: color ?? Colors.black,
         fontWeight: fontWeight,
-        fontFamily:  GoogleFonts.inter().fontFamily,
+        fontFamily: GoogleFonts.inter().fontFamily,
         decoration: decoration,
         decorationColor: decorationColor,
         letterSpacing: latterSpacing,
@@ -65,18 +76,33 @@ class AppText extends StatelessWidget {
     if (!frosted) return textWidget;
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(_getResponsiveSize(context, 10)),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          padding: EdgeInsets.symmetric(
+            horizontal: _getResponsiveSize(context, 8),
+            vertical: _getResponsiveSize(context, 4),
+          ),
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(_getResponsiveSize(context, 10)),
           ),
           child: textWidget,
         ),
       ),
     );
+  }
+
+  // Responsive font size calculation (based on 375px standard width)
+  double _getResponsiveFontSize(BuildContext context, double size) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return screenWidth * (size / 375);
+  }
+
+  // Responsive size for padding/borders
+  double _getResponsiveSize(BuildContext context, double size) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return screenWidth * (size / 375);
   }
 }

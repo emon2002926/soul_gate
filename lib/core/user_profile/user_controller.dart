@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:soul_gate/core/user_profile.dart';
+import 'package:soul_gate/core/user_profile/user_profile.dart';
 import 'dart:convert';
-import 'constants/app_constant.dart';
-import 'util/storage_service.dart';
+import '../constants/app_constant.dart';
+import '../util/storage_service.dart';
 
 
 class UserController extends GetxController {

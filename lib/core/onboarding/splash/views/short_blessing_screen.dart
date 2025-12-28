@@ -8,8 +8,8 @@ import '../../../../features/card_shuffle/views/shuffle_screen.dart';
 import '../../../../features/profile/views/profile_page.dart';
 import '../../../constants/app_assert_image.dart';
 import '../../../constants/app_strings.dart';
+import '../../../util/screen_size.dart';
 import '../../../util/storage_service.dart';
-
 
 
 class ShortBlessingScreen extends StatelessWidget {
@@ -46,7 +46,7 @@ class ShortBlessingScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(context.spacing8),
           child: GestureDetector(
             onTap: () {
               controller.audioPlayer.stop();
@@ -57,39 +57,38 @@ class ShortBlessingScreen extends StatelessWidget {
                 color: Colors.white.withOpacity(0.2),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.arrow_back,
                 color: Colors.white,
-                size: 24,
+                size: context.responsiveSize(24),
               ),
             ),
           ),
         ),
         title: AppText(
           data: appStrings.saintMichaelsBlessingTitle,
-          fontSize: 18,
+          fontSize: context.responsiveFontSize(18),
           fontWeight: FontWeight.w500,
           color: Colors.white,
         ),
         centerTitle: true,
         actions: [
           Padding(
-
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(context.spacing8),
             child: GestureDetector(
               onTap: () {
                 AppNavigation.push(Get.context!, ProfilePage());
               },
               child: Container(
-                padding: const EdgeInsets.all(8),
+                padding: EdgeInsets.all(context.spacing8),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.2),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.account_circle_outlined,
                   color: Colors.white,
-                  size: 24,
+                  size: context.responsiveSize(24),
                 ),
               ),
             ),
@@ -112,31 +111,31 @@ class ShortBlessingScreen extends StatelessWidget {
         child: SafeArea(
           child: Column(
             children: [
-              const Spacer(flex: 1),
 
+              SizedBox(height: context.heightPercentage(2),),
               // Saint Michael Image
               Image.asset(
                 AppAssertImage.instance.saintMichaelImage,
-                width: 280,
-                height: 280,
+                width: context.widthPercentage(74.7), // ~280px on 375px screen
+                height: context.widthPercentage(74.7),
                 fit: BoxFit.contain,
               ),
 
-              const SizedBox(height: 40),
+              SizedBox(height: context.heightPercentage(2)),
 
               // Blessing Text
               Expanded(
                 flex: 3,
                 child: SingleChildScrollView(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    padding: EdgeInsets.symmetric(horizontal: context.spacing32),
                     child: Column(
                       children: [
                         Text(
                           AppStrings.instance.saintMichaelsBlessingText,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 16,
+                          style: TextStyle(
+                            fontSize: context.responsiveFontSize(16),
                             fontWeight: FontWeight.w400,
                             color: Colors.white,
                             height: 1.5,
@@ -144,7 +143,7 @@ class ShortBlessingScreen extends StatelessWidget {
                           ),
                         ),
 
-                        const SizedBox(height: 40),
+                        SizedBox(height: context.heightPercentage(5)),
 
                         // Playing Indicator
                         Obx(() {
@@ -152,11 +151,11 @@ class ShortBlessingScreen extends StatelessWidget {
                             return Column(
                               children: [
                                 _SimpleSpeakingIndicator(),
-                                const SizedBox(height: 16),
-                                const Text(
+                                SizedBox(height: context.spacing16),
+                                Text(
                                   'Playing...',
                                   style: TextStyle(
-                                    fontSize: 14,
+                                    fontSize: context.responsiveFontSize(14),
                                     color: Colors.white,
                                   ),
                                 ),
@@ -165,23 +164,23 @@ class ShortBlessingScreen extends StatelessWidget {
                           } else if (controller.isCompleted.value) {
                             return Column(
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.check_circle_outline,
-                                  color: Color(0xFFD4AF37),
-                                  size: 40,
+                                  color: const Color(0xFFD4AF37),
+                                  size: context.responsiveSize(40),
                                 ),
-                                const SizedBox(height: 12),
+                                SizedBox(height: context.spacing12),
                                 Text(
                                   'Blessing Complete',
                                   style: TextStyle(
-                                    fontSize: 14,
+                                    fontSize: context.responsiveFontSize(14),
                                     color: Colors.white.withOpacity(0.7),
                                   ),
                                 ),
                               ],
                             );
                           }
-                          return const SizedBox(height: 70);
+                          return SizedBox(height: context.responsiveSize(70));
                         }),
                       ],
                     ),
@@ -195,7 +194,7 @@ class ShortBlessingScreen extends StatelessWidget {
                 child: Text(
                   appStrings.skip,
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: context.responsiveFontSize(15),
                     color: Colors.white,
                     decoration: TextDecoration.underline,
                     decorationColor: Colors.white.withOpacity(0.5),
@@ -203,7 +202,7 @@ class ShortBlessingScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 30),
+              SizedBox(height: context.heightPercentage(3.75)),
             ],
           ),
         ),
@@ -252,7 +251,7 @@ class _SimpleSpeakingIndicatorState extends State<_SimpleSpeakingIndicator>
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 30,
+      height: context.responsiveSize(30),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(5, (index) {
@@ -260,12 +259,12 @@ class _SimpleSpeakingIndicatorState extends State<_SimpleSpeakingIndicator>
             animation: animations[index],
             builder: (context, child) {
               return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 3),
-                width: 4,
-                height: 20 * animations[index].value,
+                margin: EdgeInsets.symmetric(horizontal: context.responsiveSize(3)),
+                width: context.responsiveSize(4),
+                height: context.responsiveSize(20) * animations[index].value,
                 decoration: BoxDecoration(
                   color: const Color(0xFFD4AF37).withOpacity(0.8),
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(context.responsiveSize(2)),
                 ),
               );
             },
@@ -276,8 +275,7 @@ class _SimpleSpeakingIndicatorState extends State<_SimpleSpeakingIndicator>
   }
 }
 
-
-
+// Controller remains the same
 class ShortBlessingController extends GetxController {
   final audioPlayer = AudioPlayer();
   final isPlaying = false.obs;
