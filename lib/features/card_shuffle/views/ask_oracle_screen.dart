@@ -13,14 +13,14 @@ import '../../../core/util/storage_service.dart';
 import '../../../core/widgets/buttons/app_button.dart';
 import '../controller/question_confirmation_controller.dart';
 
-
-
-
-
 class AskOracleScreen extends StatelessWidget {
   final int readingTypeIndex;
   final int deckIndex;
-  const AskOracleScreen({super.key, required this.readingTypeIndex, required this.deckIndex});
+  const AskOracleScreen({
+    super.key,
+    required this.readingTypeIndex,
+    required this.deckIndex,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +56,30 @@ class AskOracleScreen extends StatelessWidget {
                 ),
               ),
 
-              SizedBox(height: context.heightPercentage(4)),
+              SizedBox(height: context.heightPercentage(1.5)),
 
+              Padding(
+                padding: EdgeInsetsGeometry.symmetric(
+                  horizontal: context.widthPercentage(5.3),
+                ),
+                child: Align(
+                  alignment: AlignmentGeometry.bottomRight,
+                  child: //Custome Button
+                  SizedBox(
+                    width: context.widthPercentage(40),
+                    height: 40,
+                    child: AppButton(
+                      buttonText: 'Type Question',
+                      onPressed: () => controller.selectQuestion(
+                        OracleQuestion(question: '', id: 0, category: ''),
+                        readingTypeIndex,
+                        deckIndex,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: context.heightPercentage(2)),
               // Questions List
               Expanded(
                 child: Obx(() {
@@ -82,13 +104,19 @@ class AskOracleScreen extends StatelessWidget {
                   }
 
                   return ListView.builder(
-                    padding: EdgeInsets.symmetric(horizontal: context.widthPercentage(5.3)),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: context.widthPercentage(5.3),
+                    ),
                     itemCount: controller.questions.length,
                     itemBuilder: (context, index) {
                       final question = controller.questions[index];
                       return _QuestionTile(
                         question: question.question,
-                        onTap: () => controller.selectQuestion(question, readingTypeIndex, deckIndex),
+                        onTap: () => controller.selectQuestion(
+                          question,
+                          readingTypeIndex,
+                          deckIndex,
+                        ),
                       );
                     },
                   );
@@ -108,10 +136,7 @@ class _QuestionTile extends StatelessWidget {
   final String question;
   final VoidCallback onTap;
 
-  const _QuestionTile({
-    required this.question,
-    required this.onTap,
-  });
+  const _QuestionTile({required this.question, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -126,10 +151,7 @@ class _QuestionTile extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.08),
           borderRadius: BorderRadius.circular(context.responsiveSize(12)),
-          border: Border.all(
-            color: Colors.white.withOpacity(0.2),
-            width: 1,
-          ),
+          border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
         ),
         child: Row(
           children: [
@@ -163,7 +185,11 @@ class _QuestionTile extends StatelessWidget {
 class QuestionConfirmationScreen extends StatelessWidget {
   final int readingTypeIndex;
   final int deckIndex;
-  const QuestionConfirmationScreen({super.key, required this.readingTypeIndex, required this.deckIndex});
+  const QuestionConfirmationScreen({
+    super.key,
+    required this.readingTypeIndex,
+    required this.deckIndex,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -186,7 +212,8 @@ class QuestionConfirmationScreen extends StatelessWidget {
             child: SingleChildScrollView(
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  minHeight: context.screenHeight -
+                  minHeight:
+                      context.screenHeight -
                       MediaQuery.of(context).padding.top -
                       MediaQuery.of(context).padding.bottom,
                 ),
@@ -197,7 +224,9 @@ class QuestionConfirmationScreen extends StatelessWidget {
 
                       // Title
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: context.spacing32),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: context.spacing32,
+                        ),
                         child: Text(
                           appStrings.exploreQuestionPrompt,
                           textAlign: TextAlign.center,
@@ -215,7 +244,9 @@ class QuestionConfirmationScreen extends StatelessWidget {
 
                       // Editable Question TextField
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: context.spacing32),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: context.spacing32,
+                        ),
                         child: TextField(
                           controller: controller.questionController,
                           maxLines: 5,
@@ -231,21 +262,27 @@ class QuestionConfirmationScreen extends StatelessWidget {
                             filled: true,
                             fillColor: Colors.white.withOpacity(0.1),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(context.responsiveSize(16)),
+                              borderRadius: BorderRadius.circular(
+                                context.responsiveSize(16),
+                              ),
                               borderSide: BorderSide(
                                 color: Colors.white.withOpacity(0.3),
                                 width: 1,
                               ),
                             ),
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(context.responsiveSize(16)),
+                              borderRadius: BorderRadius.circular(
+                                context.responsiveSize(16),
+                              ),
                               borderSide: BorderSide(
                                 color: Colors.white.withOpacity(0.3),
                                 width: 1,
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(context.responsiveSize(16)),
+                              borderRadius: BorderRadius.circular(
+                                context.responsiveSize(16),
+                              ),
                               borderSide: const BorderSide(
                                 color: Color(0xFFD4AF37),
                                 width: 1.5,
@@ -267,11 +304,16 @@ class QuestionConfirmationScreen extends StatelessWidget {
 
                       // Continue Button
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: context.spacing24),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: context.spacing24,
+                        ),
                         child: AppButton(
                           buttonText: appStrings.yesContinueButton,
                           onPressed: () {
-                            controller.continueToReading(readingTypeIndex, deckIndex);
+                            controller.continueToReading(
+                              readingTypeIndex,
+                              deckIndex,
+                            );
                           },
                           fillColor: const Color(0xFFD4AF37).withOpacity(0.85),
                           buttonHeight: context.responsiveSize(50),

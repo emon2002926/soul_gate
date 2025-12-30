@@ -1,11 +1,10 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:soul_gate/core/widgets/snackbar/custome_snackbar.dart';
 import 'dart:convert';
 
 import '../../../core/routes/app_routes.dart';
-
-
 
 class ResetPassController extends GetxController {
   final newPasswordController = TextEditingController();
@@ -62,57 +61,62 @@ class ResetPassController extends GetxController {
   Future<void> resetPassword() async {
     // Validate passwords
     if (newPasswordController.text.trim().isEmpty) {
-      Get.snackbar(
-        'Error',
-        'Please enter new password',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   'Error',
+      //   'Please enter new password',
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error("Please enter new password");
       return;
     }
 
     if (newPasswordController.text.length < 8) {
-      Get.snackbar(
-        'Error',
-        'Password must be at least 8 characters',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   'Error',
+      //   'Password must be at least 8 characters',
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error("Password must be at least 8 characters");
       return;
     }
 
     if (confirmPasswordController.text.trim().isEmpty) {
-      Get.snackbar(
-        'Error',
-        'Please confirm your password',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   'Error',
+      //   'Please confirm your password',
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error("Please confirm your password");
       return;
     }
 
     if (newPasswordController.text != confirmPasswordController.text) {
-      Get.snackbar(
-        'Error',
-        'Passwords do not match',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   'Error',
+      //   'Passwords do not match',
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error("Passwords do not match");
       return;
     }
 
     if (email.value.isEmpty || otp.value.isEmpty) {
-      Get.snackbar(
-        'Error',
-        'Missing email or OTP. Please try again.',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   'Error',
+      //   'Missing email or OTP. Please try again.',
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error("Missing email or OTP. Please try again.");
       return;
     }
 
@@ -123,9 +127,7 @@ class ResetPassController extends GetxController {
 
       final response = await http.post(
         url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'email': email.value,
           'otp': otp.value,
@@ -133,18 +135,19 @@ class ResetPassController extends GetxController {
           'confirm_password': confirmPasswordController.text.trim(),
         }),
       );
-
       final responseData = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        Get.snackbar(
-          'Success',
-          responseData['message'] ?? 'Password reset successful',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: const Color(0xFF4CAF50),
-          colorText: Colors.white,
-          duration: const Duration(seconds: 2),
-        );
+        // Get.snackbar(
+        //   'Success',
+        //   responseData['message'] ?? 'Password reset successful',
+        //   snackPosition: SnackPosition.TOP,
+        //   backgroundColor: const Color(0xFF4CAF50),
+        //   colorText: Colors.white,
+        //   duration: const Duration(seconds: 2),
+        // );
+        CustomeSnackbar.success(
+            responseData['message'] ?? 'Password reset successful');
 
         // Navigate to login screen after successful password reset
         await Future.delayed(const Duration(seconds: 1));
@@ -158,7 +161,9 @@ class ResetPassController extends GetxController {
           if (responseData.containsKey('new_password')) {
             errorMessage = responseData['new_password'][0] ?? 'Password error';
           } else if (responseData.containsKey('confirm_password')) {
-            errorMessage = responseData['confirm_password'][0] ?? 'Password confirmation error';
+            errorMessage =
+                responseData['confirm_password'][0] ??
+                'Password confirmation error';
           } else if (responseData.containsKey('otp')) {
             errorMessage = responseData['otp'][0] ?? 'Invalid or expired OTP';
           } else if (responseData.containsKey('email')) {
@@ -168,22 +173,24 @@ class ResetPassController extends GetxController {
           }
         }
 
-        Get.snackbar(
-          'Error',
-          errorMessage,
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        // Get.snackbar(
+        //   'Error',
+        //   errorMessage,
+        //   snackPosition: SnackPosition.TOP,
+        //   backgroundColor: Colors.red,
+        //   colorText: Colors.white,
+        // );
+        CustomeSnackbar.error(errorMessage);
       }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Something went wrong: ${e.toString()}',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   'Error',
+      //   'Something went wrong: ${e.toString()}',
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error("Something went wrong: ${e.toString()}");
     } finally {
       isLoading.value = false;
     }

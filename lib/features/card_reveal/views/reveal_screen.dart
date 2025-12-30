@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:soul_gate/core/constants/app_colors.dart';
+import 'package:soul_gate/core/util/screen_size.dart';
 import 'package:soul_gate/core/widgets/app_bar/build_app_bar.dart';
 import 'package:soul_gate/core/widgets/text/app_text.dart';
 import '../../../core/constants/app_assert_image.dart';
@@ -9,15 +11,20 @@ import '../../../core/constants/app_strings.dart';
 import '../controllers/reveal_controller.dart';
 import '../models/tarot_response.dart';
 
-
 class RevealScreen extends StatelessWidget {
-
   final String questionText;
   final int readingTypeIndex;
   final int deckIndex;
   final int? questionId;
   final int cardCount;
-   RevealScreen({super.key, required this.questionText, required this.readingTypeIndex, required this.deckIndex, this.questionId, required this.cardCount});
+  RevealScreen({
+    super.key,
+    required this.questionText,
+    required this.readingTypeIndex,
+    required this.deckIndex,
+    this.questionId,
+    required this.cardCount,
+  });
   AppStrings appStrings = AppStrings();
 
   @override
@@ -28,10 +35,7 @@ class RevealScreen extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: const Color(0xFFF5F3EE),
-      appBar: BuildAppBar(
-        showSideButton: false,
-        title: appStrings.yourReading,
-      ),
+      appBar: BuildAppBar(showSideButton: false, title: appStrings.yourReading),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -52,7 +56,8 @@ class RevealScreen extends StatelessWidget {
               children: [
                 // Main content
                 if (isLoading)
-                  _buildLoadingView()
+                  // _buildLoadingView()
+                  Center(child: _LoadingWidget())
                 else
                   Padding(
                     padding: EdgeInsets.only(
@@ -81,15 +86,14 @@ class RevealScreen extends StatelessWidget {
                   ),
 
                 // Loading overlay with pulsing animation
-                if (isLoading)
-                  Positioned.fill(
-                    child: Container(
-                      color: Colors.black.withOpacity(0.01),
-                      child: Center(
-                        child: _LoadingWidget(),
-                      ),
-                    ),
-                  ),
+                // if (isLoading)
+                //   Positioned.fill(
+                //     child: Container(
+                //       color: Colors.transparent,
+                //       // color: Colors.black.withOpacity(0.01),
+                //       child: Center(child: _LoadingWidget()),
+                //     ),
+                //   ),
               ],
             );
           }),
@@ -99,7 +103,7 @@ class RevealScreen extends StatelessWidget {
   }
 
   Widget _buildLoadingView() {
-    return  Center(
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -110,19 +114,21 @@ class RevealScreen extends StatelessWidget {
           SizedBox(height: 20),
           AppText(
             data: appStrings.consultingTheCards,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: Colors.white70,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Colors.white70,
           ),
         ],
       ),
     );
   }
 }
+
 class _LoadingWidget extends StatefulWidget {
   @override
   State<_LoadingWidget> createState() => _LoadingWidgetState();
 }
+
 class _LoadingWidgetState extends State<_LoadingWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
@@ -160,40 +166,27 @@ class _LoadingWidgetState extends State<_LoadingWidget>
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(32),
-      margin: const EdgeInsets.symmetric(horizontal: 40),
+      margin: EdgeInsets.only(bottom: context.spacing12),
+      padding: EdgeInsets.symmetric(
+        horizontal: context.spacing32,
+        vertical: context.responsiveSize(20),
+      ),
       decoration: BoxDecoration(
-        color: const Color(0xFFF5F5DC),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 30,
-            offset: const Offset(0, 10),
-          ),
-        ],
+        color: Colors.white.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(context.responsiveSize(12)),
+        border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           ScaleTransition(
             scale: Tween(begin: 0.8, end: 1.2).animate(
-              CurvedAnimation(
-                parent: _controller,
-                curve: Curves.easeInOut,
-              ),
+              CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
             ),
-            child: Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: const Color(0xFF9B7EBD).withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.auto_awesome,
-                color: Color(0xFF9B7EBD),
-                size: 40,
-              ),
+            child: const Icon(
+              Icons.auto_awesome,
+              color: Color(0xFFffffff),
+              size: 40,
             ),
           ),
           const SizedBox(height: 24),
@@ -205,24 +198,25 @@ class _LoadingWidgetState extends State<_LoadingWidget>
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF4A4A4A),
+                fontWeight: FontWeight.w700,
+                color: Color(0xFFffffff),
                 letterSpacing: 0.5,
               ),
             ),
           ),
           const SizedBox(height: 12),
-           AppText(
+          AppText(
             data: appStrings.loadingTimeoutMessage,
             textAlign: TextAlign.center,
-              fontSize: 13,
-              color: Color(0xFF8B7355),
+            fontSize: 13,
+            color: Color(0xFFffffff),
           ),
         ],
       ),
     );
   }
 }
+
 class _Build7CardLayout extends StatelessWidget {
   final RevealController controller;
 
@@ -300,6 +294,7 @@ class _Build7CardLayout extends StatelessWidget {
     );
   }
 }
+
 class _Build3CardLayout extends StatelessWidget {
   final RevealController controller;
 
@@ -315,7 +310,6 @@ class _Build3CardLayout extends StatelessWidget {
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-
             const SizedBox(height: 16),
             // Cards
             Row(
@@ -348,8 +342,6 @@ class _Build3CardLayout extends StatelessWidget {
       },
     );
   }
-
-
 }
 
 class _PositionedCard extends StatelessWidget {
@@ -386,10 +378,7 @@ class _PositionedCard extends StatelessWidget {
             scale: value,
             child: Transform.translate(
               offset: Offset(0, 30 * (1 - value)),
-              child: Opacity(
-                opacity: value.clamp(0.0, 1.0),
-                child: child,
-              ),
+              child: Opacity(opacity: value.clamp(0.0, 1.0), child: child),
             ),
           );
         },
@@ -402,10 +391,7 @@ class _PositionedCard extends StatelessWidget {
             curve: Curves.easeOutBack,
             width: isSelected && isFlipped ? cardWidth * 1.1 : cardWidth,
             height: isSelected && isFlipped ? cardHeight * 1.1 : cardHeight,
-            child: _FlipCard(
-              controller: controller,
-              index: index,
-            ),
+            child: _FlipCard(controller: controller, index: index),
           );
         }),
       ),
@@ -437,10 +423,7 @@ class _AnimatedCard extends StatelessWidget {
           scale: value,
           child: Transform.translate(
             offset: Offset(0, 30 * (1 - value)),
-            child: Opacity(
-              opacity: value.clamp(0.0, 1.0),
-              child: child,
-            ),
+            child: Opacity(opacity: value.clamp(0.0, 1.0), child: child),
           ),
         );
       },
@@ -453,10 +436,7 @@ class _AnimatedCard extends StatelessWidget {
           curve: Curves.easeOutBack,
           width: isSelected && isFlipped ? cardWidth * 1.1 : cardWidth,
           height: isSelected && isFlipped ? cardHeight * 1.1 : cardHeight,
-          child: _FlipCard(
-            controller: controller,
-            index: index,
-          ),
+          child: _FlipCard(controller: controller, index: index),
         );
       }),
     );
@@ -467,10 +447,7 @@ class _FlipCard extends StatelessWidget {
   final RevealController controller;
   final int index;
 
-  const _FlipCard({
-    required this.controller,
-    required this.index,
-  });
+  const _FlipCard({required this.controller, required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -498,7 +475,9 @@ class _FlipCard extends StatelessWidget {
                   final isUnder = (ValueKey(isFlipped) != child!.key);
                   var tilt = ((animation.value - 0.5).abs() - 0.5) * 0.003;
                   tilt *= isUnder ? -1.0 : 1.0;
-                  final value = isUnder ? animation.value : 1.0 - animation.value;
+                  final value = isUnder
+                      ? animation.value
+                      : 1.0 - animation.value;
                   return Transform(
                     transform: Matrix4.rotationY(value * math.pi),
                     alignment: Alignment.center,
@@ -611,7 +590,7 @@ class _CardFront extends StatelessWidget {
           child: CircularProgressIndicator(
             value: loadingProgress.expectedTotalBytes != null
                 ? loadingProgress.cumulativeBytesLoaded /
-                loadingProgress.expectedTotalBytes!
+                      loadingProgress.expectedTotalBytes!
                 : null,
             valueColor: const AlwaysStoppedAnimation(Color(0xFF8B7BA8)),
           ),
@@ -627,11 +606,7 @@ class _CardFront extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.auto_awesome,
-            color: Color(0xFF8B7BA8),
-            size: 40,
-          ),
+          const Icon(Icons.auto_awesome, color: Color(0xFF8B7BA8), size: 40),
           const SizedBox(height: 8),
           AppText(
             data: card.name,
@@ -655,7 +630,8 @@ class _CardDetailsPanel extends StatelessWidget {
   const _CardDetailsPanel({
     required this.card,
     required this.interpretation,
-    required this.controller, required this.questionText,
+    required this.controller,
+    required this.questionText,
   });
 
   @override
@@ -768,7 +744,7 @@ class _CardDetailsPanel extends StatelessWidget {
                             color: Color(0xFF8B7355),
                             size: 22,
                           ),
-                          label:  AppText(
+                          label: AppText(
                             data: AppStrings.instance.close,
                             fontSize: 15,
                             fontWeight: FontWeight.w500,
@@ -791,7 +767,8 @@ class _CardDetailsPanel extends StatelessWidget {
                                     isSpeaking ? Icons.stop : Icons.volume_up,
                                     color: Colors.white,
                                   ),
-                                  onPressed: () => controller.speakCardMeaning(card),
+                                  onPressed: () =>
+                                      controller.speakCardMeaning(card),
                                 );
                               }),
                             ),
@@ -810,7 +787,9 @@ class _CardDetailsPanel extends StatelessWidget {
                                   color: Colors.white,
                                 ),
                                 onPressed: () {
-                                  controller.navigateToFullReading(questionText);
+                                  controller.navigateToFullReading(
+                                    questionText,
+                                  );
                                 },
                               ),
                             ),

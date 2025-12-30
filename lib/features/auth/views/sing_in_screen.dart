@@ -35,7 +35,10 @@ class SingInScreen extends StatelessWidget {
           SafeArea(
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24.0,
+                  vertical: 24,
+                ),
                 child: GetBuilder<LanguageController>(
                   builder: (_) {
                     final strings = AppStrings.instance;
@@ -73,16 +76,18 @@ class SingInScreen extends StatelessWidget {
                                     ),
                                   ),
                                   const SizedBox(width: 6),
-                                  Obx(() => Text(
-                                    Get.find<LanguageController>().isEnglish
-                                        ? strings.english
-                                        : strings.spanish,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
+                                  Obx(
+                                    () => Text(
+                                      Get.find<LanguageController>().isEnglish
+                                          ? strings.english
+                                          : strings.spanish,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
-                                  )),
+                                  ),
                                   const SizedBox(width: 4),
                                   Icon(
                                     Icons.keyboard_arrow_down,
@@ -122,24 +127,27 @@ class SingInScreen extends StatelessWidget {
                         SizedBox(height: 24.h),
 
                         // Password Field
-                        Obx(() => AppTextField(
-                          label: strings.password,
-                          label2: strings.forgotPassword,
-                          hintText: strings.enterYourPassword,
-                          label2OnClick: () {
-                            Get.to(() => EmailVerificationPage());
-                          },
-                          controller: controller.passwordController,
-                          obscureText: !controller.isPasswordVisible.value,
-                          suffixIcon: controller.isPasswordVisible.value
-                              ? Icons.visibility_outlined
-                              : Icons.visibility_off_outlined,
-                          onSuffixIconTap: controller.togglePasswordVisibility,
-                          hintTextColor: Colors.white,
-                          borderColor: AppColors.instance.primaryBtnColor,
-                          fillColor: Colors.transparent,
-                          inputTextColor: Colors.white,
-                        )),
+                        Obx(
+                          () => AppTextField(
+                            label: strings.password,
+                            label2: strings.forgotPassword,
+                            hintText: strings.enterYourPassword,
+                            label2OnClick: () {
+                              Get.to(() => EmailVerificationPage());
+                            },
+                            controller: controller.passwordController,
+                            obscureText: !controller.isPasswordVisible.value,
+                            suffixIcon: controller.isPasswordVisible.value
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                            onSuffixIconTap:
+                                controller.togglePasswordVisibility,
+                            hintTextColor: Colors.white,
+                            borderColor: AppColors.instance.primaryBtnColor,
+                            fillColor: Colors.transparent,
+                            inputTextColor: Colors.white,
+                          ),
+                        ),
 
                         SizedBox(height: 48.h),
 
@@ -150,33 +158,36 @@ class SingInScreen extends StatelessWidget {
                             width: double.infinity,
                             height: 50,
                             child: ElevatedButton(
-                              onPressed: loading ? null : () {
-                                print("🔘 Button pressed");
-                                controller.login();
-                              },
+                              onPressed: loading
+                                  ? null
+                                  : () {
+                                      print("🔘 Button pressed");
+                                      controller.login();
+                                    },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.instance.primaryBtnColor,
+                                backgroundColor:
+                                    AppColors.instance.primaryBtnColor,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(25),
                                 ),
                               ),
                               child: loading
                                   ? const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2.5,
-                                ),
-                              )
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2.5,
+                                      ),
+                                    )
                                   : Text(
-                                strings.login,
-                                style: TextStyle(
-                                  color: AppColors.instance.btnTextColor,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                                      strings.login,
+                                      style: TextStyle(
+                                        color: AppColors.instance.btnTextColor,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                             ),
                           );
                         }),

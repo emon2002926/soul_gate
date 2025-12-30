@@ -6,17 +6,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:soul_gate/core/util/app_navigation.dart';
 import 'package:soul_gate/core/util/storage_service.dart';
+import 'package:soul_gate/core/widgets/snackbar/custome_snackbar.dart';
 import '../../card_shuffle/views/full_reading_screen.dart';
 import '../models/tarot_response.dart';
 import '../views/widgets/reveal_dialogs.dart';
-
-import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-import 'package:audioplayers/audioplayers.dart';
 import 'package:path_provider/path_provider.dart';
 
 class RevealController extends GetxController {
@@ -101,13 +95,15 @@ class RevealController extends GetxController {
       debugPrint('❌ Failed to fetch interpretation: $e');
       isLoadingInterpretation.value = false;
 
-      Get.snackbar(
-        'Error',
-        'Failed to load interpretation. Please try again.',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red.withOpacity(0.8),
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   'Error',
+      //   'Failed to load interpretation. Please try again.',
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.red.withOpacity(0.8),
+      //   colorText: Colors.white,
+      // );
+
+      CustomeSnackbar.error('Failed to load interpretation. Please try again.');
     }
   }
 
@@ -300,13 +296,14 @@ class RevealController extends GetxController {
   Future<void> playAudioFromUrl(String audioUrl) async {
     if (audioUrl.isEmpty) {
       debugPrint('❌ No audio URL provided');
-      Get.snackbar(
-        'Audio Unavailable',
-        'No audio available for this content',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.orange.withOpacity(0.8),
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   'Audio Unavailable',
+      //   'No audio available for this content',
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.orange.withOpacity(0.8),
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.warning('No audio available for this content');
       return;
     }
 
@@ -376,26 +373,28 @@ class RevealController extends GetxController {
       } else {
         debugPrint('❌ Failed to download audio: ${response.statusCode}');
         isDownloadingAudio.value = false;
-        Get.snackbar(
-          'Download Failed',
-          'Could not download audio (${response.statusCode})',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red.withOpacity(0.8),
-          colorText: Colors.white,
-        );
+        // Get.snackbar(
+        //   'Download Failed',
+        //   'Could not download audio (${response.statusCode})',
+        //   snackPosition: SnackPosition.TOP,
+        //   backgroundColor: Colors.red.withOpacity(0.8),
+        //   colorText: Colors.white,
+        // );
+        CustomeSnackbar.error('Could not download audio (${response.statusCode})');
       }
     } catch (e) {
       debugPrint('❌ Audio download/playback error: $e');
       isDownloadingAudio.value = false;
       isSpeaking.value = false;
 
-      Get.snackbar(
-        'Audio Error',
-        'Failed to play audio: ${e.toString()}',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red.withOpacity(0.8),
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   'Audio Error',
+      //   'Failed to play audio: ${e.toString()}',
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.red.withOpacity(0.8),
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error('Failed to play audio: ${e.toString()}');
     }
   }
 

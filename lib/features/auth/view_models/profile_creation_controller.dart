@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:soul_gate/core/widgets/snackbar/custome_snackbar.dart';
 
 import '../../../core/routes/app_routes.dart';
 
@@ -70,12 +71,13 @@ class ProfileCreationController extends GetxController {
         profileImage.value = File(image.path);
       }
     } catch (e) {
-      Get.snackbar(
-        "Error",
-        "Failed to pick image from gallery",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   "Error",
+      //   "Failed to pick image from gallery",
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error("Failed to pick image from gallery");
     }
   }
 
@@ -93,12 +95,13 @@ class ProfileCreationController extends GetxController {
         profileImage.value = File(image.path);
       }
     } catch (e) {
-      Get.snackbar(
-        "Error",
-        "Failed to take photo",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   "Error",
+      //   "Failed to take photo",
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error("Failed to take photo");
     }
   }
 
@@ -161,12 +164,13 @@ class ProfileCreationController extends GetxController {
   // Address picker method (placeholder for now)
   void selectAddress() {
     // This would typically open a location picker or address selection screen
-    Get.snackbar(
-      "Info",
-      "Address picker coming soon",
-      backgroundColor: Colors.blueAccent,
-      colorText: Colors.white,
-    );
+    // Get.snackbar(
+    //   "Info",
+    //   "Address picker coming soon",
+    //   backgroundColor: Colors.blueAccent,
+    //   colorText: Colors.white,
+    // );
+    CustomeSnackbar.info("Address picker coming soon");
   }
 
   // Form submission
@@ -192,23 +196,25 @@ class ProfileCreationController extends GetxController {
 
       print('Profile Data: $profileData');
 
-      Get.snackbar(
-        "Success",
-        "Profile created successfully!",
-        backgroundColor: const Color(0xFF4CAF50),
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   "Success",
+      //   "Profile created successfully!",
+      //   backgroundColor: const Color(0xFF4CAF50),
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.success("Profile created successfully!");
 
       // Navigate to next screen (dashboard, verification, etc.)
       Get.offAllNamed(AppRoutes.onboardingServingSelection);
 
     } catch (e) {
-      Get.snackbar(
-        "Error",
-        "Failed to create profile. Please try again.",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   "Error",
+      //   "Failed to create profile. Please try again.",
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error("Failed to create profile. Please try again.");
     } finally {
       isLoading.value = false;
     }

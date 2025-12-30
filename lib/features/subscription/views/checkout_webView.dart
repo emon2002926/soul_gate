@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
+import 'package:soul_gate/core/widgets/snakbar/custom_snackbar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -176,16 +177,21 @@ class _CheckoutWebViewState extends State<CheckoutWebView> {
     // );
 
     // Show success message
-    Get.snackbar(
-      'Payment Successful!',
-      'Your subscription is now active',
-      snackPosition: SnackPosition.TOP,
-      backgroundColor: const Color(0xFF8B7BA8),
-      colorText: Colors.white,
-      duration: const Duration(seconds: 3),
-      icon: const Icon(Icons.check_circle, color: Colors.white),
-      margin: const EdgeInsets.all(16),
-      borderRadius: 12,
+    // Get.snackbar(
+    //   'Payment Successful!',
+    //   'Your subscription is now active',
+    //   snackPosition: SnackPosition.TOP,
+    //   backgroundColor: const Color(0xFF8B7BA8),
+    //   colorText: Colors.white,
+    //   duration: const Duration(seconds: 3),
+    //   icon: const Icon(Icons.check_circle, color: Colors.white),
+    //   margin: const EdgeInsets.all(16),
+    //   borderRadius: 12,
+    // );
+    CustomSnackbar.success(
+      context,
+      title: 'Success',
+      message: 'Your subscription is now active',
     );
   }
 

@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:soul_gate/core/widgets/buttons/app_button.dart';
+import 'package:soul_gate/core/widgets/snackbar/custome_snackbar.dart';
 import 'package:soul_gate/core/widgets/text/app_text.dart';
 import '../../../core/constants/app_assert_image.dart';
 import '../../../core/constants/app_strings.dart';
@@ -18,17 +19,20 @@ class ShuffleScreen extends StatelessWidget {
   final int readingTypeIndex;
   final int deckIndex;
   final int? questionId;
-  ShuffleScreen({super.key, required this.questionText, required this.readingTypeIndex, required this.deckIndex, this.questionId});
+  ShuffleScreen({
+    super.key,
+    required this.questionText,
+    required this.readingTypeIndex,
+    required this.deckIndex,
+    this.questionId,
+  });
   AppStrings appStrings = AppStrings.instance;
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: BuildAppBar(
-        title: "Choose",
-      ),
+      appBar: BuildAppBar(title: "Choose"),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -69,16 +73,22 @@ class ShuffleScreen extends StatelessWidget {
         Obx(() {
           final isShuffling = controller.isShuffling.value;
           return Padding(
-            padding: EdgeInsets.symmetric(horizontal: context.responsiveSize(40)),
+            padding: EdgeInsets.symmetric(
+              horizontal: context.responsiveSize(40),
+            ),
             child: ElevatedButton(
               onPressed: isShuffling
                   ? null
                   : () => controller.shuffleAndDivideCards(),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFD4A574),
-                padding: EdgeInsets.symmetric(vertical: context.responsiveSize(18)),
+                padding: EdgeInsets.symmetric(
+                  vertical: context.responsiveSize(18),
+                ),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(context.responsiveSize(30)),
+                  borderRadius: BorderRadius.circular(
+                    context.responsiveSize(30),
+                  ),
                 ),
                 elevation: 0,
               ),
@@ -86,7 +96,9 @@ class ShuffleScreen extends StatelessWidget {
                 width: double.infinity,
                 child: Center(
                   child: AppText(
-                    data: isShuffling ? appStrings.shufflingBtn : appStrings.shuffleBtn,
+                    data: isShuffling
+                        ? appStrings.shufflingBtn
+                        : appStrings.shuffleBtn,
                     fontSize: context.responsiveFontSize(16),
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
@@ -101,7 +113,6 @@ class ShuffleScreen extends StatelessWidget {
     );
   }
 
-
   Widget _buildCircularCardSpread(BuildContext context) {
     final isShuffling = controller.isShuffling.value;
     final hasShuffled = controller.hasShuffled.value;
@@ -115,9 +126,11 @@ class ShuffleScreen extends StatelessWidget {
     final sweepAngle = math.pi * 0.7;
 
     // Dynamic card dimensions
-    final stackedCardWidth = context.screenWidth * 0.267; // ~100px on 375px screen
+    final stackedCardWidth =
+        context.screenWidth * 0.267; // ~100px on 375px screen
     final stackedCardHeight = stackedCardWidth * 1.5; // Maintain aspect ratio
-    final spreadCardWidth = context.screenWidth * 0.144; // ~54px on 375px screen
+    final spreadCardWidth =
+        context.screenWidth * 0.144; // ~54px on 375px screen
     final spreadCardHeight = spreadCardWidth * 1.5; // Maintain aspect ratio
 
     final containerHeight = context.screenHeight * 0.35; // ~300px responsive
@@ -148,7 +161,9 @@ class ShuffleScreen extends StatelessWidget {
                     width: stackedCardWidth + context.responsiveSize(20),
                     height: stackedCardHeight,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(context.responsiveSize(16)),
+                      borderRadius: BorderRadius.circular(
+                        context.responsiveSize(16),
+                      ),
                       boxShadow: [
                         BoxShadow(
                           color: const Color(0xFFD4A574).withOpacity(0.4),
@@ -171,17 +186,25 @@ class ShuffleScreen extends StatelessWidget {
 
                 final spreadX = radius * math.cos(angle);
                 final spreadY = radius * math.sin(angle);
-                final spreadLeft = (containerWidth / 2) + spreadX - (spreadCardWidth / 2);
-                final spreadTop = (containerHeight / 2) + spreadY - (spreadCardHeight / 2);
+                final spreadLeft =
+                    (containerWidth / 2) + spreadX - (spreadCardWidth / 2);
+                final spreadTop =
+                    (containerHeight / 2) + spreadY - (spreadCardHeight / 2);
 
                 // ORIGINAL stack positioning
-                final stackLeft = stackCenterX + (i * context.responsiveSize(0.8));
-                final stackTop = stackCenterY - (i * context.responsiveSize(0.6));
+                final stackLeft =
+                    stackCenterX + (i * context.responsiveSize(0.8));
+                final stackTop =
+                    stackCenterY - (i * context.responsiveSize(0.6));
 
                 final cardRotation = angle + math.pi / 2;
 
-                final currentWidth = isSpread ? spreadCardWidth : stackedCardWidth;
-                final currentHeight = isSpread ? spreadCardHeight : stackedCardHeight;
+                final currentWidth = isSpread
+                    ? spreadCardWidth
+                    : stackedCardWidth;
+                final currentHeight = isSpread
+                    ? spreadCardHeight
+                    : stackedCardHeight;
 
                 final isSelected = selectedIndex == i;
 
@@ -235,18 +258,19 @@ class ShuffleScreen extends StatelessWidget {
     controller.selectStackForHighlight(stackIndex);
   }
 
-  void _onLayoutCardSelected(int stackIndex,BuildContext context) {
+  void _onLayoutCardSelected(int stackIndex, BuildContext context) {
     if (controller.selectedStackIndex.value == null) {
-      Get.snackbar(
-        'Select a Card',
-        'Please tap a card from the arc above first',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: const Color(0xFFD4A574).withOpacity(0.9),
-        colorText: Colors.white,
-        duration: const Duration(seconds: 2),
-        margin: EdgeInsets.all(context.responsiveSize(16)),
-        borderRadius: context.responsiveSize(12),
-      );
+      // Get.snackbar(
+      //   'Select a Card',
+      //   'Please tap a card from the arc above first',
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: const Color(0xFFD4A574).withOpacity(0.9),
+      //   colorText: Colors.white,
+      //   duration: const Duration(seconds: 2),
+      //   margin: EdgeInsets.all(context.responsiveSize(16)),
+      //   borderRadius: context.responsiveSize(12),
+      // );
+      CustomeSnackbar.info('Please tap a card from the arc above first');
       return;
     }
 
@@ -319,7 +343,9 @@ class ShuffleScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       CircularProgressIndicator(
-                        valueColor: const AlwaysStoppedAnimation(Color(0xFFD4A574)),
+                        valueColor: const AlwaysStoppedAnimation(
+                          Color(0xFFD4A574),
+                        ),
                         strokeWidth: context.responsiveSize(4),
                       ),
                       SizedBox(height: context.spacing16),
@@ -369,12 +395,17 @@ class ShuffleScreen extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isDisabled ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: isSelected ? const Color(0xFFD4A574) : const Color(0xFF8B7355),
+          backgroundColor: isSelected
+              ? const Color(0xFFD4A574)
+              : const Color(0xFF8B7355),
           padding: EdgeInsets.symmetric(vertical: context.responsiveSize(12)),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(context.responsiveSize(12)),
             side: isSelected
-                ? BorderSide(color: Colors.white, width: context.responsiveSize(2))
+                ? BorderSide(
+                    color: Colors.white,
+                    width: context.responsiveSize(2),
+                  )
                 : BorderSide.none,
           ),
           elevation: 0,
@@ -395,22 +426,74 @@ class ShuffleScreen extends StatelessWidget {
       final hasSelected = controller.selectedStackIndex.value != null;
 
       return SizedBox(
-        height: context.heightPercentage(100), // ← ADD THIS - gives more vertical space
+        height: context.heightPercentage(
+          100,
+        ), // ← ADD THIS - gives more vertical space
         child: Stack(
           alignment: Alignment.center,
           children: [
-            _buildPositionedCard(context, 0, top: context.responsiveSize(0), left: context.responsiveSize(130), index: 0, enabled: hasSelected),
-            _buildPositionedCard(context, 1, top: context.responsiveSize(100), left: context.responsiveSize(45), index: 1, enabled: hasSelected),
-            _buildPositionedCard(context, 2, top: context.responsiveSize(100), left: context.responsiveSize(130), index: 2, enabled: hasSelected),
-            _buildPositionedCard(context, 3, top: context.responsiveSize(100), right: context.responsiveSize(118), index: 3, enabled: hasSelected),
-            _buildPositionedCard(context, 4, top: context.responsiveSize(200), left: context.responsiveSize(130), index: 4, enabled: hasSelected),
-            _buildPositionedCard(context, 5, top: context.responsiveSize(142), right: context.responsiveSize(42), index: 5, enabled: hasSelected),
-            _buildPositionedCard(context, 6, top: context.responsiveSize(45), right: context.responsiveSize(42), index: 6, enabled: hasSelected),
+            _buildPositionedCard(
+              context,
+              0,
+              top: context.responsiveSize(0),
+              left: context.responsiveSize(130),
+              index: 0,
+              enabled: hasSelected,
+            ),
+            _buildPositionedCard(
+              context,
+              1,
+              top: context.responsiveSize(100),
+              left: context.responsiveSize(45),
+              index: 1,
+              enabled: hasSelected,
+            ),
+            _buildPositionedCard(
+              context,
+              2,
+              top: context.responsiveSize(100),
+              left: context.responsiveSize(130),
+              index: 2,
+              enabled: hasSelected,
+            ),
+            _buildPositionedCard(
+              context,
+              3,
+              top: context.responsiveSize(100),
+              right: context.responsiveSize(118),
+              index: 3,
+              enabled: hasSelected,
+            ),
+            _buildPositionedCard(
+              context,
+              4,
+              top: context.responsiveSize(200),
+              left: context.responsiveSize(130),
+              index: 4,
+              enabled: hasSelected,
+            ),
+            _buildPositionedCard(
+              context,
+              5,
+              top: context.responsiveSize(142),
+              right: context.responsiveSize(42),
+              index: 5,
+              enabled: hasSelected,
+            ),
+            _buildPositionedCard(
+              context,
+              6,
+              top: context.responsiveSize(45),
+              right: context.responsiveSize(42),
+              index: 6,
+              enabled: hasSelected,
+            ),
           ],
         ),
       );
     });
   }
+
   // 3-card layout - MEDIUM cards
   Widget _build3CardLayout(BuildContext context) {
     return Obx(() {
@@ -420,7 +503,9 @@ class ShuffleScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: context.responsiveSize(30)),
+            padding: EdgeInsets.symmetric(
+              horizontal: context.responsiveSize(30),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [],
@@ -430,11 +515,23 @@ class ShuffleScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildAnimatedLayoutCard(context: context, index: 0, enabled: hasSelected),
+              _buildAnimatedLayoutCard(
+                context: context,
+                index: 0,
+                enabled: hasSelected,
+              ),
               SizedBox(width: context.responsiveSize(18)),
-              _buildAnimatedLayoutCard(context: context, index: 1, enabled: hasSelected),
+              _buildAnimatedLayoutCard(
+                context: context,
+                index: 1,
+                enabled: hasSelected,
+              ),
               SizedBox(width: context.responsiveSize(18)),
-              _buildAnimatedLayoutCard(context: context, index: 2, enabled: hasSelected),
+              _buildAnimatedLayoutCard(
+                context: context,
+                index: 2,
+                enabled: hasSelected,
+              ),
             ],
           ),
         ],
@@ -442,7 +539,11 @@ class ShuffleScreen extends StatelessWidget {
     });
   }
 
-  Widget _buildAnimatedLayoutCard({required BuildContext context, required int index, required bool enabled}) {
+  Widget _buildAnimatedLayoutCard({
+    required BuildContext context,
+    required int index,
+    required bool enabled,
+  }) {
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: 1.0),
       duration: Duration(milliseconds: 600 + (index * 150)),
@@ -452,29 +553,26 @@ class ShuffleScreen extends StatelessWidget {
           scale: value,
           child: Transform.translate(
             offset: Offset(0, context.responsiveSize(30) * (1 - value)),
-            child: Opacity(
-              opacity: value.clamp(0.0, 1.0),
-              child: child,
-            ),
+            child: Opacity(opacity: value.clamp(0.0, 1.0), child: child),
           ),
         );
       },
       child: GestureDetector(
-        onTap: () => _onLayoutCardSelected(index,context),
+        onTap: () => _onLayoutCardSelected(index, context),
         child: _LayoutCard(enabled: enabled, context: context),
       ),
     );
   }
 
   Widget _buildPositionedCard(
-      BuildContext context,
-      int stackIndex, {
-        double? top,
-        double? left,
-        double? right,
-        required int index,
-        required bool enabled,
-      }) {
+    BuildContext context,
+    int stackIndex, {
+    double? top,
+    double? left,
+    double? right,
+    required int index,
+    required bool enabled,
+  }) {
     return Positioned(
       top: top,
       left: left,
@@ -488,15 +586,12 @@ class ShuffleScreen extends StatelessWidget {
             scale: value,
             child: Transform.translate(
               offset: Offset(0, context.responsiveSize(30) * (1 - value)),
-              child: Opacity(
-                opacity: value.clamp(0.0, 1.0),
-                child: child,
-              ),
+              child: Opacity(opacity: value.clamp(0.0, 1.0), child: child),
             ),
           );
         },
         child: GestureDetector(
-          onTap: () => _onLayoutCardSelected(stackIndex,context),
+          onTap: () => _onLayoutCardSelected(stackIndex, context),
           child: _LayoutCard(enabled: enabled, context: context),
         ),
       ),
@@ -546,47 +641,58 @@ class _AnimatedCard extends StatelessWidget {
         width: width,
         height: height,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(isSpread ? context.responsiveSize(7) : context.responsiveSize(12)),
+          borderRadius: BorderRadius.circular(
+            isSpread ? context.responsiveSize(7) : context.responsiveSize(12),
+          ),
           border: Border.all(
             color: isSelected
                 ? const Color(0xFFFFD700)
                 : isTopCard
                 ? const Color(0xFFD4A574)
                 : const Color(0xFFE5D4C1).withOpacity(0.8),
-            width: isSelected ? context.responsiveSize(2.5) : (isTopCard ? context.responsiveSize(2.0) : context.responsiveSize(1.5)),
+            width: isSelected
+                ? context.responsiveSize(2.5)
+                : (isTopCard
+                      ? context.responsiveSize(2.0)
+                      : context.responsiveSize(1.5)),
           ),
           boxShadow: isSelected
               ? [
-            BoxShadow(
-              color: const Color(0xFFFFD700).withOpacity(0.5),
-              blurRadius: context.responsiveSize(12),
-              spreadRadius: context.responsiveSize(2),
-            ),
-          ]
+                  BoxShadow(
+                    color: const Color(0xFFFFD700).withOpacity(0.5),
+                    blurRadius: context.responsiveSize(12),
+                    spreadRadius: context.responsiveSize(2),
+                  ),
+                ]
               : isStacked
               ? [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.4),
-              blurRadius: context.responsiveSize(8),
-              offset: Offset(context.responsiveSize(2), context.responsiveSize(4)),
-            ),
-            if (isTopCard)
-              BoxShadow(
-                color: const Color(0xFFD4A574).withOpacity(0.3),
-                blurRadius: context.responsiveSize(15),
-                spreadRadius: -context.responsiveSize(2),
-              ),
-          ]
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.4),
+                    blurRadius: context.responsiveSize(8),
+                    offset: Offset(
+                      context.responsiveSize(2),
+                      context.responsiveSize(4),
+                    ),
+                  ),
+                  if (isTopCard)
+                    BoxShadow(
+                      color: const Color(0xFFD4A574).withOpacity(0.3),
+                      blurRadius: context.responsiveSize(15),
+                      spreadRadius: -context.responsiveSize(2),
+                    ),
+                ]
               : [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: context.responsiveSize(7),
-              offset: Offset(0, context.responsiveSize(3)),
-            ),
-          ],
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: context.responsiveSize(7),
+                    offset: Offset(0, context.responsiveSize(3)),
+                  ),
+                ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(isSpread ? context.responsiveSize(5) : context.responsiveSize(10)),
+          borderRadius: BorderRadius.circular(
+            isSpread ? context.responsiveSize(5) : context.responsiveSize(10),
+          ),
           child: Stack(
             children: [
               // Card back image
@@ -604,7 +710,9 @@ class _AnimatedCard extends StatelessWidget {
                 Positioned.fill(
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(context.responsiveSize(10)),
+                      borderRadius: BorderRadius.circular(
+                        context.responsiveSize(10),
+                      ),
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -660,7 +768,9 @@ class _LayoutCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(context.responsiveSize(7)),
         border: Border.all(
           color: enabled ? const Color(0xFFD4A574) : const Color(0xFFE5D4C1),
-          width: enabled ? context.responsiveSize(2.2) : context.responsiveSize(1.8),
+          width: enabled
+              ? context.responsiveSize(2.2)
+              : context.responsiveSize(1.8),
         ),
         boxShadow: [
           BoxShadow(
@@ -694,7 +804,9 @@ class _LayoutCard extends StatelessWidget {
                         ? [const Color(0xFFD4A574), const Color(0xFFB8956A)]
                         : [const Color(0xFFB8956A), const Color(0xFF9B7B5E)],
                   ),
-                  borderRadius: BorderRadius.circular(context.responsiveSize(5)),
+                  borderRadius: BorderRadius.circular(
+                    context.responsiveSize(5),
+                  ),
                 ),
                 child: Center(
                   child: Icon(
@@ -711,10 +823,3 @@ class _LayoutCard extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-

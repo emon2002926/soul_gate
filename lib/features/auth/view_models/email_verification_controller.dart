@@ -2,11 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:soul_gate/core/widgets/snackbar/custome_snackbar.dart';
 import 'dart:convert';
 
 import '../../../core/routes/app_routes.dart';
-
-
 
 class EmailVerificationController extends GetxController {
   final TextEditingController emailController = TextEditingController();
@@ -34,24 +33,26 @@ class EmailVerificationController extends GetxController {
 
   Future<void> sendVerificationCode() async {
     if (emailController.text.trim().isEmpty) {
-      Get.snackbar(
-        "Error",
-        "Please enter your email address",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   "Error",
+      //   "Please enter your email address",
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error("Please enter your email address");
       return;
     }
 
     if (!GetUtils.isEmail(emailController.text.trim())) {
-      Get.snackbar(
-        "Error",
-        "Please enter a valid email address",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   "Error",
+      //   "Please enter a valid email address",
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error("Please enter a valid email address");
       return;
     }
 
@@ -62,12 +63,8 @@ class EmailVerificationController extends GetxController {
 
       final response = await http.post(
         url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'email': emailController.text.trim(),
-        }),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': emailController.text.trim()}),
       );
 
       final responseData = jsonDecode(response.body);
@@ -79,34 +76,39 @@ class EmailVerificationController extends GetxController {
         // Show success message
         String message = responseData['message'] ?? 'OTP sent to your email';
 
-        Get.snackbar(
-          "Success",
-          message,
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: const Color(0xFF4CAF50),
-          colorText: Colors.white,
-        );
+        // Get.snackbar(
+        //   "Success",
+        //   message,
+        //   snackPosition: SnackPosition.TOP,
+        //   backgroundColor: const Color(0xFF4CAF50),
+        //   colorText: Colors.white,
+        // );
+        CustomeSnackbar.success(message);
 
         // Navigate to OTP verification
         continueToOtpVerification();
       } else {
         // Handle error response
-        Get.snackbar(
-          "Error",
+        // Get.snackbar(
+        //   "Error",
+        //   responseData['message'] ?? 'Failed to send verification code',
+        //   snackPosition: SnackPosition.TOP,
+        //   backgroundColor: Colors.red,
+        //   colorText: Colors.white,
+        // );
+        CustomeSnackbar.error(
           responseData['message'] ?? 'Failed to send verification code',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
         );
       }
     } catch (e) {
-      Get.snackbar(
-        "Error",
-        "Something went wrong: ${e.toString()}",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   "Error",
+      //   "Something went wrong: ${e.toString()}",
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error("Something went wrong: ${e.toString()}");
     } finally {
       isLoading.value = false;
     }
@@ -114,12 +116,15 @@ class EmailVerificationController extends GetxController {
 
   Future<void> resendCode() async {
     if (resendCountdown.value > 0) {
-      Get.snackbar(
-        "Please Wait",
+      // Get.snackbar(
+      //   "Please Wait",
+      //   "You can resend code in ${resendCountdown.value} seconds",
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.orange,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.warning(
         "You can resend code in ${resendCountdown.value} seconds",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
       );
       return;
     }
@@ -131,12 +136,8 @@ class EmailVerificationController extends GetxController {
 
       final response = await http.post(
         url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'email': emailController.text.trim(),
-        }),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': emailController.text.trim()}),
       );
 
       final responseData = jsonDecode(response.body);
@@ -147,33 +148,38 @@ class EmailVerificationController extends GetxController {
         // Show success message
         String message = responseData['message'] ?? 'OTP sent to your email';
 
-        Get.snackbar(
-          "Code Sent",
-          message,
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.blueAccent,
-          colorText: Colors.white,
-        );
+        // Get.snackbar(
+        //   "Code Sent",
+        //   message,
+        //   snackPosition: SnackPosition.TOP,
+        //   backgroundColor: Colors.blueAccent,
+        //   colorText: Colors.white,
+        // );
+        CustomeSnackbar.success(message);
 
         // Optionally navigate to OTP verification again
         continueToOtpVerification();
       } else {
-        Get.snackbar(
-          "Error",
+        // Get.snackbar(
+        //   "Error",
+        //   responseData['message'] ?? 'Failed to resend code',
+        //   snackPosition: SnackPosition.TOP,
+        //   backgroundColor: Colors.red,
+        //   colorText: Colors.white,
+        // );
+        CustomeSnackbar.error(
           responseData['message'] ?? 'Failed to resend code',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
         );
       }
     } catch (e) {
-      Get.snackbar(
-        "Error",
-        "Something went wrong: ${e.toString()}",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   "Error",
+      //   "Something went wrong: ${e.toString()}",
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error("Something went wrong: ${e.toString()}");
     } finally {
       isLoading.value = false;
     }
@@ -183,13 +189,9 @@ class EmailVerificationController extends GetxController {
     // Navigate to OTP verification with context
     Get.toNamed(
       AppRoutes.otpVerifyPage,
-      arguments: {
-        "isFromSignUp": false,
-        "email": emailController.text.trim(),
-      },
+      arguments: {"isFromSignUp": false, "email": emailController.text.trim()},
     );
   }
-
 
   @override
   void onClose() {

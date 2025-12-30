@@ -8,6 +8,7 @@ import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/text/app_text.dart';
 import '../../../core/widgets/text/text_field/AppTextFiled.dart';
 import '../view_models/sign_up_controller.dart';
+
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
 
@@ -15,7 +16,6 @@ class SignUpScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(SignUpController());
     final appStrings = AppStrings.instance;
-
 
     return Scaffold(
       extendBodyBehindAppBar: true, // Allow body to extend behind AppBar
@@ -53,12 +53,10 @@ class SignUpScreen extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       color: AppColors.instance.titleTextColor,
                       height: 1.0,
-
                     ),
                     SizedBox(height: 28.h),
 
                     // Full Name field
-
 
                     // Email field
                     AppTextField(
@@ -74,35 +72,39 @@ class SignUpScreen extends StatelessWidget {
 
                     SizedBox(height: 20.h),
 
-                    Obx(() => AppTextField(
-                      label: appStrings.password,
-                      controller: controller.passwordController,
-                      obscureText: !controller.isPasswordVisible.value,
-                      suffixIcon: controller.isPasswordVisible.value
-                          ? Icons.visibility_outlined
-                          : Icons.visibility_off_outlined,
-                      onSuffixIconTap: controller.togglePasswordVisibility,
-                      validator: controller.validatePassword,
-                      hintTextColor: Colors.white,
-                      borderColor: AppColors.instance.primaryBtnColor,
-                      fillColor: Colors.transparent,
-                      inputTextColor: Colors.white,
-                    )),
+                    Obx(
+                      () => AppTextField(
+                        label: appStrings.password,
+                        controller: controller.passwordController,
+                        obscureText: !controller.isPasswordVisible.value,
+                        suffixIcon: controller.isPasswordVisible.value
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                        onSuffixIconTap: controller.togglePasswordVisibility,
+                        validator: controller.validatePassword,
+                        hintTextColor: Colors.white,
+                        borderColor: AppColors.instance.primaryBtnColor,
+                        fillColor: Colors.transparent,
+                        inputTextColor: Colors.white,
+                      ),
+                    ),
 
                     SizedBox(height: 20.h),
 
-                    Obx(() => AppTextField(
-                      label: appStrings.confirmPassword,
-                      obscureText: !controller.isPasswordVisible.value,
-                      suffixIcon: controller.isPasswordVisible.value
-                          ? Icons.visibility_outlined
-                          : Icons.visibility_off_outlined,
-                      onSuffixIconTap: controller.togglePasswordVisibility,
-                      hintTextColor: Colors.white,
-                      borderColor: AppColors.instance.primaryBtnColor,
-                      fillColor: Colors.transparent,
-                      inputTextColor: Colors.white,
-                    )),
+                    Obx(
+                      () => AppTextField(
+                        label: appStrings.confirmPassword,
+                        obscureText: !controller.isPasswordVisible.value,
+                        suffixIcon: controller.isPasswordVisible.value
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                        onSuffixIconTap: controller.togglePasswordVisibility,
+                        hintTextColor: Colors.white,
+                        borderColor: AppColors.instance.primaryBtnColor,
+                        fillColor: Colors.transparent,
+                        inputTextColor: Colors.white,
+                      ),
+                    ),
 
                     SizedBox(height: 20.h),
                     Row(
@@ -121,7 +123,7 @@ class SignUpScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 12),
-                         AppText(
+                        AppText(
                           data: appStrings.termsOfServiceAgreement,
                           fontSize: 16,
                           color: Colors.white,
@@ -132,19 +134,21 @@ class SignUpScreen extends StatelessWidget {
                     SizedBox(height: 40.h),
 
                     // Create account button
-                    Obx(() => AppButton(
-                      buttonText: controller.isLoading.value
-                          ? appStrings.createAccountBtn
-                          : appStrings.creatingAccountBtn,
-                      onPressed: controller.isLoading.value
-                          ? null
-                          : controller.submitProfile,
-                      fillColor: AppColors.instance.primaryBtnColor,
-                      buttonHeight: 50,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      isLoading: controller.isLoading.value,
-                    )),
+                    Obx(
+                      () => AppButton(
+                        buttonText: controller.isLoading.value
+                            ? appStrings.creatingAccountBtn
+                            : appStrings.createAccountBtn,
+                        onPressed: controller.isLoading.value
+                            ? null
+                            : controller.submitProfile,
+                        fillColor: AppColors.instance.primaryBtnColor,
+                        buttonHeight: 50,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        isLoading: controller.isLoading.value,
+                      ),
+                    ),
 
                     const SizedBox(height: 20),
 
@@ -152,7 +156,7 @@ class SignUpScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                         AppText(
+                        AppText(
                           data: appStrings.alreadyHaveAccount,
                           fontSize: 16,
                           color: Colors.white,
@@ -161,8 +165,8 @@ class SignUpScreen extends StatelessWidget {
                           onTap: () {
                             Get.back();
                           },
-                          child:  AppText(
-                            data:appStrings.login,
+                          child: AppText(
+                            data: appStrings.login,
                             fontSize: 16,
                             color: Colors.white,
                             fontWeight: FontWeight.w600,

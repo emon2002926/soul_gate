@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
+import 'package:soul_gate/core/widgets/snackbar/custome_snackbar.dart';
 import '../../subscription/views/subscription_page.dart';
 import '../../../core/routes/app_routes.dart';
 import 'package:http/http.dart' as http;
@@ -9,11 +10,6 @@ import 'dart:convert';
 import 'dart:async';
 
 import '../../../core/util/storage_service.dart';
-
-
-
-
-
 
 class OtpVerificationController extends GetxController {
   final otpControllers = List.generate(6, (_) => TextEditingController());
@@ -78,25 +74,27 @@ class OtpVerificationController extends GetxController {
   Future<void> signupVerifyCode() async {
     // Validate OTP length
     if (otpCode.length != 6) {
-      Get.snackbar(
-        "Error",
-        "Please enter the complete 6-digit code.",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   "Error",
+      //   "Please enter the complete 6-digit code.",
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error("Please enter the complete 6-digit code.");
       return;
     }
 
     // Validate email
     if (email.value.isEmpty) {
-      Get.snackbar(
-        "Error",
-        "Email not found. Please try again.",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   "Error",
+      //   "Email not found. Please try again.",
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error("Email not found. Please try again.");
       return;
     }
 
@@ -107,13 +105,11 @@ class OtpVerificationController extends GetxController {
 
       final response = await http.post(
         url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           "email": email.value,
           "otp": otpCode,
-          "otp_type": "signup"
+          "otp_type": "signup",
         }),
       );
 
@@ -133,34 +129,40 @@ class OtpVerificationController extends GetxController {
           await StorageService.saveRefreshToken(refreshToken);
         }
 
-        Get.snackbar(
-          "Success",
+        // Get.snackbar(
+        //   "Success",
+        //   responseData['message'] ?? "Email verified successfully!",
+        //   snackPosition: SnackPosition.TOP,
+        //   backgroundColor: const Color(0xFF4CAF50),
+        //   colorText: Colors.white,
+        // );
+        CustomeSnackbar.success(
           responseData['message'] ?? "Email verified successfully!",
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: const Color(0xFF4CAF50),
-          colorText: Colors.white,
         );
-
         // Navigate to onboarding serving selection (default for all users)
         AppNavigation.push(Get.context!, SubscriptionPage());
       } else {
         // Handle error response
-        Get.snackbar(
-          "Error",
+        // Get.snackbar(
+        //   "Error",
+        //   responseData['message'] ?? 'Invalid or expired OTP code',
+        //   snackPosition: SnackPosition.TOP,
+        //   backgroundColor: Colors.red,
+        //   colorText: Colors.white,
+        // );
+        CustomeSnackbar.error(
           responseData['message'] ?? 'Invalid or expired OTP code',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
         );
       }
     } catch (e) {
-      Get.snackbar(
-        "Error",
-        "Something went wrong: ${e.toString()}",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   "Error",
+      //   "Something went wrong: ${e.toString()}",
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error("Something went wrong: ${e.toString()}");
     } finally {
       isLoading.value = false;
     }
@@ -170,25 +172,27 @@ class OtpVerificationController extends GetxController {
   Future<void> resetPassVerifyCode() async {
     // Validate OTP length
     if (otpCode.length != 6) {
-      Get.snackbar(
-        "Error",
-        "Please enter the complete 6-digit code.",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   "Error",
+      //   "Please enter the complete 6-digit code.",
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error("Please enter the complete 6-digit code.");
       return;
     }
 
     // Validate email
     if (email.value.isEmpty) {
-      Get.snackbar(
-        "Error",
-        "Email not found. Please try again.",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   "Error",
+      //   "Email not found. Please try again.",
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error("Email not found. Please try again.");
       return;
     }
 
@@ -199,9 +203,7 @@ class OtpVerificationController extends GetxController {
 
       final response = await http.post(
         url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'email': email.value,
           'otp': otpCode,
@@ -215,40 +217,44 @@ class OtpVerificationController extends GetxController {
         // Cancel timer on successful verification
         resendTimer?.cancel();
 
-        Get.snackbar(
-          "Success",
+        // Get.snackbar(
+        //   "Success",
+        //   responseData['message'] ?? "Code verified!",
+        //   snackPosition: SnackPosition.TOP,
+        //   backgroundColor: const Color(0xFF4CAF50),
+        //   colorText: Colors.white,
+        // );
+        CustomeSnackbar.success(
           responseData['message'] ?? "Code verified!",
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: const Color(0xFF4CAF50),
-          colorText: Colors.white,
         );
 
         // Navigate to reset password page
         Get.toNamed(
           AppRoutes.resetPassword,
-          arguments: {
-            'email': email.value,
-            'otp': otpCode,
-          },
+          arguments: {'email': email.value, 'otp': otpCode},
         );
       } else {
         // Handle error response
-        Get.snackbar(
-          "Error",
+        // Get.snackbar(
+        //   "Error",
+        //   responseData['message'] ?? 'Invalid or expired OTP code',
+        //   snackPosition: SnackPosition.TOP,
+        //   backgroundColor: Colors.red,
+        //   colorText: Colors.white,
+        // );
+        CustomeSnackbar.error(
           responseData['message'] ?? 'Invalid or expired OTP code',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
         );
       }
     } catch (e) {
-      Get.snackbar(
-        "Error",
-        "Something went wrong: ${e.toString()}",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   "Error",
+      //   "Something went wrong: ${e.toString()}",
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error("Something went wrong: ${e.toString()}");
     } finally {
       isLoading.value = false;
     }
@@ -267,24 +273,28 @@ class OtpVerificationController extends GetxController {
   Future<void> signupResendOtp() async {
     // Check if countdown is still running
     if (resendCountdown.value > 0) {
-      Get.snackbar(
-        "Please Wait",
+      // Get.snackbar(
+      //   "Please Wait",
+      //   "You can resend code in ${resendCountdown.value} seconds",
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.orange,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.warning(
         "You can resend code in ${resendCountdown.value} seconds",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
       );
       return;
     }
 
     if (email.value.isEmpty) {
-      Get.snackbar(
-        "Error",
-        "Email not found. Please try again.",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   "Error",
+      //   "Email not found. Please try again.",
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error("Email not found. Please try again.");
       return;
     }
 
@@ -295,12 +305,8 @@ class OtpVerificationController extends GetxController {
 
       final response = await http.post(
         url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'email': email.value,
-        }),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email.value}),
       );
 
       final responseData = jsonDecode(response.body);
@@ -309,12 +315,15 @@ class OtpVerificationController extends GetxController {
         // Start countdown timer
         startResendCountdown(60);
 
-        Get.snackbar(
-          "OTP Sent",
+        // Get.snackbar(
+        //   "OTP Sent",
+        //   responseData['message'] ?? "Verification code resent to your email.",
+        //   snackPosition: SnackPosition.TOP,
+        //   backgroundColor: Colors.blueAccent,
+        //   colorText: Colors.white,
+        // );
+        CustomeSnackbar.success(
           responseData['message'] ?? "Verification code resent to your email.",
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.blueAccent,
-          colorText: Colors.white,
         );
 
         // Clear existing OTP fields
@@ -324,22 +333,26 @@ class OtpVerificationController extends GetxController {
         // Focus on first field
         focusNodes[0].requestFocus();
       } else {
-        Get.snackbar(
-          "Error",
+        // Get.snackbar(
+        //   "Error",
+        //   responseData['message'] ?? 'Failed to resend OTP',
+        //   snackPosition: SnackPosition.TOP,
+        //   backgroundColor: Colors.red,
+        //   colorText: Colors.white,
+        // );
+        CustomeSnackbar.error(
           responseData['message'] ?? 'Failed to resend OTP',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
         );
       }
     } catch (e) {
-      Get.snackbar(
-        "Error",
-        "Something went wrong: ${e.toString()}",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   "Error",
+      //   "Something went wrong: ${e.toString()}",
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error("Something went wrong: ${e.toString()}");
     } finally {
       isLoading.value = false;
     }
@@ -349,24 +362,28 @@ class OtpVerificationController extends GetxController {
   Future<void> resetPassResendOtp() async {
     // Check if countdown is still running
     if (resendCountdown.value > 0) {
-      Get.snackbar(
-        "Please Wait",
+      // Get.snackbar(
+      //   "Please Wait",
+      //   "You can resend code in ${resendCountdown.value} seconds",
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.orange,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.warning(
         "You can resend code in ${resendCountdown.value} seconds",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
       );
       return;
     }
 
     if (email.value.isEmpty) {
-      Get.snackbar(
-        "Error",
-        "Email not found. Please try again.",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   "Error",
+      //   "Email not found. Please try again.",
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error("Email not found. Please try again.");
       return;
     }
 
@@ -377,12 +394,8 @@ class OtpVerificationController extends GetxController {
 
       final response = await http.post(
         url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'email': email.value,
-        }),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email.value}),
       );
 
       final responseData = jsonDecode(response.body);
@@ -391,12 +404,17 @@ class OtpVerificationController extends GetxController {
         // Start countdown timer
         startResendCountdown(60);
 
-        Get.snackbar(
-          "OTP Sent",
-          responseData['message'] ?? "Password reset code resent to your email.",
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.blueAccent,
-          colorText: Colors.white,
+        // Get.snackbar(
+        //   "OTP Sent",
+        //   responseData['message'] ??
+        //       "Password reset code resent to your email.",
+        //   snackPosition: SnackPosition.TOP,
+        //   backgroundColor: Colors.blueAccent,
+        //   colorText: Colors.white,
+        // );
+        CustomeSnackbar.success(
+          responseData['message'] ??
+              "Password reset code resent to your email.",
         );
 
         // Clear existing OTP fields
@@ -406,22 +424,26 @@ class OtpVerificationController extends GetxController {
         // Focus on first field
         focusNodes[0].requestFocus();
       } else {
-        Get.snackbar(
-          "Error",
+        // Get.snackbar(
+        //   "Error",
+        //   responseData['message'] ?? 'Failed to resend OTP',
+        //   snackPosition: SnackPosition.TOP,
+        //   backgroundColor: Colors.red,
+        //   colorText: Colors.white,
+        // );
+        CustomeSnackbar.error(
           responseData['message'] ?? 'Failed to resend OTP',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
         );
       }
     } catch (e) {
-      Get.snackbar(
-        "Error",
-        "Something went wrong: ${e.toString()}",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   "Error",
+      //   "Something went wrong: ${e.toString()}",
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      // );
+      CustomeSnackbar.error("Something went wrong: ${e.toString()}");
     } finally {
       isLoading.value = false;
     }
@@ -439,8 +461,3 @@ class OtpVerificationController extends GetxController {
     super.onClose();
   }
 }
-
-
-
-
-

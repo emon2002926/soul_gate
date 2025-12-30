@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
+import 'package:soul_gate/core/widgets/snackbar/custome_snackbar.dart';
 import 'package:soul_gate/features/profile/views/change_password_page.dart';
 
 import '../views/edit_profile_page.dart';

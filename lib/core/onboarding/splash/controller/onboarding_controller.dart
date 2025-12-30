@@ -7,21 +7,11 @@ import '../../../constants/app_assert_image.dart';
 import '../../../../features/card_shuffle/views/portal_entrance_screen.dart';
 // ==================== Models ====================
 
-enum OnboardingPageType {
-  standard,
-  selectionPage,
-}
+enum OnboardingPageType { standard, selectionPage }
 
-enum ReadingType {
-  audioAndText,
-  textOnly,
-}
+enum ReadingType { audioAndText, textOnly }
 
-enum DeckType {
-  classic,
-  mystical,
-  celestial,
-}
+enum DeckType { classic, mystical, celestial }
 
 class OnboardingData {
   final String title;
@@ -109,8 +99,8 @@ final List<OnboardingData> onboardingPages = [
 class OnboardingController extends GetxController {
   final pageController = PageController();
   final currentPage = 0.obs;
-  final selectedReadingType = Rx<ReadingType?>(null);
-  final selectedDeck = Rx<DeckType?>(null);
+  final selectedReadingType = Rx<ReadingType?>(ReadingType.textOnly);
+  final selectedDeck = Rx<DeckType?>(DeckType.classic);
 
   void nextPage() {
     if (currentPage.value < onboardingPages.length - 1) {

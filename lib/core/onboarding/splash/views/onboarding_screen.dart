@@ -6,8 +6,6 @@ import '../../../constants/app_strings.dart';
 import '../../../widgets/buttons/app_button.dart';
 import '../controller/onboarding_controller.dart';
 
-
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -36,7 +34,8 @@ class OnboardingScreen extends StatelessWidget {
               Expanded(
                 child: PageView.builder(
                   controller: controller.pageController,
-                  onPageChanged: (index) => controller.currentPage.value = index,
+                  onPageChanged: (index) =>
+                      controller.currentPage.value = index,
                   itemCount: onboardingPages.length,
                   itemBuilder: (context, index) {
                     final data = onboardingPages[index];
@@ -53,33 +52,37 @@ class OnboardingScreen extends StatelessWidget {
               ),
 
               // Page Indicator
-              Obx(() => Padding(
-                padding: EdgeInsets.only(bottom: _getResponsiveSize(context, 12)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(
-                    onboardingPages.length,
-                        (index) => AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      margin: EdgeInsets.symmetric(
-                        horizontal: _getResponsiveSize(context, 4),
-                      ),
-                      width: controller.currentPage.value == index
-                          ? _getResponsiveSize(context, 24)
-                          : _getResponsiveSize(context, 8),
-                      height: _getResponsiveSize(context, 8),
-                      decoration: BoxDecoration(
-                        color: controller.currentPage.value == index
-                            ? const Color(0xFFD4AF37)
-                            : Colors.white.withOpacity(0.4),
-                        borderRadius: BorderRadius.circular(
-                          _getResponsiveSize(context, 4),
+              Obx(
+                () => Padding(
+                  padding: EdgeInsets.only(
+                    bottom: _getResponsiveSize(context, 12),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      onboardingPages.length,
+                      (index) => AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        margin: EdgeInsets.symmetric(
+                          horizontal: _getResponsiveSize(context, 4),
+                        ),
+                        width: controller.currentPage.value == index
+                            ? _getResponsiveSize(context, 24)
+                            : _getResponsiveSize(context, 8),
+                        height: _getResponsiveSize(context, 8),
+                        decoration: BoxDecoration(
+                          color: controller.currentPage.value == index
+                              ? const Color(0xFFD4AF37)
+                              : Colors.white.withOpacity(0.4),
+                          borderRadius: BorderRadius.circular(
+                            _getResponsiveSize(context, 4),
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              )),
+              ),
 
               // Bottom Button
               Padding(
@@ -87,8 +90,11 @@ class OnboardingScreen extends StatelessWidget {
                   horizontal: _getResponsiveSize(context, 24),
                 ),
                 child: Obx(() {
-                  final isLastPage = controller.currentPage.value == onboardingPages.length - 1;
-                  final currentPageData = onboardingPages[controller.currentPage.value];
+                  final isLastPage =
+                      controller.currentPage.value ==
+                      onboardingPages.length - 1;
+                  final currentPageData =
+                      onboardingPages[controller.currentPage.value];
 
                   return AppButton(
                     buttonText: currentPageData.buttonText,
@@ -180,34 +186,36 @@ class _OnboardingPage extends StatelessWidget {
 
             // Features List (if exists)
             if (data.features != null) ...[
-              ...data.features!.map((feature) => Padding(
-                padding: EdgeInsets.only(
-                  bottom: _getResponsiveSize(context, 20),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(
-                      feature.icon,
-                      color: Colors.white.withOpacity(0.9),
-                      size: _getResponsiveSize(context, 20),
-                    ),
-                    SizedBox(width: _getResponsiveSize(context, 14)),
-                    Expanded(
-                      child: Text(
-                        feature.text.toUpperCase(),
-                        style: GoogleFonts.cinzel(
-                          fontSize: _getResponsiveFontSize(context, 13),
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white.withOpacity(0.95),
-                          letterSpacing: 1.3,
-                          height: 1.4,
+              ...data.features!.map(
+                (feature) => Padding(
+                  padding: EdgeInsets.only(
+                    bottom: _getResponsiveSize(context, 20),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(
+                        feature.icon,
+                        color: Colors.white.withOpacity(0.9),
+                        size: _getResponsiveSize(context, 20),
+                      ),
+                      SizedBox(width: _getResponsiveSize(context, 14)),
+                      Expanded(
+                        child: Text(
+                          feature.text.toUpperCase(),
+                          style: GoogleFonts.cinzel(
+                            fontSize: _getResponsiveFontSize(context, 13),
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white.withOpacity(0.95),
+                            letterSpacing: 1.3,
+                            height: 1.4,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              )),
+              ),
             ],
 
             // Description (if exists)
@@ -248,10 +256,7 @@ class _SelectionPage extends StatelessWidget {
   final OnboardingData data;
   final OnboardingController controller;
 
-  const _SelectionPage({
-    required this.data,
-    required this.controller,
-  });
+  const _SelectionPage({required this.data, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -279,30 +284,37 @@ class _SelectionPage extends StatelessWidget {
           SizedBox(height: _getResponsiveSize(context, 20)),
 
           // Reading Type Selection Cards
-          Obx(() => Row(
-            children: [
-              // Audio & Text Reading
-              Expanded(
-                child: _SelectionCard(
-                  icon: Icons.graphic_eq_rounded,
-                  label: 'Audio & Text Reading',
-                  isSelected: controller.selectedReadingType.value == ReadingType.audioAndText,
-                  onTap: () => controller.selectReadingType(ReadingType.audioAndText),
+          Obx(
+            () => Row(
+              children: [
+                // Text Reading
+                Expanded(
+                  child: _SelectionCard(
+                    icon: Icons.menu_book_rounded,
+                    label: 'Text Reading',
+                    isSelected:
+                        controller.selectedReadingType.value ==
+                        ReadingType.textOnly,
+                    onTap: () =>
+                        controller.selectReadingType(ReadingType.textOnly),
+                  ),
                 ),
-              ),
-              SizedBox(width: _getResponsiveSize(context, 12)),
-
-              // Text Reading
-              Expanded(
-                child: _SelectionCard(
-                  icon: Icons.menu_book_rounded,
-                  label: 'Text Reading',
-                  isSelected: controller.selectedReadingType.value == ReadingType.textOnly,
-                  onTap: () => controller.selectReadingType(ReadingType.textOnly),
+                SizedBox(width: _getResponsiveSize(context, 12)),
+                // Audio & Text Reading
+                Expanded(
+                  child: _SelectionCard(
+                    icon: Icons.graphic_eq_rounded,
+                    label: 'Audio & Text Reading',
+                    isSelected:
+                        controller.selectedReadingType.value ==
+                        ReadingType.audioAndText,
+                    onTap: () =>
+                        controller.selectReadingType(ReadingType.audioAndText),
+                  ),
                 ),
-              ),
-            ],
-          )),
+              ],
+            ),
+          ),
 
           SizedBox(height: _getResponsiveSize(context, 30)),
 
@@ -321,31 +333,35 @@ class _SelectionPage extends StatelessWidget {
           SizedBox(height: _getResponsiveSize(context, 18)),
 
           // Deck Cards
-          Obx(() => Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _DeckCard(
-                deckType: DeckType.classic,
-                imagePath: AppAssertImage.instance.deck1,
-                isSelected: controller.selectedDeck.value == DeckType.classic,
-                onTap: () => controller.selectDeck(DeckType.classic),
-              ),
-              SizedBox(width: _getResponsiveSize(context, 10)),
-              _DeckCard(
-                deckType: DeckType.mystical,
-                imagePath: AppAssertImage.instance.deck2,
-                isSelected: controller.selectedDeck.value == DeckType.mystical,
-                onTap: () => controller.selectDeck(DeckType.mystical),
-              ),
-              SizedBox(width: _getResponsiveSize(context, 10)),
-              _DeckCard(
-                deckType: DeckType.celestial,
-                imagePath: AppAssertImage.instance.deck3,
-                isSelected: controller.selectedDeck.value == DeckType.celestial,
-                onTap: () => controller.selectDeck(DeckType.celestial),
-              ),
-            ],
-          )),
+          Obx(
+            () => Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _DeckCard(
+                  deckType: DeckType.classic,
+                  imagePath: AppAssertImage.instance.deck1,
+                  isSelected: controller.selectedDeck.value == DeckType.classic,
+                  onTap: () => controller.selectDeck(DeckType.classic),
+                ),
+                SizedBox(width: _getResponsiveSize(context, 10)),
+                _DeckCard(
+                  deckType: DeckType.mystical,
+                  imagePath: AppAssertImage.instance.deck2,
+                  isSelected:
+                      controller.selectedDeck.value == DeckType.mystical,
+                  onTap: () => controller.selectDeck(DeckType.mystical),
+                ),
+                SizedBox(width: _getResponsiveSize(context, 10)),
+                _DeckCard(
+                  deckType: DeckType.celestial,
+                  imagePath: AppAssertImage.instance.deck3,
+                  isSelected:
+                      controller.selectedDeck.value == DeckType.celestial,
+                  onTap: () => controller.selectDeck(DeckType.celestial),
+                ),
+              ],
+            ),
+          ),
 
           SizedBox(height: _getResponsiveSize(context, 100)),
         ],
@@ -389,9 +405,7 @@ class _SelectionCard extends StatelessWidget {
         padding: EdgeInsets.all(_getResponsiveSize(context, 10)),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(
-            _getResponsiveSize(context, 16),
-          ),
+          borderRadius: BorderRadius.circular(_getResponsiveSize(context, 16)),
           border: Border.all(
             color: isSelected
                 ? const Color(0xFFD4AF37)
@@ -486,12 +500,10 @@ class _DeckCard extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
-        width: _getResponsiveSize(context, 95),  // Increased from 80
+        width: _getResponsiveSize(context, 95), // Increased from 80
         height: _getResponsiveSize(context, 135), // Increased from 110
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(
-            _getResponsiveSize(context, 12),
-          ),
+          borderRadius: BorderRadius.circular(_getResponsiveSize(context, 12)),
           border: Border.all(
             color: isSelected
                 ? const Color(0xFFD4AF37)
@@ -500,12 +512,12 @@ class _DeckCard extends StatelessWidget {
           ),
           boxShadow: isSelected
               ? [
-            BoxShadow(
-              color: const Color(0xFFD4AF37).withOpacity(0.4),
-              blurRadius: 12,
-              spreadRadius: 2,
-            ),
-          ]
+                  BoxShadow(
+                    color: const Color(0xFFD4AF37).withOpacity(0.4),
+                    blurRadius: 12,
+                    spreadRadius: 2,
+                  ),
+                ]
               : null,
         ),
         child: Stack(
@@ -526,10 +538,10 @@ class _DeckCard extends StatelessWidget {
             // Checkmark Overlay (if selected)
             if (isSelected)
               Positioned(
-                top: _getResponsiveSize(context, 6),  // Increased from 5
+                top: _getResponsiveSize(context, 6), // Increased from 5
                 right: _getResponsiveSize(context, 6), // Increased from 5
                 child: Container(
-                  width: _getResponsiveSize(context, 22),  // Increased from 18
+                  width: _getResponsiveSize(context, 22), // Increased from 18
                   height: _getResponsiveSize(context, 22), // Increased from 18
                   decoration: const BoxDecoration(
                     color: Color(0xFFD4AF37),

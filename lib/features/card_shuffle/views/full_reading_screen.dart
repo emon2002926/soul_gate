@@ -14,6 +14,7 @@ import '../../../core/widgets/text/app_text.dart';
 import '../../../core/util/storage_service.dart';
 import '../../../core/util/app_navigation.dart';
 import 'package:get/get.dart';
+
 class FullReadingScreen extends StatelessWidget {
   final String questionText;
   final String finalMessage;
@@ -22,7 +23,8 @@ class FullReadingScreen extends StatelessWidget {
   FullReadingScreen({
     super.key,
     required this.finalMessage,
-    required this.audioUrl, required this.questionText,
+    required this.audioUrl,
+    required this.questionText,
   });
 
   AppStrings appStrings = AppStrings.instance;
@@ -53,7 +55,10 @@ class FullReadingScreen extends StatelessWidget {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.account_circle_outlined, color: Colors.white),
+            icon: const Icon(
+              Icons.account_circle_outlined,
+              color: Colors.white,
+            ),
             onPressed: () {},
           ),
         ],
@@ -87,7 +92,10 @@ class FullReadingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildReadingCard(BuildContext context, FullReadingController controller) {
+  Widget _buildReadingCard(
+    BuildContext context,
+    FullReadingController controller,
+  ) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -147,22 +155,24 @@ class FullReadingScreen extends StatelessWidget {
                     child: IconButton(
                       icon: isLoading
                           ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation(Colors.white),
-                        ),
-                      )
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation(
+                                  Colors.white,
+                                ),
+                              ),
+                            )
                           : Icon(
-                        isPlaying ? Icons.stop : Icons.volume_up,
-                        color: Colors.white,
-                      ),
+                              isPlaying ? Icons.stop : Icons.volume_up,
+                              color: Colors.white,
+                            ),
                       onPressed: isLoading
                           ? null
                           : () {
-                        controller.playAudio();
-                      },
+                              controller.playAudio();
+                            },
                     ),
                   );
                 }),
@@ -222,7 +232,8 @@ class FullReadingController extends GetxController {
     audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
       if (state == PlayerState.playing) {
         isSpeaking.value = true;
-      } else if (state == PlayerState.completed || state == PlayerState.stopped) {
+      } else if (state == PlayerState.completed ||
+          state == PlayerState.stopped) {
         isSpeaking.value = false;
       }
     });
@@ -268,17 +279,18 @@ class FullReadingController extends GetxController {
       debugPrint('🔊 Full audio URL: $fullUrl');
 
       // Download the file
-      final response = await http.get(
-        Uri.parse(fullUrl),
-        headers: {
-          'Authorization': 'Bearer ${StorageService.accessToken}',
-        },
-      ).timeout(const Duration(seconds: 30));
+      final response = await http
+          .get(
+            Uri.parse(fullUrl),
+            headers: {'Authorization': 'Bearer ${StorageService.accessToken}'},
+          )
+          .timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         // Get temporary directory
         final tempDir = await getTemporaryDirectory();
-        final fileName = 'final_reading_${DateTime.now().millisecondsSinceEpoch}.mp3';
+        final fileName =
+            'final_reading_${DateTime.now().millisecondsSinceEpoch}.mp3';
         final filePath = '${tempDir.path}/$fileName';
 
         // Write file

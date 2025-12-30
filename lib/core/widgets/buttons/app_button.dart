@@ -96,61 +96,61 @@ class AppButton extends StatelessWidget {
             ),
             child: isLoading
                 ? Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  height: _getResponsiveSize(context, 20),
-                  width: _getResponsiveSize(context, 20),
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation(
-                      textColor ?? Colors.white,
-                    ),
-                    strokeWidth: 2.5,
-                  ),
-                ),
-                if (loadingText != null) ...[
-                  SizedBox(width: _getResponsiveSize(context, 12)),
-                  Text(
-                    loadingText!,
-                    style: TextStyle(
-                      color: textColor ?? Colors.white,
-                      fontSize: responsiveFontSize,
-                      fontWeight: fontWeight ?? FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ],
-            )
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        height: _getResponsiveSize(context, 20),
+                        width: _getResponsiveSize(context, 20),
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation(
+                            textColor ?? Colors.white,
+                          ),
+                          strokeWidth: 2.5,
+                        ),
+                      ),
+                      if (loadingText != null) ...[
+                        SizedBox(width: _getResponsiveSize(context, 12)),
+                        Text(
+                          loadingText!,
+                          style: TextStyle(
+                            color: textColor ?? Colors.white,
+                            fontSize: responsiveFontSize,
+                            fontWeight: fontWeight ?? FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ],
+                  )
                 : Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (prefixIcon != null) ...[
-                  Icon(
-                    prefixIcon,
-                    color: textColor ?? Colors.white,
-                    size: responsiveIconSize,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (prefixIcon != null) ...[
+                        Icon(
+                          prefixIcon,
+                          color: textColor ?? Colors.white,
+                          size: responsiveIconSize,
+                        ),
+                        SizedBox(width: _getResponsiveSize(context, 8)),
+                      ],
+                      AppText(
+                        data: buttonText,
+                        color: textColor ?? Colors.white,
+                        fontSize: fontSize ?? 16,
+                        fontWeight: fontWeight ?? FontWeight.w600,
+                        useResponsiveFontSize: useResponsiveSize,
+                      ),
+                      if (suffixIcon != null) ...[
+                        SizedBox(width: _getResponsiveSize(context, 8)),
+                        Icon(
+                          suffixIcon,
+                          color: textColor ?? Colors.white,
+                          size: responsiveIconSize,
+                        ),
+                      ],
+                    ],
                   ),
-                  SizedBox(width: _getResponsiveSize(context, 8)),
-                ],
-                AppText(
-                  data: buttonText,
-                  color: textColor ?? Colors.white,
-                  fontSize: fontSize ?? 16,
-                  fontWeight: fontWeight ?? FontWeight.w600,
-                  useResponsiveFontSize: useResponsiveSize,
-                ),
-                if (suffixIcon != null) ...[
-                  SizedBox(width: _getResponsiveSize(context, 8)),
-                  Icon(
-                    suffixIcon,
-                    color: textColor ?? Colors.white,
-                    size: responsiveIconSize,
-                  ),
-                ],
-              ],
-            ),
           ),
         ),
       ),
@@ -176,67 +176,67 @@ class AppButton extends StatelessWidget {
     Color? cardColor,
   }) {
     return Obx(
-          () => isLoading.value
+      () => isLoading.value
           ? Container(
-        color: (backgroundColor ?? Colors.black).withOpacity(0.5),
-        child: Center(
-          child: Builder(
-            builder: (context) {
-              // Use local helper function for static method
-              double getResponsiveSize(double size) {
-                final screenWidth = MediaQuery.of(context).size.width;
-                return screenWidth * (size / 375);
-              }
+              color: (backgroundColor ?? Colors.black).withOpacity(0.5),
+              child: Center(
+                child: Builder(
+                  builder: (context) {
+                    // Use local helper function for static method
+                    double getResponsiveSize(double size) {
+                      final screenWidth = MediaQuery.of(context).size.width;
+                      return screenWidth * (size / 375);
+                    }
 
-              return Container(
-                padding: EdgeInsets.all(getResponsiveSize(24)),
-                margin: EdgeInsets.symmetric(
-                  horizontal: getResponsiveSize(40),
-                ),
-                decoration: BoxDecoration(
-                  color: cardColor ?? const Color(0xFFF5F5DC),
-                  borderRadius: BorderRadius.circular(
-                    getResponsiveSize(16),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 20,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(
-                      height: getResponsiveSize(40),
-                      width: getResponsiveSize(40),
-                      child: const CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation(
-                          Color(0xFF9B7EBD),
+                    return Container(
+                      padding: EdgeInsets.all(getResponsiveSize(24)),
+                      margin: EdgeInsets.symmetric(
+                        horizontal: getResponsiveSize(40),
+                      ),
+                      decoration: BoxDecoration(
+                        color: cardColor ?? const Color(0xFFF5F5DC),
+                        borderRadius: BorderRadius.circular(
+                          getResponsiveSize(16),
                         ),
-                        strokeWidth: 3,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
                       ),
-                    ),
-                    SizedBox(height: getResponsiveSize(20)),
-                    Text(
-                      loadingMessage,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: getResponsiveSize(16),
-                        fontWeight: FontWeight.w500,
-                        color: const Color(0xFF4A4A4A),
-                        letterSpacing: 0.5,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            height: getResponsiveSize(40),
+                            width: getResponsiveSize(40),
+                            child: const CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation(
+                                Color(0xFF9B7EBD),
+                              ),
+                              strokeWidth: 3,
+                            ),
+                          ),
+                          SizedBox(height: getResponsiveSize(20)),
+                          Text(
+                            loadingMessage,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: getResponsiveSize(16),
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF4A4A4A),
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
-              );
-            },
-          ),
-        ),
-      )
+              ),
+            )
           : const SizedBox.shrink(),
     );
   }
