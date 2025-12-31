@@ -21,6 +21,7 @@ class PortalEntranceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppStrings appStrings = AppStrings.instance;
+    print("sfdjkgh: $readingTypeIndex, $deckIndex");
 
     return Scaffold(
       body: Container(

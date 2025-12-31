@@ -352,7 +352,7 @@ class ShuffleScreen extends StatelessWidget {
             );
           }),
         ),
-        SizedBox(height: context.responsiveSize(30)),
+        SizedBox(height: context.responsiveSize(20)),
       ],
     );
   }
@@ -395,7 +395,7 @@ class ShuffleScreen extends StatelessWidget {
       final hasSelected = controller.selectedStackIndex.value != null;
 
       return SizedBox(
-        height: context.heightPercentage(100), // ← ADD THIS - gives more vertical space
+        height: context.heightPercentage(140), // ← ADD THIS - gives more vertical space
         child: Stack(
           alignment: Alignment.center,
           children: [
