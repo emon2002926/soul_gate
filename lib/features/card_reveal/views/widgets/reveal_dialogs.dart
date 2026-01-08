@@ -4,9 +4,7 @@ import 'package:get/get.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/text/app_text.dart';
 
-/// Dialog widgets for Reveal Screen
 class RevealDialogs {
-  /// Show retry dialog with automatic retry option
   static void showRetryDialog({
     required String message,
     required int currentAttempt,

@@ -9,14 +9,7 @@ import 'package:soul_gate/core/util/storage_service.dart';
 import '../../card_shuffle/views/full_reading_screen.dart';
 import '../models/tarot_response.dart';
 import '../views/widgets/reveal_dialogs.dart';
-
-import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-import 'package:audioplayers/audioplayers.dart';
 import 'package:path_provider/path_provider.dart';
 
 class RevealController extends GetxController {

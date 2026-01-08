@@ -711,10 +711,3 @@ class _LayoutCard extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-

@@ -1,7 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
 import 'package:soul_gate/core/widgets/text/app_text.dart';
 import '../../../../features/card_shuffle/views/shuffle_screen.dart';

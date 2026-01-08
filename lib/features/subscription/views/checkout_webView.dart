@@ -2,16 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:get/get.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 // Import your navigation utilities
 // import 'package:your_app/utils/app_navigation.dart';
 
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 

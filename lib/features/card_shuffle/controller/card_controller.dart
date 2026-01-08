@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../../../core/constants/app_assert_image.dart';
+
 class CardController extends GetxController {
   // UI states only
   var isShuffling = false.obs;
@@ -11,6 +13,28 @@ class CardController extends GetxController {
 
   // Reading type: 7 or 3
   var readingCardCount = 7.obs;
+
+  // Add deck index
+  var deckIndex = 0.obs;
+
+  // Method to set deck index
+  void setDeckIndex(int index) {
+    deckIndex.value = index;
+  }
+
+  // Get the appropriate deck image based on deckIndex
+  String getDeckImage() {
+    switch (deckIndex.value) {
+      case 0:
+        return AppAssertImage.instance.deck1;
+      case 1:
+        return AppAssertImage.instance.deck2;
+      case 2:
+        return AppAssertImage.instance.deck3;
+      default:
+        return AppAssertImage.instance.deck1;
+    }
+  }
 
   // Set reading type and reshuffle animation
   Future<void> setReadingType(int cardCount) async {

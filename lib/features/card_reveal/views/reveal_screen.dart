@@ -17,14 +17,16 @@ class RevealScreen extends StatelessWidget {
   final int deckIndex;
   final int? questionId;
   final int cardCount;
-   RevealScreen({super.key, required this.questionText, required this.readingTypeIndex, required this.deckIndex, this.questionId, required this.cardCount});
+  RevealScreen({super.key, required this.questionText, required this.readingTypeIndex, required this.deckIndex, this.questionId, required this.cardCount});
   AppStrings appStrings = AppStrings();
+
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(RevealController());
     controller.delayedFetchInterpretation(questionText, cardCount);
-
+    print('Reading Type Index: $readingTypeIndex');
+    print('Deck Index: $deckIndex');
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: const Color(0xFFF5F3EE),
@@ -593,7 +595,7 @@ class _CardFront extends StatelessWidget {
 
   Widget _buildCardImage() {
     // Construct full image URL from card.image path
-    final imageUrl = '${card.image}';
+    final imageUrl = card.image;
 
     if (card.image.isEmpty) {
       return _buildCardPlaceholder();

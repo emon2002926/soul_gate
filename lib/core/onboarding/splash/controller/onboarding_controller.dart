@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:soul_gate/core/constants/app_strings.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
 
+import '../../../../features/card_shuffle/views/ask_oracle_screen.dart';
 import '../../../constants/app_assert_image.dart';
-import '../../../../features/card_shuffle/views/portal_entrance_screen.dart';
 // ==================== Models ====================
 
 enum OnboardingPageType {
@@ -69,48 +69,49 @@ final List<OnboardingData> onboardingPages = [
   ),
 
   // Page 3
-  OnboardingData(
-    title: AppStrings.instance.innerWorldTitle,
-    features: [
-      FeatureItem(
-        icon: Icons.auto_awesome,
-        text: AppStrings.instance.personalizedReadings,
-      ),
-      FeatureItem(
-        icon: Icons.graphic_eq,
-        text: AppStrings.instance.voiceOrText,
-      ),
-      FeatureItem(
-        icon: Icons.chat_bubble_outline,
-        text: AppStrings.instance.guideMessages,
-      ),
-      FeatureItem(
-        icon: Icons.all_inclusive,
-        text: AppStrings.instance.lifeInsights,
-      ),
-      FeatureItem(
-        icon: Icons.verified_user_outlined,
-        text: AppStrings.instance.secureSpace,
-      ),
-    ],
-    buttonText: AppStrings.instance.continueText,
-  ),
+  // OnboardingData(
+  //   title: AppStrings.instance.innerWorldTitle,
+  //   features: [
+  //     FeatureItem(
+  //       icon: Icons.auto_awesome,
+  //       text: AppStrings.instance.personalizedReadings,
+  //     ),
+  //     FeatureItem(
+  //       icon: Icons.graphic_eq,
+  //       text: AppStrings.instance.voiceOrText,
+  //     ),
+  //     FeatureItem(
+  //       icon: Icons.chat_bubble_outline,
+  //       text: AppStrings.instance.guideMessages,
+  //     ),
+  //     FeatureItem(
+  //       icon: Icons.all_inclusive,
+  //       text: AppStrings.instance.lifeInsights,
+  //     ),
+  //     FeatureItem(
+  //       icon: Icons.verified_user_outlined,
+  //       text: AppStrings.instance.secureSpace,
+  //     ),
+  //   ],
+  //   buttonText: AppStrings.instance.continueText,
+  // ),
 
   // Page 4
-  OnboardingData(
-    title: AppStrings.instance.freeReadingsTitle,
-    description: AppStrings.instance.freeReadingsDescription,
-    buttonText: AppStrings.instance.continueText,
-  ),
+  // OnboardingData(
+  //   title: AppStrings.instance.freeReadingsTitle,
+  //   description: AppStrings.instance.freeReadingsDescription,
+  //   buttonText: AppStrings.instance.continueText,
+  // ),
 ];
 
-// ==================== Controller ====================
 
 class OnboardingController extends GetxController {
   final pageController = PageController();
   final currentPage = 0.obs;
-  final selectedReadingType = Rx<ReadingType?>(null);
-  final selectedDeck = Rx<DeckType?>(null);
+
+  // Set default selections
+  final selectedReadingType = Rx<ReadingType>(ReadingType.audioAndText);
+  final selectedDeck = Rx<DeckType>(DeckType.classic);
 
   void nextPage() {
     if (currentPage.value < onboardingPages.length - 1) {
@@ -131,18 +132,19 @@ class OnboardingController extends GetxController {
 
   void completeOnboarding() {
     // Convert enum to index
-    final readingTypeIndex = selectedReadingType.value?.index ?? 0;
-    final deckIndex = selectedDeck.value?.index ?? 0;
+    final readingTypeIndex = selectedReadingType.value.index;
+    final deckIndex = selectedDeck.value.index;
 
-    print('Reading Type Index: $readingTypeIndex');
-    print('Deck Index: $deckIndex');
+    // print('Reading Type Index: $readingTypeIndex');
+    // print('Deck Index: $deckIndex');
 
     // Navigate with parameters
     AppNavigation.push(
       Get.context!,
-      PortalEntranceScreen(
+      AskOracleScreen(
         readingTypeIndex: readingTypeIndex,
         deckIndex: deckIndex,
+        isPlanB: true,
       ),
     );
   }

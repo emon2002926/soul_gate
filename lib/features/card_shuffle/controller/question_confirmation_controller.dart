@@ -26,6 +26,7 @@ class OracleQuestion {
     );
   }
 }
+
 class AskOracleController extends GetxController {
   final questions = <OracleQuestion>[].obs;
   final isLoading = true.obs;
@@ -62,9 +63,8 @@ class AskOracleController extends GetxController {
           final List questionsList = data['questions'] ?? [];
           print('Questions Count: ${questionsList.length}');
 
-          questions.value = questionsList
-              .map((q) => OracleQuestion.fromJson(q))
-              .toList();
+          questions.value =
+              questionsList.map((q) => OracleQuestion.fromJson(q)).toList();
 
           print('Loaded ${questions.length} questions');
         } else {
@@ -105,12 +105,13 @@ class AskOracleController extends GetxController {
     }
   }
 
-  void selectQuestion(OracleQuestion question, int readingTypeIndex, int deckIndex) {
+  void selectQuestion(
+      OracleQuestion question, int readingTypeIndex, int deckIndex) {
     Get.to(
           () => QuestionConfirmationScreen(
-            readingTypeIndex: readingTypeIndex,
-            deckIndex: deckIndex,
-          ),
+        readingTypeIndex: readingTypeIndex,
+        deckIndex: deckIndex,
+      ),
       arguments: question,
     );
   }
@@ -153,11 +154,9 @@ class QuestionConfirmationController extends GetxController {
     AppNavigation.push(
       Get.context!,
       ShortBlessingScreen(
-        // questionId: selectedQuestion.id,
         questionText: question,
         readingTypeIndex: readingTypeIndex,
         deckIndex: deckIndex,
-
       ),
     );
   }

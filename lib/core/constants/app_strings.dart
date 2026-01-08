@@ -192,21 +192,21 @@ class AppStrings {
 
   String get saintMichaelsBlessingTitle => _getText("Saint Michael's Blessing", "Bendición de San Miguel",);
 
-  String get saintMichaelsBlessingText => _getText("IN THIS MOMENT, I OPEN THIS SESSION\nWITH CLARITY AND INTENTION.\nARCHANGEL MICHAEL SURROUNDS US\nWITH HIS LIGHT AND PROTECTS THIS\nSPACE.\nGUIDES OF LIGHT, REVEAL ONLY WHAT\nSERVES THE HIGHEST GOOD.\nMAY EVERY MESSAGE BRING TRUTH, PEACE,\nAND ALIGNMENT.\nTHANK YOU, THANK YOU, THANK YOU.\nAND SO IT IS", "EN ESTE MOMENTO, ABRO ESTA SESIÓN\nCON CLARIDAD E INTENCIÓN.\nEL ARCÁNGEL MIGUEL NOS RODEA\nCON SU LUZ Y PROTEGE ESTE\nESPACIO.\nGUÍAS DE LUZ, REVELEN SOLO LO QUE\nSIRVA AL BIEN MÁS ALTO.\nQUE CADA MENSAJE TRAIGA VERDAD, PAZ,\nY ALINEACIÓN.\nGRACIAS, GRACIAS, GRACIAS.\nASÍ SEA",);
+  String get saintMichaelsBlessingText => _getText(
+    "MAY THIS SPACE, SOULGATE, BE UNDER\nTHE PROTECTION OF THE LIGHT OF THE\nUNIVERSE.\nMAY THE GUIDANCE OFFERED BE CLEAR\nAND ALWAYS RESPECT FREE WILL.\nMAY ONLY THAT WHICH SERVES THE\nHIGHEST GOOD TAKE PLACE.\nSO BE IT. THANK YOU. THANK YOU.\nTHANK YOU.",
+    "QUE ESTE ESPACIO, SOULGATE, ESTÉ BAJO\nLA PROTECCIÓN DE LA LUZ DEL\nUNIVERSO.\nQUE LA GUÍA OFRECIDA SEA CLARA\nY SIEMPRE RESPETE EL LIBRE ALBEDRÍO.\nQUE SOLO AQUELLO QUE SIRVA AL\nBIEN MÁS ALTO TENGA LUGAR.\nASÍ SEA. GRACIAS. GRACIAS.\nGRACIAS.",
+  );
 
   String get saintMichaelsBlessingTextSH => _getText(
-        "In this moment, I open this session with clarity and intention. "
-            "Archangel Michael surrounds us with his light and protects this space. "
-            "Guides of light, reveal only what serves the highest good. "
-            "May every message bring truth, peace, and alignment. "
-            "Thank you, thank you, thank you. And so it is.",
-        "En este momento, abro esta sesión con claridad e intención. "
-            "El Arcángel Miguel nos rodea con su luz y protege este espacio. "
-            "Guías de luz, revelen solo lo que sirva al bien más alto. "
-            "Que cada mensaje traiga verdad, paz y alineación. "
-            "Gracias, gracias, gracias. Así sea.",
-      );
-
+    "May this space, SoulGate, be under the protection of the Light of the Universe. "
+        "May the guidance offered be clear and always respect free will. "
+        "May only that which serves the highest good take place. "
+        "So be it. Thank you. Thank you. Thank you.",
+    "Que este espacio, SoulGate, esté bajo la protección de la Luz del Universo. "
+        "Que la guía ofrecida sea clara y siempre respete el libre albedrío. "
+        "Que solo aquello que sirva al bien más alto tenga lugar. "
+        "Así sea. Gracias. Gracias. Gracias.",
+  );
 
 
 

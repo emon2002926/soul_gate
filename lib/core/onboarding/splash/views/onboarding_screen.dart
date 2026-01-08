@@ -6,12 +6,6 @@ import '../../../constants/app_strings.dart';
 import '../../../widgets/buttons/app_button.dart';
 import '../controller/onboarding_controller.dart';
 
-
-
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
 

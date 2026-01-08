@@ -1,20 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:soul_gate/core/widgets/text/app_text.dart';
-import '../../../core/constants/app_assert_image.dart';
-import '../../../core/constants/app_strings.dart';
 import '../../../core/util/app_navigation.dart';
 import '../../../core/util/storage_service.dart';
-import '../../../core/widgets/buttons/app_button.dart';
 
 
-import '../../../core/widgets/snakbar/custom_snackbar.dart';
-import '../../../core/onboarding/splash/views/onboarding_screen.dart';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -138,7 +129,7 @@ class SubscriptionPage extends StatelessWidget {
                                   onTap: () => controller.selectPlan(plan.id),
                                 )),
                               );
-                            }).toList(),
+                            }),
 
                             const SizedBox(height: 32),
 

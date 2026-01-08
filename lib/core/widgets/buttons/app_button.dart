@@ -4,8 +4,6 @@ import 'package:get/get.dart';
 
 import '../text/app_text.dart';
 
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class AppButton extends StatelessWidget {
   final String buttonText;
