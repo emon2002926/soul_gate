@@ -433,7 +433,9 @@ class _FinalInterpretationContent extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: TextButton(
-                  onPressed: () => Get.back(),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                   child: AppText(
                     data: appStrings.close,
                     fontSize: 16,
