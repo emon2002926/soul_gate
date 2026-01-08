@@ -46,6 +46,23 @@ class RevealDialogs {
     );
   }
 
+  /// Show subscription required dialog
+  static void showSubscriptionRequiredDialog({
+    required VoidCallback onGoToSubscription,
+    required VoidCallback onGoBack,
+  }) {
+    Get.dialog(
+      Dialog(
+        backgroundColor: Colors.transparent,
+        child: _SubscriptionRequiredContent(
+          onGoToSubscription: onGoToSubscription,
+          onGoBack: onGoBack,
+        ),
+      ),
+      barrierDismissible: false,
+    );
+  }
+
   /// Show final interpretation dialog
   static void showFinalInterpretation({
     required String interpretation,
@@ -63,6 +80,94 @@ class RevealDialogs {
   }
 }
 
+/// Subscription Required Dialog Content Widget
+class _SubscriptionRequiredContent extends StatelessWidget {
+  final VoidCallback onGoToSubscription;
+  final VoidCallback onGoBack;
+
+  const _SubscriptionRequiredContent({
+    required this.onGoToSubscription,
+    required this.onGoBack,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final appStrings = AppStrings.instance;
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF5F3EE),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: const Color(0xFFD4A574).withOpacity(0.15),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.lock_outline_rounded,
+              color: Color(0xFFD4A574),
+              size: 48,
+            ),
+          ),
+          const SizedBox(height: 20),
+          AppText(
+            data: appStrings.subscriptionRequired ,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFF3C2A21),
+          ),
+          const SizedBox(height: 12),
+          AppText(
+            data: appStrings.subscriptionRequiredMessage ,
+            textAlign: TextAlign.center,
+            fontSize: 14,
+            color: const Color(0xFF5C4A42),
+            height: 1.5,
+          ),
+          const SizedBox(height: 24),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: onGoToSubscription,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFD4A574),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 0,
+              ),
+              child: AppText(
+                data: appStrings.goToSubscription ,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: TextButton(
+              onPressed: onGoBack,
+              child: AppText(
+                data: appStrings.goBack,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF8B7355),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 /// Retry Dialog Content Widget
 class _RetryDialogContent extends StatelessWidget {
@@ -105,26 +210,26 @@ class _RetryDialogContent extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-           AppText(
-            data:appStrings.connectionIssue,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF3C2A21),
+          AppText(
+            data: appStrings.connectionIssue,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFF3C2A21),
           ),
           const SizedBox(height: 12),
           AppText(
             data: message,
             textAlign: TextAlign.center,
-              fontSize: 14,
-              color: Color(0xFF5C4A42),
-              height: 1.5,
+            fontSize: 14,
+            color: const Color(0xFF5C4A42),
+            height: 1.5,
           ),
           const SizedBox(height: 8),
           AppText(
-            data:appStrings.attemptOfMaxRetries,
-              fontSize: 12,
-              color: Color(0xFF8B7355),
-              fontWeight: FontWeight.w500,
+            data: appStrings.attemptOfMaxRetries,
+            fontSize: 12,
+            color: const Color(0xFF8B7355),
+            fontWeight: FontWeight.w500,
           ),
           const SizedBox(height: 24),
           SizedBox(
@@ -139,11 +244,11 @@ class _RetryDialogContent extends StatelessWidget {
                 ),
                 elevation: 0,
               ),
-              child:  AppText(
+              child: AppText(
                 data: appStrings.retry,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
               ),
             ),
           ),
@@ -154,12 +259,12 @@ class _RetryDialogContent extends StatelessWidget {
               onPressed: onGoBack,
               child: AppText(
                 data: appStrings.goBack,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xFF8B7355),
-                ),
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF8B7355),
               ),
             ),
+          ),
         ],
       ),
     );
@@ -203,11 +308,11 @@ class _ErrorDialogContent extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-           AppText(
+          AppText(
             data: appStrings.readingError,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF3C2A21),
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFF3C2A21),
           ),
           const SizedBox(height: 12),
           Text(
@@ -234,9 +339,9 @@ class _ErrorDialogContent extends StatelessWidget {
               ),
               child: AppText(
                 data: appStrings.tryAgain,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
               ),
             ),
           ),
@@ -247,12 +352,12 @@ class _ErrorDialogContent extends StatelessWidget {
               onPressed: onGoBack,
               child: AppText(
                 data: appStrings.goBack,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xFF8B7355),
-                ),
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF8B7355),
               ),
             ),
+          ),
         ],
       ),
     );
@@ -281,11 +386,11 @@ class _FinalInterpretationContent extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-           AppText(
+          AppText(
             data: appStrings.yourReading,
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF3C2A21),
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFF3C2A21),
           ),
           const SizedBox(height: 16),
           Container(
@@ -311,9 +416,9 @@ class _FinalInterpretationContent extends StatelessWidget {
                   icon: const Icon(Icons.volume_up, color: Colors.white),
                   label: AppText(
                     data: appStrings.listen,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFD4A574),
@@ -331,12 +436,12 @@ class _FinalInterpretationContent extends StatelessWidget {
                   onPressed: () => Get.back(),
                   child: AppText(
                     data: appStrings.close,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF8B7355),
-                    ),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF8B7355),
                   ),
                 ),
+              ),
             ],
           ),
         ],

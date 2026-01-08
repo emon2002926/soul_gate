@@ -137,6 +137,18 @@ class AppStrings {
     "Tus primeras\nlecturas\nson un regalo.",
   );
 
+  String get subscriptionRequiredMessage => _getText(
+    "An active subscription is required to access SoulGate. Please subscribe to continue your spiritual journey.",
+    "Se requiere una suscripción activa para acceder a SoulGate. Por favor suscríbete para continuar tu viaje espiritual.",
+  );
+  String get subscriptionRequired => _getText(
+    "Subscription Required",
+    "Suscripción Requerida",
+  );
+  String get goToSubscription => _getText(
+    "Go to Subscription",
+    "Ir a Suscripción",
+  );
    String  get freeReadingsDescription => _getText("To help you experience the depth of SoulGate, you receive 5 free readings. Each one is unique, channeled, and designed to bring clarity.", "Para ayudarte a experimentar la profundidad de SoulGate, recibes 5 lecturas gratuitas. Cada una es única, canalizada y diseñada para brindar claridad.",);
 
   String get selectDeckOfCards => _getText("Select Deck of Cards", "Selecciona una baraja de cartas",);

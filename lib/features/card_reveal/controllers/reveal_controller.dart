@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:soul_gate/core/util/app_navigation.dart';
 import 'package:soul_gate/core/util/storage_service.dart';
 import '../../card_shuffle/views/full_reading_screen.dart';
+import '../../subscription/views/subscription_page.dart';
 import '../models/tarot_response.dart';
 import '../views/widgets/reveal_dialogs.dart';
 import 'dart:io';
@@ -156,26 +157,50 @@ class RevealController extends GetxController {
         } else {
           debugPrint('❌ API returned success=false');
           isLoadingInterpretation.value = false;
-          _handleApiError('Server returned an error', cardCount, question);
+          _handleApiError('Server returned an error', cardCount, question, response.statusCode);
         }
+      } else if (response.statusCode == 403) {
+        // Handle subscription error
+        debugPrint('❌ Subscription required (403)');
+        debugPrint('📄 Response body: ${response.body}');
+        isLoadingInterpretation.value = false;
+        _handleSubscriptionError();
       } else {
         debugPrint('❌ API error: ${response.statusCode}');
         debugPrint('📄 Response body: ${response.body}');
         isLoadingInterpretation.value = false;
-        _handleApiError('Server error (${response.statusCode})', cardCount, question);
+        _handleApiError('Server error (${response.statusCode})', cardCount, question, response.statusCode);
       }
     } on TimeoutException catch (e) {
       debugPrint('⏱️ Timeout: $e');
       isLoadingInterpretation.value = false;
-      _handleApiError('Request timed out. The AI is taking longer than expected.', cardCount, question);
+      _handleApiError('Request timed out. The AI is taking longer than expected.', cardCount, question, null);
     } catch (e) {
       debugPrint('❌ API error: $e');
       isLoadingInterpretation.value = false;
-      _handleApiError('An unexpected error occurred', cardCount, question);
+      _handleApiError('An unexpected error occurred', cardCount, question, null);
     }
   }
 
-  void _handleApiError(String message, int cardCount, String question) {
+  void _handleSubscriptionError() {
+    RevealDialogs.showSubscriptionRequiredDialog(
+      onGoToSubscription: () {
+        Get.back(); // Close dialog
+        Get.back(); // Go back from reveal screen
+        // Navigate to subscription page
+        AppNavigation.push(Get.context!, const SubscriptionPage());
+      },
+      onGoBack: () {
+        Get.back(); // Close dialog
+        Get.back(); // Go back from reveal screen
+      },
+    );
+  }
+
+  void _handleApiError(String message, int cardCount, String question, int? statusCode) {
+    // Don't retry if it's a 403 error (already handled separately)
+    if (statusCode == 403) return;
+
     if (retryCount.value < maxRetries - 1) {
       _showRetryDialog(message, cardCount, question);
     } else {
@@ -261,7 +286,7 @@ class RevealController extends GetxController {
     });
   }
 
-  void navigateToFullReading( String message ) {
+  void navigateToFullReading(String message) {
     _showFinalInterpretation();
     AppNavigation.push(
       Get.context!,

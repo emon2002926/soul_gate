@@ -7,9 +7,161 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/util/app_navigation.dart';
 import '../../../core/util/screen_size.dart';
 import '../../../core/widgets/app_bar/build_app_bar.dart';
+import '../../../core/widgets/snakbar/custom_snackbar.dart';
 import '../controller/card_controller.dart';
 import 'package:get/get.dart';
 import '../../card_reveal/views/reveal_screen.dart';
+
+import 'dart:math' as math;
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import 'dart:math' as math;
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+
+import 'dart:math' as math;
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+// ==================== CARD CONTROLLER ====================
+
+import 'dart:math' as math;
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+// ==================== CARD CONTROLLER ====================
+
+import 'dart:math' as math;
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+// ==================== CARD CONTROLLER ====================
+import 'dart:math' as math;
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+// ==================== CARD CONTROLLER ====================
+
+class CardController extends GetxController {
+  // UI states only
+  var isShuffling = false.obs;
+  var hasShuffled = false.obs;
+  var cardsSpread = false.obs;
+
+  // Selected card index from arc (0-77) - tracks the LAST tapped arc card
+  var selectedStackIndex = Rxn<int>();
+
+  // Reading type: always 3 now
+  var readingCardCount = 3.obs;
+
+  // Track how many cards user has selected (0, 1, 2, or 3)
+  var selectedCardCount = 0.obs;
+
+  // Store the arc card indices for each selection
+  var selectedArcIndices = <int>[].obs;
+
+  // Add deck index
+  var deckIndex = 0.obs;
+
+  // Method to set deck index
+  void setDeckIndex(int index) {
+    deckIndex.value = index;
+  }
+
+  // Get the appropriate deck image based on deckIndex
+  String getDeckImage() {
+    switch (deckIndex.value) {
+      case 0:
+        return AppAssertImage.instance.deck1;
+      case 1:
+        return AppAssertImage.instance.deck2;
+      case 2:
+        return AppAssertImage.instance.deck3;
+      default:
+        return AppAssertImage.instance.deck1;
+    }
+  }
+
+  // Just animate the shuffle - no actual card data
+  Future<void> shuffleAndDivideCards() async {
+    isShuffling.value = true;
+    cardsSpread.value = false;
+    selectedStackIndex.value = null;
+    selectedCardCount.value = 0;
+    selectedArcIndices.clear();
+
+    // Wait then spread cards visually
+    await Future.delayed(const Duration(milliseconds: 500));
+    cardsSpread.value = true;
+
+    await Future.delayed(const Duration(milliseconds: 1500));
+
+    isShuffling.value = false;
+    hasShuffled.value = true;
+  }
+
+  // User taps an arc card to select next card
+  void selectNextCard(int arcIndex) {
+    if (arcIndex < 0 || arcIndex >= 78) return;
+
+    // If all 3 cards already selected, ignore
+    if (selectedCardCount.value >= 3) return;
+
+    // Check if this arc card was already used
+    if (selectedArcIndices.contains(arcIndex)) {
+      return;
+    }
+
+    // Add this arc card to selection
+    selectedArcIndices.add(arcIndex);
+    selectedStackIndex.value = arcIndex;
+
+    // Increment the count - this lights up the next card
+    selectedCardCount.value++;
+  }
+
+  // Check if a specific arc card is selected
+  bool isArcCardSelected(int index) {
+    return selectedArcIndices.contains(index);
+  }
+
+  // Check if a specific layout card is lit (0, 1, or 2)
+  bool isCardLitUp(int index) {
+    return selectedCardCount.value > index;
+  }
+
+  // Check if all 3 cards are selected
+  bool get allCardsSelected => selectedCardCount.value >= 3;
+
+  // Get instruction text based on current state
+  String getInstructionText() {
+    switch (selectedCardCount.value) {
+      case 0:
+        return 'Select your first card from the arc';
+      case 1:
+        return 'Select your second card';
+      case 2:
+        return 'Select your third card';
+      case 3:
+        return 'Your reading is ready';
+      default:
+        return 'Tap a card from the arc';
+    }
+  }
+
+  void resetReading() {
+    isShuffling.value = false;
+    hasShuffled.value = false;
+    cardsSpread.value = false;
+    selectedStackIndex.value = null;
+    selectedCardCount.value = 0;
+    selectedArcIndices.clear();
+  }
+}
+
+// ==================== SHUFFLE SCREEN ====================
 
 class ShuffleScreen extends StatelessWidget {
   final CardController controller = Get.put(CardController());
@@ -18,12 +170,22 @@ class ShuffleScreen extends StatelessWidget {
   final int readingTypeIndex;
   final int deckIndex;
   final int? questionId;
-  ShuffleScreen({super.key, required this.questionText, required this.readingTypeIndex, required this.deckIndex, this.questionId});
-  AppStrings appStrings = AppStrings.instance;
 
+  ShuffleScreen({
+    super.key,
+    required this.questionText,
+    required this.readingTypeIndex,
+    required this.deckIndex,
+    this.questionId,
+  });
+
+  AppStrings appStrings = AppStrings.instance;
 
   @override
   Widget build(BuildContext context) {
+    // Set the deck index
+    controller.setDeckIndex(deckIndex);
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: BuildAppBar(
@@ -64,7 +226,7 @@ class ShuffleScreen extends StatelessWidget {
           color: Colors.white,
         ),
         const Spacer(),
-        Obx(() => _buildCircularCardSpread(context)),
+        _buildCircularCardSpread(context),
         const Spacer(),
         Obx(() {
           final isShuffling = controller.isShuffling.value;
@@ -101,13 +263,7 @@ class ShuffleScreen extends StatelessWidget {
     );
   }
 
-
   Widget _buildCircularCardSpread(BuildContext context) {
-    final isShuffling = controller.isShuffling.value;
-    final hasShuffled = controller.hasShuffled.value;
-    final isSpread = controller.cardsSpread.value;
-    final selectedIndex = controller.selectedStackIndex.value;
-
     final cardCount = 78;
     final radius = context.screenWidth * 0.43;
 
@@ -115,12 +271,12 @@ class ShuffleScreen extends StatelessWidget {
     final sweepAngle = math.pi * 0.7;
 
     // Dynamic card dimensions
-    final stackedCardWidth = context.screenWidth * 0.267; // ~100px on 375px screen
-    final stackedCardHeight = stackedCardWidth * 1.5; // Maintain aspect ratio
-    final spreadCardWidth = context.screenWidth * 0.144; // ~54px on 375px screen
-    final spreadCardHeight = spreadCardWidth * 1.5; // Maintain aspect ratio
+    final stackedCardWidth = context.screenWidth * 0.267;
+    final stackedCardHeight = stackedCardWidth * 1.5;
+    final spreadCardWidth = context.screenWidth * 0.144;
+    final spreadCardHeight = spreadCardWidth * 1.5;
 
-    final containerHeight = context.screenHeight * 0.35; // ~300px responsive
+    final containerHeight = context.screenHeight * 0.35;
     final containerWidth = context.screenWidth * 0.9;
 
     final stackCenterX = (containerWidth / 2) - (stackedCardWidth / 2);
@@ -135,117 +291,110 @@ class ShuffleScreen extends StatelessWidget {
         child: SizedBox(
           width: containerWidth,
           height: containerHeight,
-          child: Stack(
-            alignment: Alignment.center,
-            clipBehavior: Clip.none,
-            children: [
-              // Glow effect behind the stack (only when not spread)
-              if (!isSpread)
-                Positioned(
-                  left: stackCenterX - context.responsiveSize(10),
-                  top: stackCenterY + context.responsiveSize(20),
-                  child: Container(
-                    width: stackedCardWidth + context.responsiveSize(20),
-                    height: stackedCardHeight,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(context.responsiveSize(16)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFFD4A574).withOpacity(0.4),
-                          blurRadius: context.responsiveSize(40),
-                          spreadRadius: context.responsiveSize(10),
-                        ),
-                        BoxShadow(
-                          color: const Color(0xFFFFD700).withOpacity(0.2),
-                          blurRadius: context.responsiveSize(60),
-                          spreadRadius: context.responsiveSize(5),
-                        ),
-                      ],
+          child: Obx(() {
+            // Only read these values once at the Stack level
+            final isSpread = controller.cardsSpread.value;
+            final isShuffling = controller.isShuffling.value;
+            final hasShuffled = controller.hasShuffled.value;
+
+            return Stack(
+              alignment: Alignment.center,
+              clipBehavior: Clip.none,
+              children: [
+                // Glow effect behind the stack (only when not spread)
+                if (!isSpread)
+                  Positioned(
+                    left: stackCenterX - context.responsiveSize(10),
+                    top: stackCenterY + context.responsiveSize(20),
+                    child: Container(
+                      width: stackedCardWidth + context.responsiveSize(20),
+                      height: stackedCardHeight,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(context.responsiveSize(16)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFFD4A574).withOpacity(0.4),
+                            blurRadius: context.responsiveSize(40),
+                            spreadRadius: context.responsiveSize(10),
+                          ),
+                          BoxShadow(
+                            color: const Color(0xFFFFD700).withOpacity(0.2),
+                            blurRadius: context.responsiveSize(60),
+                            spreadRadius: context.responsiveSize(5),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              // Cards - ORIGINAL ANIMATION LOGIC PRESERVED
-              ...cardIndices.map((i) {
-                final progress = i / (cardCount - 1);
-                final angle = startAngle + (sweepAngle * progress);
+                // Cards - each card handles its own state via Obx
+                ...cardIndices.map((i) {
+                  final progress = i / (cardCount - 1);
+                  final angle = startAngle + (sweepAngle * progress);
 
-                final spreadX = radius * math.cos(angle);
-                final spreadY = radius * math.sin(angle);
-                final spreadLeft = (containerWidth / 2) + spreadX - (spreadCardWidth / 2);
-                final spreadTop = (containerHeight / 2) + spreadY - (spreadCardHeight / 2);
+                  final spreadX = radius * math.cos(angle);
+                  final spreadY = radius * math.sin(angle);
+                  final spreadLeft = (containerWidth / 2) + spreadX - (spreadCardWidth / 2);
+                  final spreadTop = (containerHeight / 2) + spreadY - (spreadCardHeight / 2);
 
-                // ORIGINAL stack positioning
-                final stackLeft = stackCenterX + (i * context.responsiveSize(0.8));
-                final stackTop = stackCenterY - (i * context.responsiveSize(0.6));
+                  final stackLeft = stackCenterX + (i * context.responsiveSize(0.8));
+                  final stackTop = stackCenterY - (i * context.responsiveSize(0.6));
 
-                final cardRotation = angle + math.pi / 2;
+                  final cardRotation = angle + math.pi / 2;
 
-                final currentWidth = isSpread ? spreadCardWidth : stackedCardWidth;
-                final currentHeight = isSpread ? spreadCardHeight : stackedCardHeight;
+                  final currentWidth = isSpread ? spreadCardWidth : stackedCardWidth;
+                  final currentHeight = isSpread ? spreadCardHeight : stackedCardHeight;
 
-                final isSelected = selectedIndex == i;
-
-                // ORIGINAL ANIMATION - UNCHANGED
-                return AnimatedPositioned(
-                  key: ValueKey('card_$i'),
-                  duration: Duration(milliseconds: 600 + (i * 8)),
-                  curve: Curves.easeOutCubic,
-                  left: isSpread ? spreadLeft : stackLeft,
-                  top: isSpread ? spreadTop : stackTop,
-                  child: TweenAnimationBuilder<double>(
-                    tween: Tween(
-                      begin: 0.0,
-                      end: isSpread ? cardRotation : 0.0,
-                    ),
+                  return AnimatedPositioned(
+                    key: ValueKey('card_$i'),
                     duration: Duration(milliseconds: 600 + (i * 8)),
                     curve: Curves.easeOutCubic,
-                    builder: (context, rotationValue, child) {
-                      return Transform.rotate(
-                        angle: rotationValue,
-                        child: child,
-                      );
-                    },
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () {
-                        if (hasShuffled && !isShuffling) {
-                          _onArcCardSelected(i);
-                        }
+                    left: isSpread ? spreadLeft : stackLeft,
+                    top: isSpread ? spreadTop : stackTop,
+                    child: TweenAnimationBuilder<double>(
+                      tween: Tween(
+                        begin: 0.0,
+                        end: isSpread ? cardRotation : 0.0,
+                      ),
+                      duration: Duration(milliseconds: 600 + (i * 8)),
+                      curve: Curves.easeOutCubic,
+                      builder: (context, rotationValue, child) {
+                        return Transform.rotate(
+                          angle: rotationValue,
+                          child: child,
+                        );
                       },
-                      child: _AnimatedCard(
+                      // Each card has its own Obx for selection state
+                      child: _ArcCardWrapper(
                         index: i,
                         width: currentWidth,
                         height: currentHeight,
                         isSpread: isSpread,
-                        isSelected: isSelected,
-                        context: context,
+                        hasShuffled: hasShuffled,
+                        isShuffling: isShuffling,
+                        controller: controller,
+                        onTap: () => _onArcCardSelected(i),
                       ),
                     ),
-                  ),
-                );
-              }).toList(),
-            ],
-          ),
+                  );
+                }).toList(),
+              ],
+            );
+          }),
         ),
       ),
     );
   }
 
-  void _onArcCardSelected(int stackIndex) {
-    controller.selectStackForHighlight(stackIndex);
+  void _onArcCardSelected(int arcIndex) {
+    controller.selectNextCard(arcIndex);
   }
 
-  void _onLayoutCardSelected(int stackIndex,BuildContext context) {
-    if (controller.selectedStackIndex.value == null) {
-      Get.snackbar(
-        'Select a Card',
-        'Please tap a card from the arc above first',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: const Color(0xFFD4A574).withOpacity(0.9),
-        colorText: Colors.white,
-        duration: const Duration(seconds: 2),
-        margin: EdgeInsets.all(context.responsiveSize(16)),
-        borderRadius: context.responsiveSize(12),
+  void _navigateToReadings(BuildContext context) {
+    if (!controller.allCardsSelected) {
+      CustomSnackbar.error(
+        context,
+        title: 'Select Cards',
+        message: 'Please select all 3 cards from the arc',
       );
       return;
     }
@@ -256,7 +405,7 @@ class ShuffleScreen extends StatelessWidget {
         deckIndex: deckIndex,
         readingTypeIndex: readingTypeIndex,
         questionText: questionText,
-        cardCount: controller.readingCardCount.value,
+        cardCount: 3,
         questionId: questionId,
       ),
     );
@@ -266,52 +415,33 @@ class ShuffleScreen extends StatelessWidget {
     return Column(
       children: [
         SizedBox(height: context.spacing24),
-        // Reading type buttons
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: context.spacing24),
-          child: Obx(() {
-            final isShuffling = controller.isShuffling.value;
-            final selected = controller.readingCardCount.value;
 
-            return Row(
-              children: [
-                Expanded(
-                  child: _buildReadingTypeButton(
-                    context: context,
-                    label: appStrings.sevenCardReading,
-                    isSelected: selected == 7,
-                    isDisabled: isShuffling,
-                    onPressed: () async {
-                      await controller.setReadingType(7);
-                    },
-                  ),
-                ),
-                SizedBox(width: context.spacing12),
-                Expanded(
-                  child: _buildReadingTypeButton(
-                    context: context,
-                    label: appStrings.threeCardReading,
-                    isSelected: selected == 3,
-                    isDisabled: isShuffling,
-                    onPressed: () async {
-                      await controller.setReadingType(3);
-                    },
-                  ),
-                ),
-              ],
-            );
-          }),
-        ),
+        // Dynamic instruction text
+        Obx(() {
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: context.spacing24),
+            child: AppText(
+              data: controller.getInstructionText(),
+              fontSize: context.responsiveFontSize(18),
+              fontWeight: FontWeight.w500,
+              color: Colors.white.withOpacity(0.9),
+              textAlign: TextAlign.center,
+            ),
+          );
+        }),
+
+        SizedBox(height: context.spacing16),
 
         // Card spread
         Transform.translate(
-          offset: Offset(0, context.responsiveSize(90)),
-          child: Obx(() => _buildCircularCardSpread(context)),
+          offset: Offset(0, context.responsiveSize(70)),
+          child: _buildCircularCardSpread(context),
         ),
-        //Todo Space bwteen Arc and Fan layout
+
+        // 3-card layout
         Expanded(
           child: Transform.translate(
-            offset: Offset(0, -context.responsiveSize(60)),
+            offset: Offset(0, -context.responsiveSize(40)),
             child: Obx(() {
               if (controller.isShuffling.value) {
                 return Center(
@@ -332,23 +462,35 @@ class ShuffleScreen extends StatelessWidget {
                   ),
                 );
               }
-              return controller.readingCardCount.value == 7
-                  ? _build7CardLayout(context)
-                  : _build3CardLayout(context);
+              return _build3CardLayout(context);
             }),
           ),
         ),
 
-        // Shuffle button
+        // Bottom button - "Shuffle" or "Readings"
         Padding(
           padding: EdgeInsets.symmetric(horizontal: context.spacing24),
           child: Obx(() {
             final isShuffling = controller.isShuffling.value;
+            final allSelected = controller.allCardsSelected;
+
+            // Determine button state
+            final String buttonText = isShuffling
+                ? "Shuffling..."
+                : allSelected
+                ? "Readings"
+                : "Shuffle";
+
             return AppButton(
-              buttonText: isShuffling ? "Shuffling..." : "Shuffle",
+              buttonText: buttonText,
               onPressed: isShuffling
                   ? null
+                  : allSelected
+                  ? () => _navigateToReadings(context)
                   : () => controller.shuffleAndDivideCards(),
+              fillColor: allSelected
+                  ? const Color(0xFFD4AF37) // Gold for Readings
+                  : const Color(0xFFD4A574), // Brown for Shuffle
             );
           }),
         ),
@@ -357,95 +499,49 @@ class ShuffleScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildReadingTypeButton({
-    required BuildContext context,
-    required String label,
-    required bool isSelected,
-    required bool isDisabled,
-    required VoidCallback onPressed,
-  }) {
-    return Opacity(
-      opacity: isDisabled ? 0.6 : 1.0,
-      child: ElevatedButton(
-        onPressed: isDisabled ? null : onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: isSelected ? const Color(0xFFD4A574) : const Color(0xFF8B7355),
-          padding: EdgeInsets.symmetric(vertical: context.responsiveSize(12)),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(context.responsiveSize(12)),
-            side: isSelected
-                ? BorderSide(color: Colors.white, width: context.responsiveSize(2))
-                : BorderSide.none,
-          ),
-          elevation: 0,
+  // 3-card layout - cards light up in order: Middle (1st), Right (2nd), Left (3rd)
+  Widget _build3CardLayout(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Left card - lights up 3rd (when selectedCardCount >= 3)
+            _buildLightUpCard(
+              context: context,
+              selectionOrder: 3, // 3rd to light up
+              label: "Past",
+            ),
+            SizedBox(width: context.responsiveSize(18)),
+            // Middle card - lights up 1st (when selectedCardCount >= 1)
+            _buildLightUpCard(
+              context: context,
+              selectionOrder: 1, // 1st to light up
+              label: "Present",
+            ),
+            SizedBox(width: context.responsiveSize(18)),
+            // Right card - lights up 2nd (when selectedCardCount >= 2)
+            _buildLightUpCard(
+              context: context,
+              selectionOrder: 2, // 2nd to light up
+              label: "Future",
+            ),
+          ],
         ),
-        child: AppText(
-          data: label,
-          fontSize: context.responsiveFontSize(16),
-          fontWeight: FontWeight.w600,
-          color: Colors.white,
-        ),
-      ),
+      ],
     );
   }
 
-  // 7-card Celtic Cross layout - MEDIUM cards
-  Widget _build7CardLayout(BuildContext context) {
-    return Obx(() {
-      final hasSelected = controller.selectedStackIndex.value != null;
-
-      return SizedBox(
-        height: context.heightPercentage(140), // ← ADD THIS - gives more vertical space
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            _buildPositionedCard(context, 0, top: context.responsiveSize(0), left: context.responsiveSize(130), index: 0, enabled: hasSelected),
-            _buildPositionedCard(context, 1, top: context.responsiveSize(100), left: context.responsiveSize(45), index: 1, enabled: hasSelected),
-            _buildPositionedCard(context, 2, top: context.responsiveSize(100), left: context.responsiveSize(130), index: 2, enabled: hasSelected),
-            _buildPositionedCard(context, 3, top: context.responsiveSize(100), right: context.responsiveSize(118), index: 3, enabled: hasSelected),
-            _buildPositionedCard(context, 4, top: context.responsiveSize(200), left: context.responsiveSize(130), index: 4, enabled: hasSelected),
-            _buildPositionedCard(context, 5, top: context.responsiveSize(142), right: context.responsiveSize(42), index: 5, enabled: hasSelected),
-            _buildPositionedCard(context, 6, top: context.responsiveSize(45), right: context.responsiveSize(42), index: 6, enabled: hasSelected),
-          ],
-        ),
-      );
-    });
-  }
-  // 3-card layout - MEDIUM cards
-  Widget _build3CardLayout(BuildContext context) {
-    return Obx(() {
-      final hasSelected = controller.selectedStackIndex.value != null;
-
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: context.responsiveSize(30)),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [],
-            ),
-          ),
-          SizedBox(height: context.spacing12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildAnimatedLayoutCard(context: context, index: 0, enabled: hasSelected),
-              SizedBox(width: context.responsiveSize(18)),
-              _buildAnimatedLayoutCard(context: context, index: 1, enabled: hasSelected),
-              SizedBox(width: context.responsiveSize(18)),
-              _buildAnimatedLayoutCard(context: context, index: 2, enabled: hasSelected),
-            ],
-          ),
-        ],
-      );
-    });
-  }
-
-  Widget _buildAnimatedLayoutCard({required BuildContext context, required int index, required bool enabled}) {
+  // Card with light-up effect
+  Widget _buildLightUpCard({
+    required BuildContext context,
+    required int selectionOrder, // 1 = first to light, 2 = second, 3 = third
+    required String label,
+  }) {
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: 1.0),
-      duration: Duration(milliseconds: 600 + (index * 150)),
+      duration: Duration(milliseconds: 600 + (selectionOrder * 150)),
       curve: Curves.easeOutBack,
       builder: (context, value, child) {
         return Transform.scale(
@@ -459,123 +555,124 @@ class ShuffleScreen extends StatelessWidget {
           ),
         );
       },
-      child: GestureDetector(
-        onTap: () => _onLayoutCardSelected(index,context),
-        child: _LayoutCard(enabled: enabled, context: context),
-      ),
-    );
-  }
-
-  Widget _buildPositionedCard(
-      BuildContext context,
-      int stackIndex, {
-        double? top,
-        double? left,
-        double? right,
-        required int index,
-        required bool enabled,
-      }) {
-    return Positioned(
-      top: top,
-      left: left,
-      right: right,
-      child: TweenAnimationBuilder<double>(
-        tween: Tween(begin: 0.0, end: 1.0),
-        duration: Duration(milliseconds: 600 + (index * 100)),
-        curve: Curves.easeOutBack,
-        builder: (context, value, child) {
-          return Transform.scale(
-            scale: value,
-            child: Transform.translate(
-              offset: Offset(0, context.responsiveSize(30) * (1 - value)),
-              child: Opacity(
-                opacity: value.clamp(0.0, 1.0),
-                child: child,
-              ),
+      child: Obx(() {
+        // Card lights up when selectedCardCount >= selectionOrder
+        final isLitUp = controller.selectedCardCount.value >= selectionOrder;
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _LightUpCard(
+              isLitUp: isLitUp,
+              context: context,
+              index: selectionOrder,
+              deckImage: controller.getDeckImage(),
             ),
-          );
-        },
-        child: GestureDetector(
-          onTap: () => _onLayoutCardSelected(stackIndex,context),
-          child: _LayoutCard(enabled: enabled, context: context),
-        ),
-      ),
+            SizedBox(height: context.responsiveSize(8)),
+            // Label below card
+
+          ],
+        );
+      }),
     );
   }
 }
 
-class _AnimatedCard extends StatelessWidget {
+// ==================== ARC CARD WRAPPER (handles its own state) ====================
+
+class _ArcCardWrapper extends StatelessWidget {
+  final int index;
+  final double width;
+  final double height;
+  final bool isSpread;
+  final bool hasShuffled;
+  final bool isShuffling;
+  final CardController controller;
+  final VoidCallback onTap;
+
+  const _ArcCardWrapper({
+    required this.index,
+    required this.width,
+    required this.height,
+    required this.isSpread,
+    required this.hasShuffled,
+    required this.isShuffling,
+    required this.controller,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      // Each card only reacts to its own selection state
+      final isSelected = controller.isArcCardSelected(index);
+      final allSelected = controller.allCardsSelected;
+      final canTap = hasShuffled && !isShuffling && !allSelected && !isSelected;
+
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: canTap ? onTap : null,
+        child: _ArcCard(
+          index: index,
+          width: width,
+          height: height,
+          isSpread: isSpread,
+          isSelected: isSelected,
+          context: context,
+          deckImage: controller.getDeckImage(),
+        ),
+      );
+    });
+  }
+}
+
+// ==================== ARC CARD (visual only, no state) ====================
+
+class _ArcCard extends StatelessWidget {
   final int index;
   final double width;
   final double height;
   final bool isSpread;
   final bool isSelected;
-  final bool isStacked;
-  final int stackIndex;
-  final int totalStackVisible;
   final BuildContext context;
+  final String deckImage;
 
-  const _AnimatedCard({
+  const _ArcCard({
     required this.index,
     required this.width,
     required this.height,
     required this.isSpread,
     required this.isSelected,
     required this.context,
-    this.isStacked = false,
-    this.stackIndex = 0,
-    this.totalStackVisible = 15,
+    required this.deckImage,
   });
 
   @override
   Widget build(BuildContext buildContext) {
-    // Calculate opacity for stacked cards (bottom cards slightly darker)
-    final stackOpacity = isStacked
-        ? 0.85 + (stackIndex / totalStackVisible) * 0.15
-        : 1.0;
-
-    // Top card of stack gets special treatment
-    final isTopCard = isStacked && stackIndex == totalStackVisible - 1;
-
     return AnimatedScale(
-      scale: isSelected ? 1.15 : 1.0,
+      scale: isSelected ? 1.2 : 1.0,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeOutBack,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
+      child: Container(
         width: width,
         height: height,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(isSpread ? context.responsiveSize(7) : context.responsiveSize(12)),
+          borderRadius: BorderRadius.circular(
+              isSpread ? context.responsiveSize(7) : context.responsiveSize(12)),
           border: Border.all(
             color: isSelected
                 ? const Color(0xFFFFD700)
-                : isTopCard
-                ? const Color(0xFFD4A574)
                 : const Color(0xFFE5D4C1).withOpacity(0.8),
-            width: isSelected ? context.responsiveSize(2.5) : (isTopCard ? context.responsiveSize(2.0) : context.responsiveSize(1.5)),
+            width: isSelected
+                ? context.responsiveSize(2.5)
+                : context.responsiveSize(1.5),
           ),
           boxShadow: isSelected
               ? [
             BoxShadow(
-              color: const Color(0xFFFFD700).withOpacity(0.5),
-              blurRadius: context.responsiveSize(12),
-              spreadRadius: context.responsiveSize(2),
+              color: const Color(0xFFFFD700).withOpacity(0.6),
+              blurRadius: context.responsiveSize(15),
+              spreadRadius: context.responsiveSize(3),
             ),
-          ]
-              : isStacked
-              ? [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.4),
-              blurRadius: context.responsiveSize(8),
-              offset: Offset(context.responsiveSize(2), context.responsiveSize(4)),
-            ),
-            if (isTopCard)
-              BoxShadow(
-                color: const Color(0xFFD4A574).withOpacity(0.3),
-                blurRadius: context.responsiveSize(15),
-                spreadRadius: -context.responsiveSize(2),
-              ),
           ]
               : [
             BoxShadow(
@@ -586,45 +683,24 @@ class _AnimatedCard extends StatelessWidget {
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(isSpread ? context.responsiveSize(5) : context.responsiveSize(10)),
+          borderRadius: BorderRadius.circular(
+              isSpread ? context.responsiveSize(5) : context.responsiveSize(10)),
           child: Stack(
             children: [
               // Card back image
               Positioned.fill(
-                child: Opacity(
-                  opacity: stackOpacity,
-                  child: Image.asset(
-                    AppAssertImage.instance.deck1,
-                    fit: BoxFit.cover,
-                  ),
+                child: Image.asset(
+                  deckImage,
+                  fit: BoxFit.cover,
                 ),
               ),
-              // Subtle gradient overlay for top card glow
-              if (isTopCard && !isSelected)
-                Positioned.fill(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(context.responsiveSize(10)),
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.white.withOpacity(0.1),
-                          Colors.transparent,
-                          Colors.transparent,
-                          const Color(0xFFD4A574).withOpacity(0.1),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              // Selection indicator
+              // Selection indicator (checkmark)
               if (isSelected)
                 Positioned(
                   top: context.responsiveSize(4),
                   right: context.responsiveSize(4),
                   child: Container(
-                    padding: EdgeInsets.all(context.responsiveSize(2)),
+                    padding: EdgeInsets.all(context.responsiveSize(3)),
                     decoration: const BoxDecoration(
                       color: Color(0xFFFFD700),
                       shape: BoxShape.circle,
@@ -632,7 +708,7 @@ class _AnimatedCard extends StatelessWidget {
                     child: Icon(
                       Icons.check,
                       color: Colors.white,
-                      size: context.responsiveSize(12),
+                      size: context.responsiveSize(10),
                     ),
                   ),
                 ),
@@ -644,67 +720,125 @@ class _AnimatedCard extends StatelessWidget {
   }
 }
 
-class _LayoutCard extends StatelessWidget {
-  final bool enabled;
-  final BuildContext context;
+// ==================== LIGHT-UP CARD (3-card layout) ====================
 
-  const _LayoutCard({required this.enabled, required this.context});
+class _LightUpCard extends StatelessWidget {
+  final bool isLitUp;
+  final BuildContext context;
+  final int index;
+  final String deckImage;
+
+  const _LightUpCard({
+    required this.isLitUp,
+    required this.context,
+    required this.index,
+    required this.deckImage,
+  });
 
   @override
   Widget build(BuildContext buildContext) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      width: context.responsiveSize(48),
-      height: context.responsiveSize(76),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(context.responsiveSize(7)),
-        border: Border.all(
-          color: enabled ? const Color(0xFFD4A574) : const Color(0xFFE5D4C1),
-          width: enabled ? context.responsiveSize(2.2) : context.responsiveSize(1.8),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            blurRadius: context.responsiveSize(7),
-            offset: Offset(0, context.responsiveSize(3)),
+    final cardWidth = context.responsiveSize(70);
+    final cardHeight = context.responsiveSize(105);
+
+    return AnimatedScale(
+      scale: isLitUp ? 1.1 : 1.0,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeOutBack,
+      child: Container(
+        width: cardWidth,
+        height: cardHeight,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(context.responsiveSize(10)),
+          border: Border.all(
+            color: isLitUp ? const Color(0xFFFFD700) : const Color(0xFFE5D4C1),
+            width: isLitUp ? context.responsiveSize(3) : context.responsiveSize(2),
           ),
-          if (enabled)
+          boxShadow: isLitUp
+              ? [
+            // Golden glow when lit
             BoxShadow(
-              color: const Color(0xFFD4A574).withOpacity(0.4),
-              blurRadius: context.responsiveSize(11),
-              spreadRadius: context.responsiveSize(1.5),
+              color: const Color(0xFFFFD700).withOpacity(0.6),
+              blurRadius: context.responsiveSize(20),
+              spreadRadius: context.responsiveSize(4),
             ),
-        ],
-      ),
-      child: AnimatedOpacity(
-        duration: const Duration(milliseconds: 300),
-        opacity: enabled ? 1.0 : 0.5,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(context.responsiveSize(5)),
-          child: Image.asset(
-            AppAssertImage.instance.deck1,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: enabled
-                        ? [const Color(0xFFD4A574), const Color(0xFFB8956A)]
-                        : [const Color(0xFFB8956A), const Color(0xFF9B7B5E)],
+            BoxShadow(
+              color: const Color(0xFFD4AF37).withOpacity(0.4),
+              blurRadius: context.responsiveSize(30),
+              spreadRadius: context.responsiveSize(2),
+            ),
+          ]
+              : [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: context.responsiveSize(7),
+              offset: Offset(0, context.responsiveSize(3)),
+            ),
+          ],
+        ),
+        child: Opacity(
+          opacity: isLitUp ? 1.0 : 0.4,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(context.responsiveSize(8)),
+            child: Stack(
+              children: [
+                // Card image
+                Positioned.fill(
+                  child: Image.asset(
+                    deckImage,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: isLitUp
+                                ? [const Color(0xFFD4AF37), const Color(0xFFB8960B)]
+                                : [const Color(0xFFB8956A), const Color(0xFF9B7B5E)],
+                          ),
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.auto_awesome,
+                            color: const Color(0xFFE5D4C1),
+                            size: context.responsiveSize(28),
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                  borderRadius: BorderRadius.circular(context.responsiveSize(5)),
                 ),
-                child: Center(
-                  child: Icon(
-                    Icons.auto_awesome,
-                    color: const Color(0xFFE5D4C1),
-                    size: context.responsiveSize(28),
+                // Golden overlay when lit
+                if (isLitUp)
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(context.responsiveSize(8)),
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            const Color(0xFFFFD700).withOpacity(0.15),
+                            Colors.transparent,
+                            const Color(0xFFFFD700).withOpacity(0.1),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              );
-            },
+                // Sparkle icon when lit
+                if (isLitUp)
+                  Positioned(
+                    top: context.responsiveSize(6),
+                    right: context.responsiveSize(6),
+                    child: Icon(
+                      Icons.auto_awesome,
+                      color: const Color(0xFFFFD700),
+                      size: context.responsiveSize(16),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
