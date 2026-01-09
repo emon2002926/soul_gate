@@ -80,7 +80,6 @@ class RevealDialogs {
   }
 }
 
-/// Subscription Required Dialog Content Widget
 class _SubscriptionRequiredContent extends StatelessWidget {
   final VoidCallback onGoToSubscription;
   final VoidCallback onGoBack;
