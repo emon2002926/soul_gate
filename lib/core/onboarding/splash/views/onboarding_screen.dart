@@ -145,19 +145,19 @@ class _OnboardingPage extends StatelessWidget {
             ),
 
             // Subtitle (if exists)
-            if (data.subtitle != null) ...[
-              SizedBox(height: _getResponsiveSize(context, 14)),
-              Text(
-                data.subtitle!.toUpperCase(),
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: _getResponsiveFontSize(context, 14),
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white,
-                  letterSpacing: 2.5,
-                ),
-              ),
-            ],
+            // if (data.subtitle != null) ...[
+            //   SizedBox(height: _getResponsiveSize(context, 14)),
+            //   Text(
+            //     data.subtitle!.toUpperCase(),
+            //     textAlign: TextAlign.center,
+            //     style: TextStyle(
+            //       fontSize: _getResponsiveFontSize(context, 14),
+            //       fontWeight: FontWeight.w500,
+            //       color: Colors.white,
+            //       letterSpacing: 2.5,
+            //     ),
+            //   ),
+            // ],
 
             SizedBox(height: _getResponsiveSize(context, 50)),
 
@@ -209,8 +209,8 @@ class _OnboardingPage extends StatelessWidget {
               Text(
                 data.description!,
                 textAlign: TextAlign.center,
-                style: GoogleFonts.cinzel(
-                  fontSize: _getResponsiveFontSize(context, 17),
+                style: TextStyle(
+                  fontSize: _getResponsiveFontSize(context, 21),
                   fontWeight: FontWeight.w500,
                   color: Colors.white.withOpacity(0.95),
                   height: 1.6,
