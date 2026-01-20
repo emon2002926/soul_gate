@@ -11,15 +11,22 @@ import '../models/tarot_response.dart';
 
 
 class RevealScreen extends StatelessWidget {
-
   final String questionText;
   final int readingTypeIndex;
   final int deckIndex;
   final int? questionId;
   final int cardCount;
-  RevealScreen({super.key, required this.questionText, required this.readingTypeIndex, required this.deckIndex, this.questionId, required this.cardCount});
-  AppStrings appStrings = AppStrings();
 
+  RevealScreen({
+    super.key,
+    required this.questionText,
+    required this.readingTypeIndex,
+    required this.deckIndex,
+    this.questionId,
+    required this.cardCount,
+  });
+
+  AppStrings appStrings = AppStrings();
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +34,7 @@ class RevealScreen extends StatelessWidget {
     controller.delayedFetchInterpretation(questionText, cardCount);
     print('Reading Type Index: $readingTypeIndex');
     print('Deck Index: $deckIndex');
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: const Color(0xFFF5F3EE),
@@ -52,20 +60,23 @@ class RevealScreen extends StatelessWidget {
 
             return Stack(
               children: [
-                // Main content
+                // Main content - Cards positioned higher when panel is open
                 if (isLoading)
                   _buildLoadingView()
                 else
-                  Padding(
-                    padding: EdgeInsets.only(
-                      top: 20,
-                      left: 20,
-                      right: 20,
-                      bottom: hasSelectedCard ? 350 : 20,
+                  AnimatedPositioned(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeOut,
+                    top: hasSelectedCard ? 60 : 0,
+                    left: 0,
+                    right: 0,
+                    bottom: hasSelectedCard
+                        ? MediaQuery.of(context).size.height * 0.65
+                        : 0,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: _Build3CardLayout(controller: controller),
                     ),
-                    child: controller.is7CardReading
-                        ? _Build7CardLayout(controller: controller)
-                        : _Build3CardLayout(controller: controller),
                   ),
 
                 // Card details panel
@@ -101,7 +112,7 @@ class RevealScreen extends StatelessWidget {
   }
 
   Widget _buildLoadingView() {
-    return  Center(
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -112,9 +123,9 @@ class RevealScreen extends StatelessWidget {
           SizedBox(height: 20),
           AppText(
             data: appStrings.consultingTheCards,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: Colors.white70,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Colors.white70,
           ),
         ],
       ),
@@ -225,83 +236,6 @@ class _LoadingWidgetState extends State<_LoadingWidget>
     );
   }
 }
-class _Build7CardLayout extends StatelessWidget {
-  final RevealController controller;
-
-  const _Build7CardLayout({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        double cardWidth = (constraints.maxWidth - 60) / 4;
-        double cardHeight = cardWidth * 1.5;
-
-        return Stack(
-          alignment: Alignment.center,
-          children: [
-            _PositionedCard(
-              controller: controller,
-              index: 0,
-              top: 0,
-              left: constraints.maxWidth / 2 - cardWidth / 2,
-              cardWidth: cardWidth,
-              cardHeight: cardHeight,
-            ),
-            _PositionedCard(
-              controller: controller,
-              index: 1,
-              top: cardHeight + 20,
-              left: 0,
-              cardWidth: cardWidth,
-              cardHeight: cardHeight,
-            ),
-            _PositionedCard(
-              controller: controller,
-              index: 2,
-              top: cardHeight + 20,
-              left: cardWidth + 20,
-              cardWidth: cardWidth,
-              cardHeight: cardHeight,
-            ),
-            _PositionedCard(
-              controller: controller,
-              index: 3,
-              top: cardHeight + 20,
-              left: (cardWidth + 20) * 2,
-              cardWidth: cardWidth,
-              cardHeight: cardHeight,
-            ),
-            _PositionedCard(
-              controller: controller,
-              index: 4,
-              top: (cardHeight + 20) * 2,
-              left: constraints.maxWidth / 2 - cardWidth / 2,
-              cardWidth: cardWidth,
-              cardHeight: cardHeight,
-            ),
-            _PositionedCard(
-              controller: controller,
-              index: 5,
-              top: (cardHeight + 20) * 1.7,
-              right: 0,
-              cardWidth: cardWidth,
-              cardHeight: cardHeight,
-            ),
-            _PositionedCard(
-              controller: controller,
-              index: 6,
-              top: cardHeight - 20,
-              right: 0,
-              cardWidth: cardWidth,
-              cardHeight: cardHeight,
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
 class _Build3CardLayout extends StatelessWidget {
   final RevealController controller;
 
@@ -317,7 +251,6 @@ class _Build3CardLayout extends StatelessWidget {
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-
             const SizedBox(height: 16),
             // Cards
             Row(
@@ -348,69 +281,6 @@ class _Build3CardLayout extends StatelessWidget {
           ],
         );
       },
-    );
-  }
-
-
-}
-
-class _PositionedCard extends StatelessWidget {
-  final RevealController controller;
-  final int index;
-  final double? top;
-  final double? left;
-  final double? right;
-  final double cardWidth;
-  final double cardHeight;
-
-  const _PositionedCard({
-    required this.controller,
-    required this.index,
-    this.top,
-    this.left,
-    this.right,
-    required this.cardWidth,
-    required this.cardHeight,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      top: top,
-      left: left,
-      right: right,
-      child: TweenAnimationBuilder<double>(
-        tween: Tween(begin: 0.0, end: 1.0),
-        duration: Duration(milliseconds: 600 + (index * 100)),
-        curve: Curves.easeOutBack,
-        builder: (context, value, child) {
-          return Transform.scale(
-            scale: value,
-            child: Transform.translate(
-              offset: Offset(0, 30 * (1 - value)),
-              child: Opacity(
-                opacity: value.clamp(0.0, 1.0),
-                child: child,
-              ),
-            ),
-          );
-        },
-        child: Obx(() {
-          final isSelected = controller.selectedCardIndex.value == index;
-          final isFlipped = controller.isCardFlipped(index);
-
-          return AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeOutBack,
-            width: isSelected && isFlipped ? cardWidth * 1.1 : cardWidth,
-            height: isSelected && isFlipped ? cardHeight * 1.1 : cardHeight,
-            child: _FlipCard(
-              controller: controller,
-              index: index,
-            ),
-          );
-        }),
-      ),
     );
   }
 }
@@ -657,7 +527,8 @@ class _CardDetailsPanel extends StatelessWidget {
   const _CardDetailsPanel({
     required this.card,
     required this.interpretation,
-    required this.controller, required this.questionText,
+    required this.controller,
+    required this.questionText,
   });
 
   @override
@@ -671,6 +542,7 @@ class _CardDetailsPanel extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
+        height: MediaQuery.of(context).size.height * 0.65, // 65% of screen height
         decoration: BoxDecoration(
           color: const Color(0xFFF5EFE7),
           borderRadius: const BorderRadius.only(
@@ -701,8 +573,7 @@ class _CardDetailsPanel extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            Container(
-              constraints: const BoxConstraints(maxHeight: 352),
+            Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 26),
                 child: Column(
@@ -770,7 +641,7 @@ class _CardDetailsPanel extends StatelessWidget {
                             color: Color(0xFF8B7355),
                             size: 22,
                           ),
-                          label:  AppText(
+                          label: AppText(
                             data: AppStrings.instance.close,
                             fontSize: 15,
                             fontWeight: FontWeight.w500,
@@ -793,7 +664,8 @@ class _CardDetailsPanel extends StatelessWidget {
                                     isSpeaking ? Icons.stop : Icons.volume_up,
                                     color: Colors.white,
                                   ),
-                                  onPressed: () => controller.speakCardMeaning(card),
+                                  onPressed: () =>
+                                      controller.speakCardMeaning(card),
                                 );
                               }),
                             ),

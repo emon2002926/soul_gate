@@ -135,16 +135,12 @@ class OnboardingController extends GetxController {
     final readingTypeIndex = selectedReadingType.value.index;
     final deckIndex = selectedDeck.value.index;
 
-    // print('Reading Type Index: $readingTypeIndex');
-    // print('Deck Index: $deckIndex');
 
-    // Navigate with parameters
     AppNavigation.push(
       Get.context!,
       AskOracleScreen(
         readingTypeIndex: readingTypeIndex,
         deckIndex: deckIndex,
-        isPlanB: true,
       ),
     );
   }
