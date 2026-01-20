@@ -7,6 +7,7 @@ import 'package:soul_gate/features/card_shuffle/views/shuffle_screen.dart';
 import '../../../core/constants/app_assert_image.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/util/app_navigation.dart';
+import '../../card_reveal/controllers/reveal_controller.dart';
 import '../../card_reveal/views/closing_screen.dart';
 
 class QuestionScreen extends StatelessWidget {
@@ -132,7 +133,7 @@ class QuestionScreen extends StatelessWidget {
                         height: 56,
                         child: ElevatedButton(
                           onPressed: () {
-                            AppNavigation.push(context, ShuffleScreen(questionText: textController.text, readingTypeIndex: 0, deckIndex: 0));
+                            controller.navigateToSecondThought(context,textController.text);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFFD4A574),
@@ -239,6 +240,30 @@ class QuestionController extends GetxController {
     // Get.to(() => ShuffleScreen());
   }
 
+  // void navigateToSecondThought(BuildContext context) async {
+  //   try {
+  //     final revealController = Get.find<RevealController>();
+  //     await revealController.clearMemoryData();
+  //   } catch (e) {
+  //     // Handle error
+  //   }
+  //
+  // }
+
+  void navigateToSecondThought(BuildContext context ,String text) async {
+    try {
+      // Delete the old controller completely
+      if (Get.isRegistered<RevealController>()) {
+        Get.delete<RevealController>();
+      }
+    } catch (e) {
+      debugPrint('Error deleting controller: $e');
+    }
+    AppNavigation.push(context, ShuffleScreen(questionText: text, readingTypeIndex: 0, deckIndex: 0,isScoundTime: true,));
+
+    // Then navigate - RevealScreen will create a fresh instance
+    // Your navigation code here
+  }
   @override
   void onClose() {
     // Clean up if needed

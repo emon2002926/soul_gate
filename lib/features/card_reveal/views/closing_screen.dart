@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_assert_image.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/util/app_navigation.dart';
+import '../../subscription/views/subscription_page.dart';
 
 class ClosingScreen extends StatelessWidget {
   const ClosingScreen({super.key});
@@ -17,7 +19,6 @@ class ClosingScreen extends StatelessWidget {
           image: DecorationImage(
             image: AssetImage(AppAssertImage.instance.appBackground),
             fit: BoxFit.cover,
-            // Optional: Add a dark overlay for better text readability
             colorFilter: ColorFilter.mode(
               Colors.black.withOpacity(0.3),
               BlendMode.darken,
@@ -93,12 +94,68 @@ class ClosingScreen extends StatelessWidget {
               ),
             ),
 
-            // Bottom wave decoration
+            // Bottom section with wave and button
             Positioned(
               bottom: 0,
               left: 0,
               right: 0,
-              child: _buildBottomWave(),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Subscription Button
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+                    child: GestureDetector(
+                      onTap: () {
+                        AppNavigation.push(context, const SubscriptionPage());
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Color(0xFFD4A574),
+                              Color(0xFFB8956A),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0xFFD4A574).withOpacity(0.4),
+                              blurRadius: 12,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.star_rounded,
+                              color: Colors.white,
+                              size: 24,
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              'Go to Subscription',
+                              style: GoogleFonts.cinzel(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Bottom wave decoration
+                  _buildBottomWave(),
+                ],
+              ),
             ),
           ],
         ),

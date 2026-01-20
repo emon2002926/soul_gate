@@ -12,15 +12,20 @@ import '../../../core/widgets/text/app_text.dart';
 import '../../../core/util/storage_service.dart';
 import '../../../core/util/app_navigation.dart';
 import 'package:get/get.dart';
+
+import '../../card_reveal/views/closing_screen.dart';
 class FullReadingScreen extends StatelessWidget {
   final String questionText;
   final String finalMessage;
   final String audioUrl;
+  final bool isSecoundTime;
 
   FullReadingScreen({
     super.key,
     required this.finalMessage,
-    required this.audioUrl, required this.questionText,
+    required this.audioUrl,
+    required this.questionText,
+    required this.isSecoundTime,
   });
 
   AppStrings appStrings = AppStrings.instance;
@@ -28,6 +33,12 @@ class FullReadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(FullReadingController(audioUrl: audioUrl));
+
+    if(isSecoundTime==true){
+      print("gsfg : its from 2nd time");
+    }else{
+      print("gsfg : its from 1st time");
+    }
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -43,6 +54,7 @@ class FullReadingScreen extends StatelessWidget {
           },
         ),
         title: AppText(
+          // data: appStrings.appProgressMessage,
           data: appStrings.appProgressMessage,
           color: Colors.white,
           fontWeight: FontWeight.w600,
@@ -74,7 +86,7 @@ class FullReadingScreen extends StatelessWidget {
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: _buildReadingCard(context, controller),
+                    child: _buildReadingCard(context, controller,questionText),
                   ),
                 ),
               ),
@@ -85,7 +97,7 @@ class FullReadingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildReadingCard(BuildContext context, FullReadingController controller) {
+  Widget _buildReadingCard(BuildContext context, FullReadingController controller, String questionText) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -107,7 +119,7 @@ class FullReadingScreen extends StatelessWidget {
             // Title
             Center(
               child: AppText(
-                data: appStrings.appProgressTitle,
+                data: questionText,
                 textAlign: TextAlign.center,
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -180,7 +192,11 @@ class FullReadingScreen extends StatelessWidget {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      AppNavigation.push(context, QuestionScreen());
+                      if(isSecoundTime== true){
+                        AppNavigation.push(context, ClosingScreen());
+                      }else{
+                        AppNavigation.push(context, QuestionScreen());
+                      }
                     },
                   ),
                 ),

@@ -16,6 +16,7 @@ class RevealScreen extends StatelessWidget {
   final int deckIndex;
   final int? questionId;
   final int cardCount;
+  final bool isSceoundTime;
 
   RevealScreen({
     super.key,
@@ -23,13 +24,20 @@ class RevealScreen extends StatelessWidget {
     required this.readingTypeIndex,
     required this.deckIndex,
     this.questionId,
-    required this.cardCount,
+    required this.cardCount, required this.isSceoundTime,
   });
 
   AppStrings appStrings = AppStrings();
 
   @override
   Widget build(BuildContext context) {
+
+    if (Get.isRegistered<RevealController>()) {
+      final oldController = Get.find<RevealController>();
+      oldController.stopSpeaking();
+      Get.delete<RevealController>(force: true); // force: true is critical!
+    }
+
     final controller = Get.put(RevealController());
     controller.delayedFetchInterpretation(questionText, cardCount);
     print('Reading Type Index: $readingTypeIndex');
@@ -89,7 +97,7 @@ class RevealScreen extends StatelessWidget {
                       card: controller.currentSelectedCard!,
                       interpretation: controller.currentCardInterpretation,
                       controller: controller,
-                      questionText: questionText,
+                      questionText: questionText,isSecoundTime: isSceoundTime,
                     ),
                   ),
 
@@ -132,6 +140,9 @@ class RevealScreen extends StatelessWidget {
     );
   }
 }
+
+
+
 class _LoadingWidget extends StatefulWidget {
   @override
   State<_LoadingWidget> createState() => _LoadingWidgetState();
@@ -245,40 +256,54 @@ class _Build3CardLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
+        // Calculate card size based on available space
+        double availableHeight = constraints.maxHeight;
         double cardWidth = (constraints.maxWidth - 60) / 3.5;
         double cardHeight = cardWidth * 1.5;
 
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 16),
-            // Cards
-            Row(
+        // Ensure cards fit within available space
+        if (cardHeight > availableHeight * 0.8) {
+          cardHeight = availableHeight * 0.8;
+          cardWidth = cardHeight / 1.5;
+        }
+
+        return Center(
+          child: SingleChildScrollView(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                _AnimatedCard(
-                  controller: controller,
-                  index: 0,
-                  cardWidth: cardWidth,
-                  cardHeight: cardHeight,
+                const SizedBox(height: 16),
+                // Cards
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _AnimatedCard(
+                      controller: controller,
+                      index: 0,
+                      cardWidth: cardWidth,
+                      cardHeight: cardHeight,
+                    ),
+                    const SizedBox(width: 20),
+                    _AnimatedCard(
+                      controller: controller,
+                      index: 1,
+                      cardWidth: cardWidth,
+                      cardHeight: cardHeight,
+                    ),
+                    const SizedBox(width: 20),
+                    _AnimatedCard(
+                      controller: controller,
+                      index: 2,
+                      cardWidth: cardWidth,
+                      cardHeight: cardHeight,
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 20),
-                _AnimatedCard(
-                  controller: controller,
-                  index: 1,
-                  cardWidth: cardWidth,
-                  cardHeight: cardHeight,
-                ),
-                const SizedBox(width: 20),
-                _AnimatedCard(
-                  controller: controller,
-                  index: 2,
-                  cardWidth: cardWidth,
-                  cardHeight: cardHeight,
-                ),
+                const SizedBox(height: 16),
               ],
             ),
-          ],
+          ),
         );
       },
     );
@@ -523,12 +548,13 @@ class _CardDetailsPanel extends StatelessWidget {
   final CardInterpretation? interpretation;
   final RevealController controller;
   final String questionText;
+  final bool isSecoundTime;
 
   const _CardDetailsPanel({
     required this.card,
     required this.interpretation,
     required this.controller,
-    required this.questionText,
+    required this.questionText, required this.isSecoundTime,
   });
 
   @override
@@ -684,7 +710,7 @@ class _CardDetailsPanel extends StatelessWidget {
                                   color: Colors.white,
                                 ),
                                 onPressed: () {
-                                  controller.navigateToFullReading(questionText);
+                                  controller.navigateToFullReading(questionText,isSecoundTime);
                                 },
                               ),
                             ),

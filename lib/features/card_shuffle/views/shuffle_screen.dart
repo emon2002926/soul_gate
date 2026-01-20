@@ -43,6 +43,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 // ==================== CARD CONTROLLER ====================
+// ==================== CARD CONTROLLER ====================
 
 class CardController extends GetxController {
   // UI states only
@@ -159,63 +160,92 @@ class CardController extends GetxController {
     selectedCardCount.value = 0;
     selectedArcIndices.clear();
   }
+
+  @override
+  void onInit() {
+    super.onInit();
+    // Reset everything when controller is initialized
+    resetReading();
+    print('CardController initialized - all data cleared');
+  }
+
+  @override
+  void onClose() {
+    // Clean up when controller is disposed
+    print('CardController disposed - cleaning up data');
+    resetReading();
+    super.onClose();
+  }
 }
 
 // ==================== SHUFFLE SCREEN ====================
 
 class ShuffleScreen extends StatelessWidget {
-  final CardController controller = Get.put(CardController());
-
   final String questionText;
   final int readingTypeIndex;
   final int deckIndex;
   final int? questionId;
+  final bool isScoundTime;
 
   ShuffleScreen({
     super.key,
     required this.questionText,
     required this.readingTypeIndex,
     required this.deckIndex,
-    this.questionId,
+    this.questionId, required this.isScoundTime,
   });
 
   AppStrings appStrings = AppStrings.instance;
 
   @override
   Widget build(BuildContext context) {
+    // IMPORTANT: Delete existing controller before creating new one
+    // This ensures fresh state every time user navigates to this screen
+    Get.delete<CardController>(force: true);
+
+    // Create new controller instance
+    final controller = Get.put(CardController());
+
     // Set the deck index
     controller.setDeckIndex(deckIndex);
 
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: BuildAppBar(
-        title: "Choose",
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(AppAssertImage.instance.appBackground),
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.3),
-              BlendMode.darken,
+    return WillPopScope(
+      // Clean up when user pops this screen
+      onWillPop: () async {
+        Get.delete<CardController>(force: true);
+        return true;
+      },
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: BuildAppBar(
+          title: "Choose",
+        ),
+        body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(AppAssertImage.instance.appBackground),
+              fit: BoxFit.cover,
+              colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.3),
+                BlendMode.darken,
+              ),
             ),
           ),
-        ),
-        child: SafeArea(
-          child: Obx(() {
-            if (!controller.hasShuffled.value) {
-              return _buildShuffleView(context);
-            } else {
-              return _buildCombinedView(context);
-            }
-          }),
+          child: SafeArea(
+            child: Obx(() {
+              if (!controller.hasShuffled.value) {
+                return _buildShuffleView(context, controller);
+              } else {
+                return _buildCombinedView(context, controller,isScoundTime);
+              }
+            }),
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildShuffleView(BuildContext context) {
+  Widget _buildShuffleView(BuildContext context, CardController controller) {
     return Column(
       children: [
         SizedBox(height: context.spacing24),
@@ -226,7 +256,7 @@ class ShuffleScreen extends StatelessWidget {
           color: Colors.white,
         ),
         const Spacer(),
-        _buildCircularCardSpread(context),
+        _buildCircularCardSpread(context, controller),
         const Spacer(),
         Obx(() {
           final isShuffling = controller.isShuffling.value;
@@ -263,7 +293,7 @@ class ShuffleScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCircularCardSpread(BuildContext context) {
+  Widget _buildCircularCardSpread(BuildContext context, CardController controller) {
     final cardCount = 78;
     final radius = context.screenWidth * 0.43;
 
@@ -292,7 +322,6 @@ class ShuffleScreen extends StatelessWidget {
           width: containerWidth,
           height: containerHeight,
           child: Obx(() {
-            // Only read these values once at the Stack level
             final isSpread = controller.cardsSpread.value;
             final isShuffling = controller.isShuffling.value;
             final hasShuffled = controller.hasShuffled.value;
@@ -326,7 +355,7 @@ class ShuffleScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                // Cards - each card handles its own state via Obx
+                // Cards
                 ...cardIndices.map((i) {
                   final progress = i / (cardCount - 1);
                   final angle = startAngle + (sweepAngle * progress);
@@ -363,7 +392,6 @@ class ShuffleScreen extends StatelessWidget {
                           child: child,
                         );
                       },
-                      // Each card has its own Obx for selection state
                       child: _ArcCardWrapper(
                         index: i,
                         width: currentWidth,
@@ -372,7 +400,7 @@ class ShuffleScreen extends StatelessWidget {
                         hasShuffled: hasShuffled,
                         isShuffling: isShuffling,
                         controller: controller,
-                        onTap: () => _onArcCardSelected(i),
+                        onTap: () => _onArcCardSelected(i, controller),
                       ),
                     ),
                   );
@@ -385,11 +413,11 @@ class ShuffleScreen extends StatelessWidget {
     );
   }
 
-  void _onArcCardSelected(int arcIndex) {
+  void _onArcCardSelected(int arcIndex, CardController controller) {
     controller.selectNextCard(arcIndex);
   }
 
-  void _navigateToReadings(BuildContext context) {
+  void _navigateToReadings(BuildContext context, CardController controller,bool isSceoundTime) {
     if (!controller.allCardsSelected) {
       CustomSnackbar.error(
         context,
@@ -399,6 +427,9 @@ class ShuffleScreen extends StatelessWidget {
       return;
     }
 
+    // Clean up controller before navigating
+    Get.delete<CardController>(force: true);
+
     AppNavigation.push(
       Get.context!,
       RevealScreen(
@@ -407,11 +438,12 @@ class ShuffleScreen extends StatelessWidget {
         questionText: questionText,
         cardCount: 3,
         questionId: questionId,
+        isSceoundTime: isSceoundTime,
       ),
     );
   }
 
-  Widget _buildCombinedView(BuildContext context) {
+  Widget _buildCombinedView(BuildContext context, CardController controller,bool isSecoundTime) {
     return Column(
       children: [
         SizedBox(height: context.spacing24),
@@ -435,7 +467,7 @@ class ShuffleScreen extends StatelessWidget {
         // Card spread
         Transform.translate(
           offset: Offset(0, context.responsiveSize(70)),
-          child: _buildCircularCardSpread(context),
+          child: _buildCircularCardSpread(context, controller),
         ),
 
         // 3-card layout
@@ -462,7 +494,7 @@ class ShuffleScreen extends StatelessWidget {
                   ),
                 );
               }
-              return _build3CardLayout(context);
+              return _build3CardLayout(context, controller);
             }),
           ),
         ),
@@ -474,7 +506,6 @@ class ShuffleScreen extends StatelessWidget {
             final isShuffling = controller.isShuffling.value;
             final allSelected = controller.allCardsSelected;
 
-            // Determine button state
             final String buttonText = isShuffling
                 ? "Shuffling..."
                 : allSelected
@@ -486,11 +517,11 @@ class ShuffleScreen extends StatelessWidget {
               onPressed: isShuffling
                   ? null
                   : allSelected
-                  ? () => _navigateToReadings(context)
+                  ? () => _navigateToReadings(context, controller,isSecoundTime)
                   : () => controller.shuffleAndDivideCards(),
               fillColor: allSelected
-                  ? const Color(0xFFD4AF37) // Gold for Readings
-                  : const Color(0xFFD4A574), // Brown for Shuffle
+                  ? const Color(0xFFD4AF37)
+                  : const Color(0xFFD4A574),
             );
           }),
         ),
@@ -499,32 +530,31 @@ class ShuffleScreen extends StatelessWidget {
     );
   }
 
-  // 3-card layout - cards light up in order: Middle (1st), Right (2nd), Left (3rd)
-  Widget _build3CardLayout(BuildContext context) {
+  Widget _build3CardLayout(BuildContext context, CardController controller) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Left card - lights up 3rd (when selectedCardCount >= 3)
             _buildLightUpCard(
               context: context,
-              selectionOrder: 3, // 3rd to light up
+              controller: controller,
+              selectionOrder: 3,
               label: "Past",
             ),
             SizedBox(width: context.responsiveSize(18)),
-            // Middle card - lights up 1st (when selectedCardCount >= 1)
             _buildLightUpCard(
               context: context,
-              selectionOrder: 1, // 1st to light up
+              controller: controller,
+              selectionOrder: 1,
               label: "Present",
             ),
             SizedBox(width: context.responsiveSize(18)),
-            // Right card - lights up 2nd (when selectedCardCount >= 2)
             _buildLightUpCard(
               context: context,
-              selectionOrder: 2, // 2nd to light up
+              controller: controller,
+              selectionOrder: 2,
               label: "Future",
             ),
           ],
@@ -533,10 +563,10 @@ class ShuffleScreen extends StatelessWidget {
     );
   }
 
-  // Card with light-up effect
   Widget _buildLightUpCard({
     required BuildContext context,
-    required int selectionOrder, // 1 = first to light, 2 = second, 3 = third
+    required CardController controller,
+    required int selectionOrder,
     required String label,
   }) {
     return TweenAnimationBuilder<double>(
@@ -556,7 +586,6 @@ class ShuffleScreen extends StatelessWidget {
         );
       },
       child: Obx(() {
-        // Card lights up when selectedCardCount >= selectionOrder
         final isLitUp = controller.selectedCardCount.value >= selectionOrder;
         return Column(
           mainAxisSize: MainAxisSize.min,
@@ -568,8 +597,6 @@ class ShuffleScreen extends StatelessWidget {
               deckImage: controller.getDeckImage(),
             ),
             SizedBox(height: context.responsiveSize(8)),
-            // Label below card
-
           ],
         );
       }),
@@ -577,7 +604,6 @@ class ShuffleScreen extends StatelessWidget {
   }
 }
 
-// ==================== ARC CARD WRAPPER (handles its own state) ====================
 
 class _ArcCardWrapper extends StatelessWidget {
   final int index;

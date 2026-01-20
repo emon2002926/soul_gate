@@ -381,6 +381,7 @@ class ShortBlessingController extends GetxController {
           questionText: questionText ?? '',
           readingTypeIndex: readingTypeIndex ?? 0,
           deckIndex: deckIndex ?? 0,
+          isScoundTime: false,
         ),
       );
     });
@@ -397,6 +398,7 @@ class ShortBlessingController extends GetxController {
         questionText: questionText ?? '',
         readingTypeIndex: readingTypeIndex ?? 0,
         deckIndex: deckIndex ?? 0,
+        isScoundTime: false,
       ),
     );
   }
