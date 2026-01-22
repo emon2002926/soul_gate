@@ -202,7 +202,7 @@ class AppStrings {
 
 
 
-  String get saintMichaelsBlessingTitle => _getText("Saint Michael's Blessing", "Bendición de San Miguel",);
+  String get saintMichaelsBlessingTitle => _getText("Blessing", "Bendición de San Miguel",);
 
   String get saintMichaelsBlessingText => _getText(
     "MAY THIS SPACE, SOULGATE, BE UNDER\nTHE PROTECTION OF THE LIGHT OF THE\nUNIVERSE.\nMAY THE GUIDANCE OFFERED BE CLEAR\nAND ALWAYS RESPECT FREE WILL.\nMAY ONLY THAT WHICH SERVES THE\nHIGHEST GOOD TAKE PLACE.\nSO BE IT. THANK YOU. THANK YOU.\nTHANK YOU.",
@@ -295,6 +295,11 @@ class AppStrings {
   String get insightsSupportHighestGood =>
       _getText(
         "MAY THE INSIGHTS OFFERED CONTINUE SUPPORTING MY HIGHEST GOOD.",
+        "QUE LOS CONOCIMIENTOS OFRECIDOS SIGAN APOYANDO MI BIEN MÁS ALTO.",
+      );
+  String get insightsSupportLast =>
+      _getText(
+        "SoulGate offers you clarity, and supports your personal process.",
         "QUE LOS CONOCIMIENTOS OFRECIDOS SIGAN APOYANDO MI BIEN MÁS ALTO.",
       );
 

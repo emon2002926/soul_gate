@@ -66,7 +66,7 @@ class ShortBlessingScreen extends StatelessWidget {
         ),
         title: AppText(
           data: appStrings.saintMichaelsBlessingTitle,
-          fontSize: 18,
+          fontSize: 24,
           fontWeight: FontWeight.w500,
           color: Colors.white,
         ),

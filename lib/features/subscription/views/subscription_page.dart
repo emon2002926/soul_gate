@@ -101,12 +101,12 @@ class SubscriptionPage extends StatelessWidget {
 
                             // Subtitle
                             Text(
-                              'Access unlimited readings and spiritual guidance',
+                              'Access your spiritual guide',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400,
-                                color: Colors.white.withOpacity(0.9),
+                                color: Colors.white.withOpacity(0.99),
                                 height: 1.5,
                               ),
                             ),
@@ -233,7 +233,7 @@ class SubscriptionPage extends StatelessWidget {
 
                       // Disclaimer
                       Text(
-                        '3-day free trial, then charges apply. Cancel anytime.',
+                        '3 free readings, then charges apply. Cancel anytime.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 12,
