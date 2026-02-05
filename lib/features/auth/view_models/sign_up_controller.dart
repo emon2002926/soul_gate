@@ -7,6 +7,8 @@ import '../../../core/routes/app_routes.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../../../core/widgets/snakbar/custom_snackbar.dart';
+
 
 
 
@@ -216,47 +218,29 @@ class SignUpController extends GetxController {
 
   Future<void> submitProfile() async {
     // Validate only email and password (required by API)
+    if (fullNameController.text.trim().isEmpty){
+      CustomSnackBar.error("Please enter your full name");
+      return;
+    }
     if (emailController.text.trim().isEmpty) {
-      Get.snackbar(
-        'Error',
-        'Please enter your email',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      CustomSnackBar.error("Please enter your email");
       return;
     }
 
     if (validateEmail(emailController.text) != null) {
-      Get.snackbar(
-        'Error',
-        'Please enter a valid email',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+
+      CustomSnackBar.error("Please enter a valid email");
       return;
     }
 
     if (passwordController.text.trim().isEmpty) {
-      Get.snackbar(
-        'Error',
-        'Please enter your password',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+
+      CustomSnackBar.error("Please enter your password");
       return;
     }
 
     if (validatePassword(passwordController.text) != null) {
-      Get.snackbar(
-        'Error',
-        'Password must be at least 8 characters',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      CustomSnackBar.error("Password must be at least 8 characters");
       return;
     }
 
@@ -265,12 +249,18 @@ class SignUpController extends GetxController {
 
       final url = Uri.parse('$baseUrl/auth/signup/');
 
+      print("fgklhh : ${fullNameController.text.trim() }");
+      print("fgklhh : ${emailController.text.trim() }");
+      print("fgklhh : ${passwordController.text.trim() }");
+
+
       final response = await http.post(
         url,
         headers: {
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
+          'username' : fullNameController.text.trim(),
           'email': emailController.text.trim(),
           'password': passwordController.text.trim(),
         }),
@@ -279,13 +269,8 @@ class SignUpController extends GetxController {
       final responseData = jsonDecode(response.body);
 
       if (response.statusCode == 201 || response.statusCode == 200) {
-        Get.snackbar(
-          'Success',
-          'Account created successfully! Please login.',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: const Color(0xFF4CAF50),
-          colorText: Colors.white,
-        );
+
+        CustomSnackBar.success("Account created successfully! Please login.");
 
         // Navigate to login screen
         Get.offAllNamed(AppRoutes.otpVerifyPage, arguments: {
@@ -307,30 +292,15 @@ class SignUpController extends GetxController {
           }
         }
 
-        Get.snackbar(
-          'Error',
-          errorMessage,
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+
+        CustomSnackBar.error(errorMessage);
       } else {
-        Get.snackbar(
-          'Error',
-          responseData['message'] ?? 'Failed to create account',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+
+        CustomSnackBar.error(responseData['message'] ?? 'Failed to create account');
       }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Something went wrong: ${e.toString()}',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+
+      CustomSnackBar.error("Something went wrong: ${e.toString()}");
     } finally {
       isLoading.value = false;
     }

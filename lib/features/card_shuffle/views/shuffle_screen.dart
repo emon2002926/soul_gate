@@ -419,11 +419,7 @@ class ShuffleScreen extends StatelessWidget {
 
   void _navigateToReadings(BuildContext context, CardController controller,bool isSceoundTime) {
     if (!controller.allCardsSelected) {
-      CustomSnackbar.error(
-        context,
-        title: 'Select Cards',
-        message: 'Please select all 3 cards from the arc',
-      );
+      CustomSnackBar.error("Please select all 3 cards from the arc");
       return;
     }
 

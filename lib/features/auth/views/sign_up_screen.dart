@@ -58,7 +58,17 @@ class SignUpScreen extends StatelessWidget {
                     SizedBox(height: 28.h),
 
                     // Full Name field
-
+                    AppTextField(
+                      label: appStrings.name,
+                      controller: controller.fullNameController,
+                      // keyboardType: TextInputType.none,
+                      validator: controller.validateEmail,
+                      hintTextColor: Colors.white,
+                      borderColor: AppColors.instance.primaryBtnColor,
+                      fillColor: Colors.transparent,
+                      inputTextColor: Colors.white,
+                    ),
+                    SizedBox(height: 20.h),
 
                     // Email field
                     AppTextField(
