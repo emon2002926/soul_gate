@@ -236,14 +236,14 @@ class AppStrings {
       "Consulting the universe...",
       "Consultando el universo...",
     ),
-    _getText(
-      "Interpreting your path...",
-      "Interpretando tu camino...",
-    ),
-    _getText(
-      "Channeling wisdom...",
-      "Canalizando sabiduría...",
-    ),
+    // _getText(
+    //   "Interpreting your path...",
+    //   "Interpretando tu camino...",
+    // ),
+    // _getText(
+    //   "Channeling wisdom...",
+    //   "Canalizando sabiduría...",
+    // ),
   ];
 
 

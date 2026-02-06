@@ -24,24 +24,22 @@ class RevealScreen extends StatelessWidget {
     required this.readingTypeIndex,
     required this.deckIndex,
     this.questionId,
-    required this.cardCount, required this.isSceoundTime,
+    required this.cardCount,
+    required this.isSceoundTime,
   });
 
   AppStrings appStrings = AppStrings();
 
   @override
   Widget build(BuildContext context) {
-
     if (Get.isRegistered<RevealController>()) {
       final oldController = Get.find<RevealController>();
       oldController.stopSpeaking();
-      Get.delete<RevealController>(force: true); // force: true is critical!
+      Get.delete<RevealController>(force: true);
     }
 
     final controller = Get.put(RevealController());
     controller.delayedFetchInterpretation(questionText, cardCount);
-    print('Reading Type Index: $readingTypeIndex');
-    print('Deck Index: $deckIndex');
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -64,7 +62,7 @@ class RevealScreen extends StatelessWidget {
         child: SafeArea(
           child: Obx(() {
             final isLoading = controller.isLoadingInterpretation.value;
-            final hasSelectedCard = controller.selectedCardIndex.value != null;
+            final allCardsRevealed = controller.allCardsRevealed.value;
 
             return Stack(
               children: [
@@ -75,33 +73,35 @@ class RevealScreen extends StatelessWidget {
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeOut,
-                    top: hasSelectedCard ? 60 : 0,
+                    top: allCardsRevealed ? 40 : 0,
                     left: 0,
                     right: 0,
-                    bottom: hasSelectedCard
+                    bottom: allCardsRevealed
                         ? MediaQuery.of(context).size.height * 0.65
                         : 0,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: _Build3CardLayout(controller: controller,deckImage: controller.getDeckImage(deckIndex),),
+                      child: _Build3CardLayout(
+                        controller: controller,
+                        deckImage: controller.getDeckImage(deckIndex),
+                      ),
                     ),
                   ),
 
-                // Card details panel
-                if (hasSelectedCard && !isLoading)
+                // All cards details panel - shows all interpretations
+                if (allCardsRevealed && !isLoading)
                   Positioned(
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    child: _CardDetailsPanel(
-                      card: controller.currentSelectedCard!,
-                      interpretation: controller.currentCardInterpretation,
+                    child: _AllCardsDetailsPanel(
                       controller: controller,
-                      questionText: questionText,isSecoundTime: isSceoundTime,
+                      questionText: questionText,
+                      isSecoundTime: isSceoundTime,
                     ),
                   ),
 
-                // Loading overlay with pulsing animation
+                // Loading overlay
                 if (isLoading)
                   Positioned.fill(
                     child: Container(
@@ -141,12 +141,11 @@ class RevealScreen extends StatelessWidget {
   }
 }
 
-
-
 class _LoadingWidget extends StatefulWidget {
   @override
   State<_LoadingWidget> createState() => _LoadingWidgetState();
 }
+
 class _LoadingWidgetState extends State<_LoadingWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
@@ -164,7 +163,6 @@ class _LoadingWidgetState extends State<_LoadingWidget>
       vsync: this,
     )..repeat();
 
-    // Change message every 3 seconds
     _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
       if (mounted) {
         setState(() {
@@ -236,33 +234,35 @@ class _LoadingWidgetState extends State<_LoadingWidget>
             ),
           ),
           const SizedBox(height: 12),
-           AppText(
+          AppText(
             data: appStrings.loadingTimeoutMessage,
             textAlign: TextAlign.center,
-              fontSize: 13,
-              color: Color(0xFF8B7355),
+            fontSize: 13,
+            color: Color(0xFF8B7355),
           ),
         ],
       ),
     );
   }
 }
+
 class _Build3CardLayout extends StatelessWidget {
   final RevealController controller;
   final String deckImage;
 
-  const _Build3CardLayout({required this.controller, required this.deckImage});
+  const _Build3CardLayout({
+    required this.controller,
+    required this.deckImage,
+  });
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Calculate card size based on available space
         double availableHeight = constraints.maxHeight;
         double cardWidth = (constraints.maxWidth - 60) / 3.5;
         double cardHeight = cardWidth * 1.5;
 
-        // Ensure cards fit within available space
         if (cardHeight > availableHeight * 0.8) {
           cardHeight = availableHeight * 0.8;
           cardWidth = cardHeight / 1.5;
@@ -274,8 +274,7 @@ class _Build3CardLayout extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const SizedBox(height: 16),
-                // Cards
+                const SizedBox(height: 4),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -325,7 +324,8 @@ class _AnimatedCard extends StatelessWidget {
     required this.controller,
     required this.index,
     required this.cardWidth,
-    required this.cardHeight, required this.dekImage,
+    required this.cardHeight,
+    required this.dekImage,
   });
 
   @override
@@ -347,14 +347,13 @@ class _AnimatedCard extends StatelessWidget {
         );
       },
       child: Obx(() {
-        final isSelected = controller.selectedCardIndex.value == index;
         final isFlipped = controller.isCardFlipped(index);
 
         return AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeOutBack,
-          width: isSelected && isFlipped ? cardWidth * 1.1 : cardWidth,
-          height: isSelected && isFlipped ? cardHeight * 1.1 : cardHeight,
+          width: cardWidth,
+          height: cardHeight,
           child: _FlipCard(
             controller: controller,
             index: index,
@@ -371,10 +370,10 @@ class _FlipCard extends StatelessWidget {
   final int index;
   final String dekImage;
 
-
   const _FlipCard({
     required this.controller,
-    required this.index, required this.dekImage,
+    required this.index,
+    required this.dekImage,
   });
 
   @override
@@ -382,43 +381,34 @@ class _FlipCard extends StatelessWidget {
     final card = controller.getCardAt(index);
     if (card == null) return const SizedBox.shrink();
 
-    return GestureDetector(
-      onTap: () => controller.flipCard(index),
-      child: Obx(() {
-        final isFlipped = controller.isCardFlipped(index);
-        final isSelected = controller.selectedCardIndex.value == index;
+    return Obx(() {
+      final isFlipped = controller.isCardFlipped(index);
 
-        return AnimatedScale(
-          scale: isSelected && isFlipped ? 1.1 : 1.0,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOutBack,
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 500),
-            transitionBuilder: (Widget child, Animation<double> animation) {
-              final rotate = Tween(begin: 0.0, end: 1.0).animate(animation);
-              return AnimatedBuilder(
-                animation: rotate,
+      return AnimatedSwitcher(
+        duration: const Duration(milliseconds: 500),
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          final rotate = Tween(begin: 0.0, end: 1.0).animate(animation);
+          return AnimatedBuilder(
+            animation: rotate,
+            child: child,
+            builder: (context, child) {
+              final isUnder = (ValueKey(isFlipped) != child!.key);
+              var tilt = ((animation.value - 0.5).abs() - 0.5) * 0.003;
+              tilt *= isUnder ? -1.0 : 1.0;
+              final value = isUnder ? animation.value : 1.0 - animation.value;
+              return Transform(
+                transform: Matrix4.rotationY(value * math.pi),
+                alignment: Alignment.center,
                 child: child,
-                builder: (context, child) {
-                  final isUnder = (ValueKey(isFlipped) != child!.key);
-                  var tilt = ((animation.value - 0.5).abs() - 0.5) * 0.003;
-                  tilt *= isUnder ? -1.0 : 1.0;
-                  final value = isUnder ? animation.value : 1.0 - animation.value;
-                  return Transform(
-                    transform: Matrix4.rotationY(value * math.pi),
-                    alignment: Alignment.center,
-                    child: child,
-                  );
-                },
               );
             },
-            child: isFlipped
-                ? _CardFront(key: const ValueKey(true), card: card)
-                : _CardBack(key: const ValueKey(false), dekImage: dekImage,),
-          ),
-        );
-      }),
-    );
+          );
+        },
+        child: isFlipped
+            ? _CardFront(key: const ValueKey(true), card: card)
+            : _CardBack(key: const ValueKey(false), dekImage: dekImage),
+      );
+    });
   }
 }
 
@@ -498,7 +488,6 @@ class _CardFront extends StatelessWidget {
   }
 
   Widget _buildCardImage() {
-    // Construct full image URL from card.image path
     final imageUrl = card.image;
 
     if (card.image.isEmpty) {
@@ -552,189 +541,224 @@ class _CardFront extends StatelessWidget {
   }
 }
 
-class _CardDetailsPanel extends StatelessWidget {
-  final TarotCard card;
-  final CardInterpretation? interpretation;
+// NEW: Panel showing all card interpretations in a scrollable view
+class _AllCardsDetailsPanel extends StatelessWidget {
   final RevealController controller;
   final String questionText;
   final bool isSecoundTime;
 
-  const _CardDetailsPanel({
-    required this.card,
-    required this.interpretation,
+  const _AllCardsDetailsPanel({
     required this.controller,
-    required this.questionText, required this.isSecoundTime,
+    required this.questionText,
+    required this.isSecoundTime,
   });
 
   @override
   Widget build(BuildContext context) {
-    final position = interpretation?.position ?? '';
-    final interpretationText = interpretation?.interpretation ?? '';
-    final symbol = interpretation?.symbol ?? '';
-
-    return GestureDetector(
-      onTap: () {},
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-        height: MediaQuery.of(context).size.height * 0.65, // 65% of screen height
-        decoration: BoxDecoration(
-          color: const Color(0xFFF5EFE7),
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(24),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 12,
-              offset: const Offset(0, -4),
-            ),
-          ],
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+      height: MediaQuery.of(context).size.height * 0.65,
+      decoration: BoxDecoration(
+        color: const Color(0xFFF5EFE7),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Drag handle
-            Container(
-              margin: const EdgeInsets.only(top: 12),
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: const Color(0xFFD4C5B9),
-                borderRadius: BorderRadius.circular(2),
-              ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 12,
+            offset: const Offset(0, -4),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Drag handle
+          Container(
+            margin: const EdgeInsets.only(top: 12),
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: const Color(0xFFD4C5B9),
+              borderRadius: BorderRadius.circular(2),
             ),
+          ),
+          const SizedBox(height: 16),
 
-            const SizedBox(height: 20),
+          // Header with action buttons
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                AppText(
+                  data: AppStrings.instance.yourReading,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF3C2A21),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFD4A574),
+                    borderRadius: BorderRadius.circular(9),
+                  ),
+                  child: IconButton(
+                    iconSize: 24,
+                    icon: Image.asset(
+                      AppAssertImage.instance.shareIcon,
+                      width: 24,
+                      height: 24,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      controller.navigateToFullReading(
+                        questionText,
+                        isSecoundTime,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
 
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 26),
+          // Scrollable list of all card interpretations
+          Expanded(
+            child: Obx(() {
+              final interpretations = controller.interpretations;
+              final cards = controller.cards;
+
+              if (interpretations.isEmpty || cards.isEmpty) {
+                return Center(
+                  child: AppText(
+                    data: 'No interpretations available',
+                    fontSize: 14,
+                    color: Color(0xFF8B7355),
+                  ),
+                );
+              }
+
+              return ListView.separated(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                itemCount: interpretations.length,
+                separatorBuilder: (context, index) => const SizedBox(height: 20),
+                itemBuilder: (context, index) {
+                  final interpretation = interpretations[index];
+                  final card = cards[index];
+
+                  return _CardInterpretationItem(
+                    card: card,
+                    interpretation: interpretation,
+                    controller: controller,
+                    index: index,
+                  );
+                },
+              );
+            }),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Individual card interpretation item
+class _CardInterpretationItem extends StatelessWidget {
+  final TarotCard card;
+  final CardInterpretation interpretation;
+  final RevealController controller;
+  final int index;
+
+  const _CardInterpretationItem({
+    required this.card,
+    required this.interpretation,
+    required this.controller,
+    required this.index,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.6),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: const Color(0xFFD4C5B9),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Card header with symbol and name
+          Row(
+            children: [
+              if (interpretation.symbol.isNotEmpty) ...[
+                AppText(
+                  data: interpretation.symbol,
+                  fontSize: 24,
+                  color: Color(0xFFD4A574),
+                ),
+                const SizedBox(width: 10),
+              ],
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        if (symbol.isNotEmpty) ...[
-                          AppText(
-                            data: symbol,
-                            fontSize: 26,
-                            color: Color(0xFFD4A574),
-                          ),
-                          const SizedBox(width: 10),
-                        ],
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              AppText(
-                                data: card.name,
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF3C2A21),
-                              ),
-                              if (position.isNotEmpty)
-                                AppText(
-                                  data: position,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                  color: Color(0xFF8B7355),
-                                ),
-                            ],
-                          ),
-                        ),
-                      ],
+                    AppText(
+                      data: card.name,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF3C2A21),
                     ),
-                    const SizedBox(height: 18),
-
-                    if (interpretationText.isNotEmpty)
+                    if (interpretation.position.isNotEmpty)
                       AppText(
-                        data: interpretationText,
-                        fontSize: 15,
-                        color: Color(0xFF5C4A42),
-                        height: 1.6,
-                      )
-                    else
-                      AppText(
-                        data: card.meaning,
-                        fontSize: 15,
-                        color: Color(0xFF5C4A42),
-                        height: 1.6,
+                        data: interpretation.position,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF8B7355),
                       ),
-
-                    const SizedBox(height: 22),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Close button
-                        TextButton.icon(
-                          onPressed: () => controller.closeCardDetails(),
-                          icon: const Icon(
-                            Icons.close,
-                            color: Color(0xFF8B7355),
-                            size: 22,
-                          ),
-                          label: AppText(
-                            data: AppStrings.instance.close,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xFF8B7355),
-                          ),
-                        ),
-
-                        Row(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFD4A574),
-                                borderRadius: BorderRadius.circular(9),
-                              ),
-                              child: Obx(() {
-                                final isSpeaking = controller.isSpeaking.value;
-                                return IconButton(
-                                  iconSize: 26,
-                                  icon: Icon(
-                                    isSpeaking ? Icons.stop : Icons.volume_up,
-                                    color: Colors.white,
-                                  ),
-                                  onPressed: () =>
-                                      controller.speakCardMeaning(card),
-                                );
-                              }),
-                            ),
-                            const SizedBox(width: 13),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFD4A574),
-                                borderRadius: BorderRadius.circular(9),
-                              ),
-                              child: IconButton(
-                                iconSize: 26,
-                                icon: Image.asset(
-                                  AppAssertImage.instance.shareIcon,
-                                  width: 26,
-                                  height: 26,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {
-                                  controller.navigateToFullReading(questionText,isSecoundTime);
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 22),
                   ],
                 ),
               ),
-            ),
-          ],
-        ),
+              // Audio button for this card
+              Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFFD4A574),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Obx(() {
+                  final isSpeaking = controller.isSpeaking.value &&
+                      controller.currentPlayingCardIndex.value == index;
+                  return IconButton(
+                    iconSize: 22,
+                    icon: Icon(
+                      isSpeaking ? Icons.stop : Icons.volume_up,
+                      color: Colors.white,
+                    ),
+                    onPressed: () => controller.speakCardAtIndex(index),
+                  );
+                }),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+
+          // Interpretation text
+          AppText(
+            data: interpretation.interpretation.isNotEmpty
+                ? interpretation.interpretation
+                : card.meaning,
+            fontSize: 14,
+            color: Color(0xFF5C4A42),
+            height: 1.5,
+          ),
+        ],
       ),
     );
   }
