@@ -9,9 +9,6 @@ import 'dart:convert';
 
 import '../../../core/widgets/snakbar/custom_snackbar.dart';
 
-
-
-
 class SignUpController extends GetxController {
   // Form key
   final formKey = GlobalKey<FormState>();
@@ -21,15 +18,9 @@ class SignUpController extends GetxController {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final phoneController = TextEditingController();
-  final dobController = TextEditingController();
-  final addressController = TextEditingController();
 
   final isLoading = false.obs;
-  final profileImage = Rx<File?>(null);
   final isPasswordVisible = false.obs;
-
-  final genderList = ['Male', 'Female', 'Other'];
-  final selectedGender = ''.obs;
 
   // Updated Base URL
   static final String baseUrl = 'https://sofiapi.dsrt321.online/api';
@@ -101,120 +92,8 @@ class SignUpController extends GetxController {
     return null;
   }
 
-  void setGender(String gender) {
-    selectedGender.value = gender;
-  }
 
-  // Future<void> pickImageFromGallery() async {
-  //   try {
-  //     final ImagePicker picker = ImagePicker();
-  //     final XFile? image = await picker.pickImage(
-  //       source: ImageSource.gallery,
-  //       maxWidth: 300,
-  //       maxHeight: 300,
-  //       imageQuality: 80,
-  //     );
-  //
-  //     if (image != null) {
-  //       profileImage.value = File(image.path);
-  //     }
-  //   } catch (e) {
-  //     Get.snackbar(
-  //       "Error",
-  //       "Failed to pick image from gallery",
-  //       backgroundColor: Colors.red,
-  //       colorText: Colors.white,
-  //     );
-  //   }
-  // }
 
-  // Future<void> pickImageFromCamera() async {
-  //   try {
-  //     final ImagePicker picker = ImagePicker();
-  //     final XFile? image = await picker.pickImage(
-  //       source: ImageSource.camera,
-  //       maxWidth: 300,
-  //       maxHeight: 300,
-  //       imageQuality: 80,
-  //     );
-  //
-  //     if (image != null) {
-  //       profileImage.value = File(image.path);
-  //     }
-  //   } catch (e) {
-  //     Get.snackbar(
-  //       "Error",
-  //       "Failed to take photo",
-  //       backgroundColor: Colors.red,
-  //       colorText: Colors.white,
-  //     );
-  //   }
-  // }
-
-  // void showImagePickerDialog() {
-  //   Get.dialog(
-  //     AlertDialog(
-  //       title: const Text('Select Profile Picture'),
-  //       content: Column(
-  //         mainAxisSize: MainAxisSize.min,
-  //         children: [
-  //           ListTile(
-  //             leading: const Icon(Icons.photo_library),
-  //             title: const Text('Gallery'),
-  //             onTap: () {
-  //               Get.back();
-  //               pickImageFromGallery();
-  //             },
-  //           ),
-  //           ListTile(
-  //             leading: const Icon(Icons.camera_alt),
-  //             title: const Text('Camera'),
-  //             onTap: () {
-  //               Get.back();
-  //               pickImageFromCamera();
-  //             },
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Future<void> selectDateOfBirth() async {
-  //   final DateTime? pickedDate = await showDatePicker(
-  //     context: Get.context!,
-  //     initialDate:
-  //     DateTime.now().subtract(const Duration(days: 365 * 18)), // 18 years ago
-  //     firstDate: DateTime(1900),
-  //     lastDate: DateTime.now(),
-  //     builder: (context, child) {
-  //       return Theme(
-  //         data: Theme.of(context).copyWith(
-  //           colorScheme: ColorScheme.light(
-  //             primary: Colors.grey[800]!,
-  //             onPrimary: Colors.white,
-  //             surface: Colors.white,
-  //             onSurface: Colors.black,
-  //           ),
-  //         ),
-  //         child: child!,
-  //       );
-  //     },
-  //   );
-  //
-  //   if (pickedDate != null) {
-  //     dobController.text = DateFormat('dd/MM/yyyy').format(pickedDate);
-  //   }
-  // }
-
-  // void selectAddress() {
-  //   Get.snackbar(
-  //     "Info",
-  //     "Address picker coming soon",
-  //     backgroundColor: Colors.blueAccent,
-  //     colorText: Colors.white,
-  //   );
-  // }
 
   Future<void> submitProfile() async {
     // Validate only email and password (required by API)
@@ -248,10 +127,6 @@ class SignUpController extends GetxController {
       isLoading.value = true;
 
       final url = Uri.parse('$baseUrl/auth/signup/');
-
-      print("fgklhh : ${fullNameController.text.trim() }");
-      print("fgklhh : ${emailController.text.trim() }");
-      print("fgklhh : ${passwordController.text.trim() }");
 
 
       final response = await http.post(
@@ -291,8 +166,6 @@ class SignUpController extends GetxController {
             errorMessage = responseData['message'];
           }
         }
-
-
         CustomSnackBar.error(errorMessage);
       } else {
 
@@ -312,8 +185,6 @@ class SignUpController extends GetxController {
     emailController.dispose();
     passwordController.dispose();
     phoneController.dispose();
-    dobController.dispose();
-    addressController.dispose();
     super.onClose();
   }
 }

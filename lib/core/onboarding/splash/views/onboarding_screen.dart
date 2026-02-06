@@ -459,7 +459,6 @@ class _SelectionCard extends StatelessWidget {
 }
 
 // Deck Card Widget
-// Deck Card Widget
 class _DeckCard extends StatelessWidget {
   final DeckType deckType;
   final String imagePath;

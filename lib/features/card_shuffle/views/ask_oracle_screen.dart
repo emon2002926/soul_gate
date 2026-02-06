@@ -1,15 +1,12 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
 import 'package:soul_gate/core/util/screen_size.dart';
+import 'package:soul_gate/core/widgets/snakbar/custom_snackbar.dart';
 import '../../../core/constants/app_assert_image.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/onboarding/splash/views/short_blessing_screen.dart';
 import '../../../core/util/app_navigation.dart';
-import '../../../core/util/storage_service.dart';
 import '../../../core/widgets/buttons/app_button.dart';
 
 class OracleQuestion {
@@ -77,6 +74,8 @@ class AskOracleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('Reading Type Index: $readingTypeIndex');
+    print('Deck Index: $deckIndex');
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -432,15 +431,7 @@ class QuestionConfirmationController extends GetxController {
     final question = questionController.text.trim();
 
     if (question.isEmpty) {
-      Get.snackbar(
-        'Empty Question',
-        'Please enter a question before continuing',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red.withOpacity(0.8),
-        colorText: Colors.white,
-        margin: const EdgeInsets.all(16),
-        borderRadius: 12,
-      );
+      CustomSnackBar.error('Please enter a question before continuing',);
       return;
     }
 

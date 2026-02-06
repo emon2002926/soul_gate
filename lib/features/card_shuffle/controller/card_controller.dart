@@ -8,15 +8,17 @@ class CardController extends GetxController {
   var hasShuffled = false.obs;
   var cardsSpread = false.obs;
 
-  // Selected card index from arc (0-77)
+  // Selected card index from arc (0-77) - tracks the LAST tapped arc card
   var selectedStackIndex = Rxn<int>();
 
   // Reading type: always 3 now
   var readingCardCount = 3.obs;
 
-  // Sequential light-up state for 3 cards (0, 1, 2)
-  var currentLitIndex = (-1).obs; // -1 means none lit, 0 = first, 1 = second, 2 = third
-  var isLightingUp = false.obs; // Animation in progress
+  // Track how many cards user has selected (0, 1, 2, or 3)
+  var selectedCardCount = 0.obs;
+
+  // Store the arc card indices for each selection
+  var selectedArcIndices = <int>[].obs;
 
   // Add deck index
   var deckIndex = 0.obs;
@@ -27,8 +29,8 @@ class CardController extends GetxController {
   }
 
   // Get the appropriate deck image based on deckIndex
-  String getDeckImage() {
-    switch (deckIndex.value) {
+  String getDeckImage(int deckIndex) {
+    switch (deckIndex) {
       case 0:
         return AppAssertImage.instance.deck1;
       case 1:
@@ -40,13 +42,14 @@ class CardController extends GetxController {
     }
   }
 
+
   // Just animate the shuffle - no actual card data
   Future<void> shuffleAndDivideCards() async {
     isShuffling.value = true;
     cardsSpread.value = false;
     selectedStackIndex.value = null;
-    currentLitIndex.value = -1;
-    isLightingUp.value = false;
+    selectedCardCount.value = 0;
+    selectedArcIndices.clear();
 
     // Wait then spread cards visually
     await Future.delayed(const Duration(milliseconds: 500));
@@ -58,59 +61,77 @@ class CardController extends GetxController {
     hasShuffled.value = true;
   }
 
-  // Select a card from the arc - triggers sequential light-up
-  void selectStackForHighlight(int index) {
-    if (index < 0 || index >= 78) return;
-    if (isLightingUp.value) return; // Don't allow during animation
+  // User taps an arc card to select next card
+  void selectNextCard(int arcIndex) {
+    if (arcIndex < 0 || arcIndex >= 78) return;
 
-    // If same card tapped, deselect
-    if (selectedStackIndex.value == index) {
-      selectedStackIndex.value = null;
-      currentLitIndex.value = -1;
+    // If all 3 cards already selected, ignore
+    if (selectedCardCount.value >= 3) return;
+
+    // Check if this arc card was already used
+    if (selectedArcIndices.contains(arcIndex)) {
       return;
     }
 
-    // Select the arc card
-    selectedStackIndex.value = index;
+    // Add this arc card to selection
+    selectedArcIndices.add(arcIndex);
+    selectedStackIndex.value = arcIndex;
 
-    // Start sequential light-up animation
-    _startSequentialLightUp();
+    // Increment the count - this lights up the next card
+    selectedCardCount.value++;
   }
 
-  // Sequential light-up effect - one card at a time
-  Future<void> _startSequentialLightUp() async {
-    isLightingUp.value = true;
-    currentLitIndex.value = -1;
-
-    // Light up card 0 (first card)
-    await Future.delayed(const Duration(milliseconds: 400));
-    currentLitIndex.value = 0;
-
-    // Light up card 1 (second card)
-    await Future.delayed(const Duration(milliseconds: 500));
-    currentLitIndex.value = 1;
-
-    // Light up card 2 (third card)
-    await Future.delayed(const Duration(milliseconds: 500));
-    currentLitIndex.value = 2;
-
-    isLightingUp.value = false;
+  // Check if a specific arc card is selected
+  bool isArcCardSelected(int index) {
+    return selectedArcIndices.contains(index);
   }
 
-  // Check if a specific card is lit
+  // Check if a specific layout card is lit (0, 1, or 2)
   bool isCardLitUp(int index) {
-    return currentLitIndex.value >= index;
+    return selectedCardCount.value > index;
   }
 
-  // Check if all 3 cards are lit up
-  bool get allCardsLitUp => currentLitIndex.value >= 2;
+  // Check if all 3 cards are selected
+  bool get allCardsSelected => selectedCardCount.value >= 3;
+
+  // Get instruction text based on current state
+  String getInstructionText() {
+    switch (selectedCardCount.value) {
+      case 0:
+        return 'Select your first card from the arc';
+      case 1:
+        return 'Select your second card';
+      case 2:
+        return 'Select your third card';
+      case 3:
+        return 'Your reading is ready';
+      default:
+        return 'Tap a card from the arc';
+    }
+  }
 
   void resetReading() {
     isShuffling.value = false;
     hasShuffled.value = false;
     cardsSpread.value = false;
     selectedStackIndex.value = null;
-    currentLitIndex.value = -1;
-    isLightingUp.value = false;
+    selectedCardCount.value = 0;
+    selectedArcIndices.clear();
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    // Reset everything when controller is initialized
+    resetReading();
+    print('CardController initialized - all data cleared');
+  }
+
+  @override
+  void onClose() {
+    // Clean up when controller is disposed
+    print('CardController disposed - cleaning up data');
+    resetReading();
+    super.onClose();
   }
 }

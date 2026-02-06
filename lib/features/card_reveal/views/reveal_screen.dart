@@ -83,7 +83,7 @@ class RevealScreen extends StatelessWidget {
                         : 0,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: _Build3CardLayout(controller: controller),
+                      child: _Build3CardLayout(controller: controller,deckImage: controller.getDeckImage(deckIndex),),
                     ),
                   ),
 
@@ -249,8 +249,9 @@ class _LoadingWidgetState extends State<_LoadingWidget>
 }
 class _Build3CardLayout extends StatelessWidget {
   final RevealController controller;
+  final String deckImage;
 
-  const _Build3CardLayout({required this.controller});
+  const _Build3CardLayout({required this.controller, required this.deckImage});
 
   @override
   Widget build(BuildContext context) {
@@ -283,6 +284,7 @@ class _Build3CardLayout extends StatelessWidget {
                       index: 0,
                       cardWidth: cardWidth,
                       cardHeight: cardHeight,
+                      dekImage: deckImage,
                     ),
                     const SizedBox(width: 20),
                     _AnimatedCard(
@@ -290,6 +292,7 @@ class _Build3CardLayout extends StatelessWidget {
                       index: 1,
                       cardWidth: cardWidth,
                       cardHeight: cardHeight,
+                      dekImage: deckImage,
                     ),
                     const SizedBox(width: 20),
                     _AnimatedCard(
@@ -297,6 +300,7 @@ class _Build3CardLayout extends StatelessWidget {
                       index: 2,
                       cardWidth: cardWidth,
                       cardHeight: cardHeight,
+                      dekImage: deckImage,
                     ),
                   ],
                 ),
@@ -315,12 +319,13 @@ class _AnimatedCard extends StatelessWidget {
   final int index;
   final double cardWidth;
   final double cardHeight;
+  final String dekImage;
 
   const _AnimatedCard({
     required this.controller,
     required this.index,
     required this.cardWidth,
-    required this.cardHeight,
+    required this.cardHeight, required this.dekImage,
   });
 
   @override
@@ -353,6 +358,7 @@ class _AnimatedCard extends StatelessWidget {
           child: _FlipCard(
             controller: controller,
             index: index,
+            dekImage: dekImage,
           ),
         );
       }),
@@ -363,10 +369,12 @@ class _AnimatedCard extends StatelessWidget {
 class _FlipCard extends StatelessWidget {
   final RevealController controller;
   final int index;
+  final String dekImage;
+
 
   const _FlipCard({
     required this.controller,
-    required this.index,
+    required this.index, required this.dekImage,
   });
 
   @override
@@ -406,7 +414,7 @@ class _FlipCard extends StatelessWidget {
             },
             child: isFlipped
                 ? _CardFront(key: const ValueKey(true), card: card)
-                : _CardBack(key: const ValueKey(false)),
+                : _CardBack(key: const ValueKey(false), dekImage: dekImage,),
           ),
         );
       }),
@@ -415,7 +423,8 @@ class _FlipCard extends StatelessWidget {
 }
 
 class _CardBack extends StatelessWidget {
-  const _CardBack({super.key});
+  final String dekImage;
+  const _CardBack({super.key, required this.dekImage});
 
   @override
   Widget build(BuildContext context) {
@@ -434,7 +443,7 @@ class _CardBack extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: Image.asset(
-          AppAssertImage.instance.deck1,
+          dekImage,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
             return Container(

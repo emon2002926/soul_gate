@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:soul_gate/core/onboarding/splash/views/onboarding_screen.dart';
+import 'package:soul_gate/core/widgets/snakbar/custom_snackbar.dart';
 import '../../subscription/views/subscription_page.dart';
 import '../../../core/util/app_navigation.dart';
 import '../../../core/util/storage_service.dart';
@@ -33,24 +35,13 @@ class LoginController extends GetxController {
   Future<void> login() async {
     // Validation
     if (emailController.text.trim().isEmpty) {
-      Get.snackbar(
-        'Error',
-        'Please enter your email',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      CustomSnackBar.error("Please enter your email");
+
       return;
     }
 
     if (passwordController.text.trim().isEmpty) {
-      Get.snackbar(
-        'Error',
-        'Please enter your password',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      CustomSnackBar.error('Please enter your password');
       return;
     }
 
@@ -90,33 +81,14 @@ class LoginController extends GetxController {
         //   await StorageService.saveUserEmail(user['email']);
         // }
 
-        Get.snackbar(
-          'Success',
-          responseData['message'] ?? 'Login successful',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
-
+        CustomSnackBar.success("Login successful");
         // All users navigate to onboarding serving selection
-        AppNavigation.pushAndClear(Get.context!, SubscriptionPage());
+        AppNavigation.pushAndClear(Get.context!, OnboardingScreen());
       } else {
-        Get.snackbar(
-          'Error',
-          responseData['message'] ?? 'Login failed',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        CustomSnackBar.error('Login failed');
       }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Something went wrong: ${e.toString()}',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      CustomSnackBar.error('Something went wrong');
     } finally {
       isLoading.value = false;
     }

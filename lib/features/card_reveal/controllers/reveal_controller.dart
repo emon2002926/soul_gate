@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:soul_gate/core/util/app_navigation.dart';
 import 'package:soul_gate/core/util/storage_service.dart';
+import '../../../core/constants/app_assert_image.dart';
 import '../../card_shuffle/views/full_reading_screen.dart';
 import '../../subscription/views/subscription_page.dart';
 import '../models/tarot_response.dart';
@@ -78,6 +79,20 @@ import 'package:path_provider/path_provider.dart';
 
       debugPrint('✅ RevealController memory cleared');
     }
+
+    String getDeckImage(int deckIndex) {
+      switch (deckIndex) {
+        case 0:
+          return AppAssertImage.instance.deck1;
+        case 1:
+          return AppAssertImage.instance.deck2;
+        case 2:
+          return AppAssertImage.instance.deck3;
+        default:
+          return AppAssertImage.instance.deck1;
+      }
+    }
+
   
     void _initializeController() {
       try {
