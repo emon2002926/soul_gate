@@ -7,7 +7,9 @@ import '../../../core/constants/app_assert_image.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/onboarding/splash/views/short_blessing_screen.dart';
 import '../../../core/util/app_navigation.dart';
+import '../../../core/widgets/app_bar/build_app_bar.dart';
 import '../../../core/widgets/buttons/app_button.dart';
+import '../../profile/views/profile_page.dart';
 
 class OracleQuestion {
   final int id;
@@ -77,6 +79,15 @@ class AskOracleScreen extends StatelessWidget {
     print('Reading Type Index: $readingTypeIndex');
     print('Deck Index: $deckIndex');
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: BuildAppBar(
+        showSideButton: true,
+        sideButtonIcon: Icons.account_circle_outlined,
+        onSideButtonPressed: ()=>AppNavigation.push(Get.context!, ProfilePage()),
+        onBackButtonPrassed: (){
+          Navigator.pop(context);
+        },
+      ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -230,6 +241,15 @@ class QuestionConfirmationScreen extends StatelessWidget {
     AppStrings appStrings = AppStrings.instance;
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: BuildAppBar(
+        showSideButton: true,
+        sideButtonIcon: Icons.account_circle_outlined,
+        onSideButtonPressed: ()=>AppNavigation.push(Get.context!, ProfilePage()),
+        onBackButtonPrassed: (){
+          Navigator.pop(context);
+        },
+      ),
       body: Container(
         width: double.infinity,
         height: double.infinity,

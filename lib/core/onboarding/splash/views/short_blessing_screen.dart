@@ -2,6 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
+import 'package:soul_gate/core/widgets/app_bar/build_app_bar.dart';
 import 'package:soul_gate/core/widgets/text/app_text.dart';
 import '../../../../features/card_shuffle/views/shuffle_screen.dart';
 import '../../../../features/profile/views/profile_page.dart';
@@ -41,60 +42,17 @@ class ShortBlessingScreen extends StatelessWidget {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GestureDetector(
-            onTap: () {
-              controller.audioPlayer.stop();
-              Get.back();
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-                size: 24,
-              ),
-            ),
-          ),
-        ),
-        title: AppText(
-          data: appStrings.saintMichaelsBlessingTitle,
-          fontSize: 24,
-          fontWeight: FontWeight.w500,
-          color: Colors.white,
-        ),
-        centerTitle: true,
-        actions: [
-          Padding(
-
-            padding: const EdgeInsets.all(8.0),
-            child: GestureDetector(
-              onTap: () {
-                AppNavigation.push(Get.context!, ProfilePage());
-              },
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.account_circle_outlined,
-                  color: Colors.white,
-                  size: 24,
-                ),
-              ),
-            ),
-          ),
-        ],
+      appBar: BuildAppBar(
+        title: appStrings.saintMichaelsBlessingTitle,
+        showSideButton: true,
+        sideButtonIcon: Icons.account_circle_outlined,
+        onSideButtonPressed: ()=>AppNavigation.push(Get.context!, ProfilePage()),
+        onBackButtonPrassed: (){
+          controller.audioPlayer.stop();
+          Navigator.pop(context);
+          },
       ),
+
       body: Container(
         width: double.infinity,
         height: double.infinity,

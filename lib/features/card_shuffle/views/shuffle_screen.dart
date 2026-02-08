@@ -8,6 +8,7 @@ import '../../../core/util/app_navigation.dart';
 import '../../../core/util/screen_size.dart';
 import '../../../core/widgets/app_bar/build_app_bar.dart';
 import '../../../core/widgets/snakbar/custom_snackbar.dart';
+import '../../profile/views/profile_page.dart';
 import '../controller/card_controller.dart';
 import 'package:get/get.dart';
 import '../../card_reveal/views/reveal_screen.dart';
@@ -80,8 +81,16 @@ class ShuffleScreen extends StatelessWidget {
       child: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: BuildAppBar(
-          title: "Choose",
+          title: appStrings.choose,
+          showSideButton: true,
+          sideButtonIcon: Icons.account_circle_outlined,
+          onSideButtonPressed: ()=>AppNavigation.push(Get.context!, ProfilePage()),
+          onBackButtonPrassed: (){
+            Navigator.pop(context);
+          },
         ),
+
+
         body: Container(
           decoration: BoxDecoration(
             image: DecorationImage(

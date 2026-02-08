@@ -15,6 +15,7 @@ class BuildAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Color? backgroundColor;  // Added backgroundColor parameter
   final double? titleSize;
   final FontWeight? fontWeight;
+  final VoidCallback? onBackButtonPrassed ;
 
   const BuildAppBar({
     super.key,
@@ -29,6 +30,7 @@ class BuildAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.backgroundColor,
     this.titleSize,
     this.fontWeight,
+    this.onBackButtonPrassed,
   });
 
   @override
@@ -42,7 +44,7 @@ class BuildAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: showBackButton
           ? IconButton(
         icon: Icon(Icons.arrow_back_ios, color: iconColor ?? Colors.white),
-        onPressed: () => Navigator.pop(context),
+        onPressed:  onBackButtonPrassed,
       )
           : null,
       title: Text(
@@ -56,17 +58,10 @@ class BuildAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       actions: showSideButton
           ? [
-        Container(
-          margin: const EdgeInsets.only(right: 16),
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: const Color(0xFF69BE28),
-            shape: BoxShape.circle,
-          ),
-          child: IconButton(
-            icon: Icon(sideButtonIcon, color: iconColor ?? Colors.white),
-            onPressed: onSideButtonPressed,
-          ),
+        IconButton(
+          icon: Icon(sideButtonIcon, color: iconColor ?? Colors.white),
+          onPressed: onSideButtonPressed,
+          iconSize: 24,
         )
       ]
           : null,

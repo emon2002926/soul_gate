@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
+import 'package:soul_gate/core/util/storage_service.dart';
+import 'package:soul_gate/features/auth/views/sign_up_screen.dart';
 import 'package:soul_gate/features/profile/views/change_password_page.dart';
 
+import '../../auth/views/sing_in_screen.dart';
 import '../views/edit_profile_page.dart';
 import '../views/legal_conditions_screen.dart';
 
@@ -42,6 +45,12 @@ class ProfileController extends GetxController {
   void onContactUs() {
     // Navigate to contact us
     AppNavigation.push(Get.context!, LegalConditionsScreen());
+  }
+
+  void logUot() {
+    // Navigate to contact us
+    StorageService.logout();
+    AppNavigation.pushAndClear(Get.context!,SingInScreen());
   }
 
   void onFAQ() {

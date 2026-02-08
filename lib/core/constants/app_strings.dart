@@ -24,6 +24,8 @@ class AppStrings {
   String get selectLanguage => _getText("Select Language", "Seleccionar idioma");
   String get english => "English";
   String get spanish => "Español";
+  String get choose => _getText("Choose", "Elegir");
+
 
   // ========== Authentication ==========
   String get login => _getText("Log in", "Iniciar sesión");
@@ -190,6 +192,7 @@ class AppStrings {
   String get retry => _getText("Retry", "Reintentar",);
 
   String get goBack => _getText("Go Back", "Regresar",);
+
 
   String get readingError => _getText("Reading Error", "Error de lectura",);
 

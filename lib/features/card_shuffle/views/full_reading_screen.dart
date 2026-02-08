@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:soul_gate/features/card_shuffle/views/question_screen.dart';
-
 import '../../../core/constants/app_assert_image.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/widgets/text/app_text.dart';
@@ -119,7 +118,7 @@ class FullReadingScreen extends StatelessWidget {
             // Title
             Center(
               child: AppText(
-                data: questionText,
+                data: "Iman your question interpretation is \n $questionText",
                 textAlign: TextAlign.center,
                 fontSize: 22,
                 fontWeight: FontWeight.bold,

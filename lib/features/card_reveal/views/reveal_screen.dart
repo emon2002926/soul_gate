@@ -6,6 +6,8 @@ import 'package:soul_gate/core/widgets/text/app_text.dart';
 import '../../../core/constants/app_assert_image.dart';
 import 'dart:math' as math;
 import '../../../core/constants/app_strings.dart';
+import '../../../core/util/app_navigation.dart';
+import '../../profile/views/profile_page.dart';
 import '../controllers/reveal_controller.dart';
 import '../models/tarot_response.dart';
 
@@ -45,8 +47,13 @@ class RevealScreen extends StatelessWidget {
       extendBodyBehindAppBar: true,
       backgroundColor: const Color(0xFFF5F3EE),
       appBar: BuildAppBar(
-        showSideButton: false,
         title: appStrings.yourReading,
+        showSideButton: true,
+        sideButtonIcon: Icons.account_circle_outlined,
+        onSideButtonPressed: ()=>AppNavigation.push(Get.context!, ProfilePage()),
+        onBackButtonPrassed: (){
+          Navigator.pop(context);
+        },
       ),
       body: Container(
         decoration: BoxDecoration(

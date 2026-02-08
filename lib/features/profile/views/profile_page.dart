@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
 
 import '../../../core/constants/app_assert_image.dart';
+import '../../../core/constants/app_strings.dart';
+import '../../../core/widgets/app_bar/build_app_bar.dart';
 import '../controller/profile_controller.dart';
 import 'change_password_page.dart';
 
@@ -13,10 +15,20 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ProfileController());
+    AppStrings appStrings = AppStrings.instance;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
+      appBar: BuildAppBar(
+        title: appStrings.profile,
+        showSideButton: true,
+        sideButtonIcon: Icons.account_circle_outlined,
+        onSideButtonPressed: ()=>AppNavigation.push(Get.context!, ProfilePage()),
+        onBackButtonPrassed: (){
+          Navigator.pop(context);
+        },
+      ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -109,14 +121,13 @@ class ProfilePage extends StatelessWidget {
                       subtitle: 'Legal Conditions of Use.',
                       onTap: controller.onContactUs,
                     ),
-                    // const Divider(height: 1, indent: 56),
-                    // _buildMenuItem(
-                    //   icon: Icons.help_outline_rounded,
-                    //   iconColor: const Color(0xFFE85C4A),
-                    //   title: 'FAQ',
-                    //   subtitle: 'Reach our support team for help.',
-                    //   onTap: controller.onFAQ,
-                    // ),
+                    _buildMenuItem(
+                      icon: Icons.logout,
+                      iconColor: const Color(0xFFE85C4A),
+                      title: 'LogOut',
+                      subtitle: '',
+                      onTap: controller.logUot,
+                    ),
                   ],
                 ),
 
