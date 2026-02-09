@@ -115,10 +115,17 @@ class ProfilePage extends StatelessWidget {
                     ),
                     const Divider(height: 1, indent: 56),
                     _buildMenuItem(
-                      icon: Icons.headset_mic_outlined,
+                      icon: Icons.privacy_tip_sharp,
                       iconColor: const Color(0xFFE85C4A),
                       title: 'Legal Conditions of Use',
                       subtitle: 'Legal Conditions of Use.',
+                      onTap: controller.onContactUs,
+                    ),
+                    _buildMenuItem(
+                      icon: Icons.chat_bubble,
+                      iconColor: const Color(0xFFE85C4A),
+                      title: 'Write a ote',
+                      subtitle: '',
                       onTap: controller.onContactUs,
                     ),
                     _buildMenuItem(

@@ -98,7 +98,7 @@ class CardController extends GetxController {
   String getInstructionText() {
     switch (selectedCardCount.value) {
       case 0:
-        return 'Select your first card from the arc';
+        return 'Select your first card ';
       case 1:
         return 'Select your second card';
       case 2:

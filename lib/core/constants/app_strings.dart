@@ -231,22 +231,22 @@ class AppStrings {
 
 
    late List<String> messages = [
-    _getText(
-      "Reading the cards...",
-      "Leyendo las cartas...",
-    ),
+    // _getText(
+    //   "Reading the cards...",
+    //   "Leyendo las cartas...",
+    // ),
     _getText(
       "Consulting the universe...",
       "Consultando el universo...",
     ),
-    // _getText(
-    //   "Interpreting your path...",
-    //   "Interpretando tu camino...",
-    // ),
-    // _getText(
-    //   "Channeling wisdom...",
-    //   "Canalizando sabiduría...",
-    // ),
+    _getText(
+      "Interpreting your path...",
+      "Interpretando tu camino...",
+    ),
+    _getText(
+      "Getting Ready ...",
+      "Canalizando sabiduría...",
+    ),
   ];
 
 
@@ -360,7 +360,7 @@ class AppStrings {
   String get privacyPolicy => _getText("Privacy Policy", "Política de privacidad");
   String get termsOfService => _getText("Terms of Service", "Términos de servicio");
   String get termsOfServiceAgreement =>
-      _getText("I agree to Terms of Service", "Acepto los Términos de servicio");
+      _getText("I agree to Terms and Conditions ", "Acepto los Términos de servicio");
   String get logout => _getText("Logout", "Cerrar sesión");
 
   // ========== Loading & Messages ==========

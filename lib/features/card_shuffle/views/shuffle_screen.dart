@@ -376,7 +376,7 @@ class ShuffleScreen extends StatelessWidget {
             final String buttonText = isShuffling
                 ? "Shuffling..."
                 : allSelected
-                ? "Readings"
+                ? "Continue"
                 : "Shuffle";
 
             return AppButton(
