@@ -124,9 +124,9 @@ class ProfilePage extends StatelessWidget {
                     _buildMenuItem(
                       icon: Icons.chat_bubble,
                       iconColor: const Color(0xFFE85C4A),
-                      title: 'Write a ote',
+                      title: 'Share Your Thoughts',
                       subtitle: '',
-                      onTap: controller.onContactUs,
+                      onTap: controller.openSupportEmail,
                     ),
                     _buildMenuItem(
                       icon: Icons.logout,

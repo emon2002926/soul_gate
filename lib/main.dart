@@ -31,32 +31,32 @@ Future<void> main() async {
   runApp(const MainEntryApp());
 }
 
-class MainEntryApp extends StatelessWidget {
-  const MainEntryApp({super.key});
+  class MainEntryApp extends StatelessWidget {
+    const MainEntryApp({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(375, 812),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (context, child) {
-        return GetMaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            // Ensure status bar styling is applied to all AppBars
-            appBarTheme: const AppBarTheme(
-              systemOverlayStyle: SystemUiOverlayStyle(
-                statusBarColor: Colors.transparent,
-                statusBarIconBrightness: Brightness.light,
-                statusBarBrightness: Brightness.dark,
+    @override
+    Widget build(BuildContext context) {
+      return ScreenUtilInit(
+        designSize: const Size(375, 812),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (context, child) {
+          return GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              // Ensure status bar styling is applied to all AppBars
+              appBarTheme: const AppBarTheme(
+                systemOverlayStyle: SystemUiOverlayStyle(
+                  statusBarColor: Colors.transparent,
+                  statusBarIconBrightness: Brightness.light,
+                  statusBarBrightness: Brightness.dark,
+                ),
               ),
             ),
-          ),
-          home: const SplashScreen(),
-          getPages: appRootRoutesFile,
-        );
-      },
-    );
+            home: const SplashScreen(),
+            getPages: appRootRoutesFile,
+          );
+        },
+      );
+    }
   }
-}

@@ -28,6 +28,7 @@ class AppStrings {
 
 
   // ========== Authentication ==========
+
   String get login => _getText("Log in", "Iniciar sesión");
   String get signUp => _getText("Sign Up", "Registrarse");
   String get name => _getText("Name", "Nombre");
