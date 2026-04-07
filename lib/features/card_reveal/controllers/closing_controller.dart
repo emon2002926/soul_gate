@@ -25,7 +25,7 @@ class ClosingController extends GetxController {
     );
 
     final Uri emailUri = Uri.parse(
-      'mailto:support23@gmail.com?subject=$subject',
+      'mailto:soulgateapp2026@gmail.com?subject=$subject',
     );
 
     try {
@@ -42,7 +42,7 @@ class ClosingController extends GetxController {
   void _showEmailError() {
     Get.snackbar(
       'Unable to Open Mail',
-      'Please email us directly at support23@gmail.com',
+      'Please email us directly at soulgateapp2026@gmail.com',
       snackPosition: SnackPosition.BOTTOM,
       duration: const Duration(seconds: 4),
     );

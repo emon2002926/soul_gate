@@ -13,7 +13,7 @@ import '../views/legal_conditions_screen.dart';
 class ProfileController extends GetxController {
   // User data
   final userName = 'Amelia'.obs;
-  final userEmail = 'amelia1234@gmail.com'.obs;
+  final userEmail = 'soulgateapp2026@gmail.com'.obs;
   final isPremiumUser = true.obs;
   final profileImageUrl = ''.obs;
 
@@ -84,7 +84,7 @@ class ProfileController extends GetxController {
     );
 
     final Uri emailUri = Uri.parse(
-      'mailto:support23@gmail.com?subject=$subject',
+      'mailto:soulgateapp2026@gmail.com?subject=$subject',
     );
 
     try {
@@ -101,7 +101,7 @@ class ProfileController extends GetxController {
   void _showEmailError() {
     Get.snackbar(
       'Unable to Open Mail',
-      'Please email us directly at support23@gmail.com',
+      'Please email us directly at soulgateapp2026@gmail.com',
       snackPosition: SnackPosition.BOTTOM,
       duration: const Duration(seconds: 4),
     );
