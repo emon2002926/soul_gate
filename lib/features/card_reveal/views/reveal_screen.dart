@@ -73,7 +73,6 @@ class RevealScreen extends StatelessWidget {
 
             return Stack(
               children: [
-                // Main content - Cards positioned higher when panel is open
                 if (isLoading)
                   _buildLoadingView()
                 else
@@ -95,7 +94,6 @@ class RevealScreen extends StatelessWidget {
                     ),
                   ),
 
-                // All cards details panel - shows all interpretations
                 if (allCardsRevealed && !isLoading)
                   Positioned(
                     bottom: 0,
@@ -108,7 +106,6 @@ class RevealScreen extends StatelessWidget {
                     ),
                   ),
 
-                // Loading overlay
                 if (isLoading)
                   Positioned.fill(
                     child: Container(
@@ -548,7 +545,6 @@ class _CardFront extends StatelessWidget {
   }
 }
 
-// NEW: Panel showing all card interpretations in a scrollable view
 class _AllCardsDetailsPanel extends StatelessWidget {
   final RevealController controller;
   final String questionText;
@@ -756,7 +752,6 @@ class _CardInterpretationItem extends StatelessWidget {
           ),
           const SizedBox(height: 14),
 
-          // Interpretation text
           AppText(
             data: interpretation.interpretation.isNotEmpty
                 ? interpretation.interpretation

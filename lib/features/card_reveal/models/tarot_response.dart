@@ -1,8 +1,6 @@
 import 'dart:convert';
 
-/// Main tarot reading response model
 class TarotReading {
-  final int cardCount;
   final List<TarotCard> cards;
   final String finalAudioUrl;
   final String finalInterpretation;
@@ -11,7 +9,6 @@ class TarotReading {
   final bool success;
 
   TarotReading({
-    required this.cardCount,
     required this.cards,
     required this.finalAudioUrl,
     required this.finalInterpretation,
@@ -20,14 +17,19 @@ class TarotReading {
     required this.success,
   });
 
+  // Derived from actual cards list length
+  int get cardCount => cards.length;
+
   factory TarotReading.fromJson(Map<String, dynamic> json) {
     return TarotReading(
-      cardCount: json['card_count'] as int,
       cards: (json['cards'] as List)
           .map((card) => TarotCard.fromJson(card))
           .toList(),
+      // API returns relative path like "/static/audio/speech_xxx.mp3?t=..."
+      // Need to prepend base URL
       finalAudioUrl: json['final_audio_url'] as String? ?? '',
-      finalInterpretation: json['final_interpretation'] as String? ?? '',
+      finalInterpretation: json['final_interpretation'] as String? ??
+          json['unified_reading'] as String? ?? '',
       interpretations: (json['interpretations'] as List)
           .map((interp) => CardInterpretation.fromJson(interp))
           .toList(),
@@ -38,7 +40,6 @@ class TarotReading {
 
   Map<String, dynamic> toJson() {
     return {
-      'card_count': cardCount,
       'cards': cards.map((card) => card.toJson()).toList(),
       'final_audio_url': finalAudioUrl,
       'final_interpretation': finalInterpretation,
@@ -57,7 +58,6 @@ class TarotReading {
   }
 }
 
-/// Tarot card model
 class TarotCard {
   final String arcana;
   final int id;
@@ -82,7 +82,10 @@ class TarotCard {
       arcana: json['arcana'] as String? ?? '',
       id: json['id'] as int? ?? 0,
       image: json['image'] as String? ?? '',
-      keywords: (json['keywords'] as List?)?.map((k) => k as String).toList() ?? [],
+      keywords: (json['keywords'] as List?)
+          ?.map((k) => k as String)
+          .toList() ??
+          [],
       meaning: json['meaning'] as String? ?? '',
       name: json['name'] as String? ?? '',
       suit: json['suit'] as String?,
@@ -104,7 +107,6 @@ class TarotCard {
   bool get isMajorArcana => arcana == 'major';
   bool get isMinorArcana => arcana == 'minor';
 
-  /// Get image URL with base URL
   String getImageUrl(String baseUrl) {
     if (image.startsWith('http')) {
       return image;
@@ -113,25 +115,28 @@ class TarotCard {
   }
 }
 
-/// Card interpretation model
 class CardInterpretation {
-  final String audioUrl;
+  final int index;       // present in API response
   final TarotCard card;
   final String interpretation;
   final String position;
   final String symbol;
 
+  // No audio_url in API response — this is derived if needed
   CardInterpretation({
-    required this.audioUrl,
+    required this.index,
     required this.card,
     required this.interpretation,
     required this.position,
     required this.symbol,
   });
 
+  // Convenience getter — keeps RevealController compatible without changes
+  String get audioUrl => '';
+
   factory CardInterpretation.fromJson(Map<String, dynamic> json) {
     return CardInterpretation(
-      audioUrl: json['audio_url'] as String? ?? '',
+      index: json['index'] as int? ?? 0,
       card: TarotCard.fromJson(json['card']),
       interpretation: json['interpretation'] as String? ?? '',
       position: json['position'] as String? ?? '',
@@ -141,19 +146,11 @@ class CardInterpretation {
 
   Map<String, dynamic> toJson() {
     return {
-      'audio_url': audioUrl,
+      'index': index,
       'card': card.toJson(),
       'interpretation': interpretation,
       'position': position,
       'symbol': symbol,
     };
-  }
-
-  /// Get audio URL with base URL
-  String getAudioUrl(String baseUrl) {
-    if (audioUrl.startsWith('http')) {
-      return audioUrl;
-    }
-    return '$baseUrl$audioUrl';
   }
 }

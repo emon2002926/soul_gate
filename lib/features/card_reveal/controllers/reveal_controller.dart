@@ -25,11 +25,8 @@ class RevealController extends GetxController {
 
   final audioPlayer = AudioPlayer();
 
-  // Flip states for each card
   var isFlipped = <bool>[].obs;
 
-  // Removed selectedCardIndex - no longer needed since all cards show at once
-  // var selectedCardIndex = Rxn<int>();
 
   var allCardsRevealed = false.obs;
 
@@ -309,27 +306,9 @@ class RevealController extends GetxController {
     );
   }
 
-  // void _showFinalInterpretation() {
-  //   final reading = tarotReading.value;
-  //   if (reading == null || reading.finalInterpretation.isEmpty) return;
-  //
-  //   RevealDialogs.showFinalInterpretation(
-  //     interpretation: reading.finalInterpretation,
-  //     onListen: () => playFinalAudio(),
-  //   );
-  // }
 
-  // REMOVED: flipCard method - no longer needed since cards auto-reveal
-  // void flipCard(int index) { ... }
-
-  // REMOVED: _checkAllCardsRevealed - handled in _autoRevealAllCards
-  // void _checkAllCardsRevealed() { ... }
-
-  // REMOVED: _onAllCardsRevealed - final interpretation shown via share button
-  // void _onAllCardsRevealed() { ... }
 
   void navigateToFullReading(String message, bool isSecoundTime) {
-    // _showFinalInterpretation();
     AppNavigation.push(
       Get.context!,
       FullReadingScreen(
@@ -341,8 +320,6 @@ class RevealController extends GetxController {
     );
   }
 
-  // REMOVED: closeCardDetails - no longer needed
-  // void closeCardDetails() { ... }
 
   void resetReveal() {
     final reading = tarotReading.value;
@@ -478,7 +455,6 @@ class RevealController extends GetxController {
     await playAudioFromUrl(audioUrl);
   }
 
-  // NEW: Play audio for specific card by index
   Future<void> speakCardAtIndex(int index) async {
     final interpretation = interpretations[index];
     if (interpretation.audioUrl.isEmpty) {
@@ -488,7 +464,6 @@ class RevealController extends GetxController {
     await playAudioFromUrl(interpretation.audioUrl, cardIndex: index);
   }
 
-  // MODIFIED: Now uses index-based approach
   Future<void> speakCardMeaning(TarotCard card) async {
     // Find the card index
     final cardIndex = cards.indexWhere((c) => c.id == card.id);
@@ -526,12 +501,6 @@ class RevealController extends GetxController {
     if (index < 0 || index >= isFlipped.length) return false;
     return isFlipped[index];
   }
-
-  // REMOVED: currentSelectedCard - no longer needed
-  // TarotCard? get currentSelectedCard { ... }
-
-  // REMOVED: currentCardInterpretation - use interpretations list directly
-  // CardInterpretation? get currentCardInterpretation { ... }
 
   String getPositionLabel(int index) {
     final reading = tarotReading.value;
