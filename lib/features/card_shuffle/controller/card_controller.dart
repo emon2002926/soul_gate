@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../../../core/constants/app_assert_image.dart';
+import '../data/tarot_data.dart';
 
 class CardController extends GetxController {
   // UI states only
@@ -8,27 +9,20 @@ class CardController extends GetxController {
   var hasShuffled = false.obs;
   var cardsSpread = false.obs;
 
-  // Selected card index from arc (0-77) - tracks the LAST tapped arc card
   var selectedStackIndex = Rxn<int>();
 
-  // Reading type: always 3 now
   var readingCardCount = 3.obs;
 
-  // Track how many cards user has selected (0, 1, 2, or 3)
   var selectedCardCount = 0.obs;
 
-  // Store the arc card indices for each selection
   var selectedArcIndices = <int>[].obs;
 
-  // Add deck index
   var deckIndex = 0.obs;
 
-  // Method to set deck index
   void setDeckIndex(int index) {
     deckIndex.value = index;
   }
 
-  // Get the appropriate deck image based on deckIndex
   String getDeckImage(int deckIndex) {
     switch (deckIndex) {
       case 0:
@@ -43,7 +37,10 @@ class CardController extends GetxController {
   }
 
 
-  // Just animate the shuffle - no actual card data
+  final List<int> randomCardIndices = [];
+
+
+
   Future<void> shuffleAndDivideCards() async {
     isShuffling.value = true;
     cardsSpread.value = false;
@@ -63,22 +60,19 @@ class CardController extends GetxController {
 
   // User taps an arc card to select next card
   void selectNextCard(int arcIndex) {
-    if (arcIndex < 0 || arcIndex >= 78) return;
+    if (allCardsSelected || isArcCardSelected(arcIndex)) return;
 
-    // If all 3 cards already selected, ignore
-    if (selectedCardCount.value >= 3) return;
+    // Pick a random card not already selected
+    final available = tarotCards
+        .where((c) => !selectedCards.contains(c))
+        .toList()
+      ..shuffle();
 
-    // Check if this arc card was already used
-    if (selectedArcIndices.contains(arcIndex)) {
-      return;
-    }
+    selectedCards.add(available.first);
 
-    // Add this arc card to selection
+    // your existing arc selection tracking stays the same
     selectedArcIndices.add(arcIndex);
-    selectedStackIndex.value = arcIndex;
-
-    // Increment the count - this lights up the next card
-    selectedCardCount.value++;
+    selectedCardCount.value = selectedArcIndices.length;
   }
 
   // Check if a specific arc card is selected
@@ -119,6 +113,10 @@ class CardController extends GetxController {
     selectedArcIndices.clear();
   }
 
+
+  // Add this to your CardController
+  final List<TarotCard> selectedCards = []; // stores the 3 randomly picked cards
+
   @override
   void onInit() {
     super.onInit();
@@ -134,4 +132,6 @@ class CardController extends GetxController {
     resetReading();
     super.onClose();
   }
+
+
 }

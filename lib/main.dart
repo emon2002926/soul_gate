@@ -7,10 +7,14 @@ import 'core/onboarding/splash/views/splash_screen.dart';
 import 'core/routes/app_routes_file.dart';
 import 'package:get/get.dart';
 
+import 'features/auth/view_models/sign_in_controller.dart';
+
 
 Future<void> main() async {
   await GetStorage.init();
   Get.lazyPut(() => SplashController());
+  Get.lazyPut(() => LoginController());
+
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

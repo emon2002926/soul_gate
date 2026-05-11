@@ -43,6 +43,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../data/tarot_data.dart';
+
 class ShuffleScreen extends StatelessWidget {
   final String questionText;
   final int readingTypeIndex;
@@ -62,18 +64,14 @@ class ShuffleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // IMPORTANT: Delete existing controller before creating new one
-    // This ensures fresh state every time user navigates to this screen
+
     Get.delete<CardController>(force: true);
 
-    // Create new controller instance
     final controller = Get.put(CardController());
 
-    // Set the deck index
     controller.setDeckIndex(deckIndex);
 
     return WillPopScope(
-      // Clean up when user pops this screen
       onWillPop: () async {
         Get.delete<CardController>(force: true);
         return true;
@@ -288,13 +286,18 @@ class ShuffleScreen extends StatelessWidget {
     controller.selectNextCard(arcIndex);
   }
 
-  void _navigateToReadings(BuildContext context, CardController controller,bool isSceoundTime) {
+  void _navigateToReadings(BuildContext context, CardController controller, bool isSecondTime) {
     if (!controller.allCardsSelected) {
       CustomSnackBar.error("Please select all 3 cards from the arc");
       return;
     }
 
-    // Clean up controller before navigating
+    // Pick 3 random indices from tarotCards (0-77)
+    final List<int> allIndices = List.generate(78, (i) => i)..shuffle();
+    final List<int> randomCardIndices = allIndices.take(3).toList();
+
+    print('Selected card indices: $randomCardIndices'); // 🖨️
+
     Get.delete<CardController>(force: true);
 
     AppNavigation.push(
@@ -305,7 +308,7 @@ class ShuffleScreen extends StatelessWidget {
         questionText: questionText,
         cardCount: 3,
         questionId: questionId,
-        isSceoundTime: isSceoundTime,
+        isSceoundTime: isSecondTime,
       ),
     );
   }
@@ -409,6 +412,7 @@ class ShuffleScreen extends StatelessWidget {
               controller: controller,
               selectionOrder: 3,
               label: "Past",
+              slotIndex: 2,  // ← was cardIndex with randomCardIndices[0]
             ),
             SizedBox(width: context.responsiveSize(18)),
             _buildLightUpCard(
@@ -416,6 +420,7 @@ class ShuffleScreen extends StatelessWidget {
               controller: controller,
               selectionOrder: 1,
               label: "Present",
+              slotIndex: 0,  // ← first selected card
             ),
             SizedBox(width: context.responsiveSize(18)),
             _buildLightUpCard(
@@ -423,6 +428,7 @@ class ShuffleScreen extends StatelessWidget {
               controller: controller,
               selectionOrder: 2,
               label: "Future",
+              slotIndex: 1,  // ← second selected card
             ),
           ],
         ),
@@ -435,6 +441,7 @@ class ShuffleScreen extends StatelessWidget {
     required CardController controller,
     required int selectionOrder,
     required String label,
+    required int slotIndex,
   }) {
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: 1.0),
@@ -454,6 +461,9 @@ class ShuffleScreen extends StatelessWidget {
       },
       child: Obx(() {
         final isLitUp = controller.selectedCardCount.value >= selectionOrder;
+        final cardIndex = (isLitUp && slotIndex < controller.selectedCards.length)
+            ? tarotCards.indexOf(controller.selectedCards[slotIndex])
+            : 0;
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -461,6 +471,7 @@ class ShuffleScreen extends StatelessWidget {
               isLitUp: isLitUp,
               context: context,
               index: selectionOrder,
+              cardIndex: cardIndex,
               deckImage: controller.getDeckImage(deckIndex),
             ),
             SizedBox(height: context.responsiveSize(8)),
@@ -469,6 +480,8 @@ class ShuffleScreen extends StatelessWidget {
       }),
     );
   }
+
+
 }
 
 
@@ -521,7 +534,6 @@ class _ArcCardWrapper extends StatelessWidget {
   }
 }
 
-// ==================== ARC CARD (visual only, no state) ====================
 
 class _ArcCard extends StatelessWidget {
   final int index;
@@ -616,19 +628,21 @@ class _ArcCard extends StatelessWidget {
   }
 }
 
-// ==================== LIGHT-UP CARD (3-card layout) ====================
 
 class _LightUpCard extends StatelessWidget {
   final bool isLitUp;
   final BuildContext context;
   final int index;
   final String deckImage;
+  final int cardIndex;
+
 
   const _LightUpCard({
     required this.isLitUp,
     required this.context,
     required this.index,
     required this.deckImage,
+    required this.cardIndex,
   });
 
   @override
@@ -679,8 +693,31 @@ class _LightUpCard extends StatelessWidget {
               children: [
                 // Card image
                 Positioned.fill(
-                  child: Image.asset(
-                    deckImage,
+                  child: isLitUp? Image.network(
+                    tarotCards[cardIndex].image ,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: isLitUp
+                                ? [const Color(0xFFD4AF37), const Color(0xFFB8960B)]
+                                : [const Color(0xFFB8956A), const Color(0xFF9B7B5E)],
+                          ),
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.auto_awesome,
+                            color: const Color(0xFFE5D4C1),
+                            size: context.responsiveSize(28),
+                          ),
+                        ),
+                      );
+                    },
+                  ):Image.asset(
+                     deckImage,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(

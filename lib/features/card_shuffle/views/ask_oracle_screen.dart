@@ -390,7 +390,9 @@ class QuestionConfirmationScreen extends StatelessWidget {
                         ),
                       ),
 
-                      const Spacer(),
+                       SizedBox(
+                        height: context.heightPercentage(10),
+                      ),
 
                       // Continue Button
                       Padding(
@@ -425,7 +427,6 @@ class QuestionConfirmationScreen extends StatelessWidget {
     );
   }
 }
-// ==================== CONTROLLER ====================
 
 class QuestionConfirmationController extends GetxController {
   final questionController = TextEditingController();

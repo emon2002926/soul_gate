@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:get/get.dart';
 import 'package:soul_gate/core/onboarding/splash/views/onboarding_screen.dart';
 import 'package:soul_gate/core/widgets/snakbar/custom_snackbar.dart';
@@ -67,7 +69,7 @@ class LoginController extends GetxController {
         // Save access token
         final accessToken = responseData['access'];
         await StorageService.saveToken(accessToken);
-
+        dispose();
         // Save refresh token if you need it later
         // final refreshToken = responseData['refresh'];
         // if (refreshToken != null) {
@@ -85,12 +87,22 @@ class LoginController extends GetxController {
         // All users navigate to onboarding serving selection
         AppNavigation.pushAndClear(Get.context!, OnboardingScreen());
       } else {
+        dispose();
         CustomSnackBar.error('Login failed');
       }
     } catch (e) {
+      dispose();
       CustomSnackBar.error('Something went wrong');
     } finally {
       isLoading.value = false;
     }
+  }
+
+
+  void dispose (){
+
+    emailController.clear();
+    passwordController.clear();
+
   }
 }

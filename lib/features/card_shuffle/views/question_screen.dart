@@ -240,16 +240,6 @@ class QuestionController extends GetxController {
     // Get.to(() => ShuffleScreen());
   }
 
-  // void navigateToSecondThought(BuildContext context) async {
-  //   try {
-  //     final revealController = Get.find<RevealController>();
-  //     await revealController.clearMemoryData();
-  //   } catch (e) {
-  //     // Handle error
-  //   }
-  //
-  // }
-
   void navigateToSecondThought(BuildContext context ,String text) async {
     try {
       // Delete the old controller completely
