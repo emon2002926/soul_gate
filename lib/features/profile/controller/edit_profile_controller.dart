@@ -1,6 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:soul_gate/features/profile/controller/profile_controller.dart';
+
+import '../../../core/util/app_navigation.dart';
+import '../../../core/util/storage_service.dart';
+import '../../auth/views/sing_in_screen.dart';
 class EditProfileController extends GetxController {
   // Text Controllers
   final nameController = TextEditingController();
@@ -17,16 +25,31 @@ class EditProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Load existing user data
     _loadUserData();
   }
 
-  void _loadUserData() {
-    // TODO: Load from your user service/repository
-    nameController.text = 'Kurt Cobain';
-    emailController.text = 'Kurtcobain@email.com';
-    mobileController.text = '+8800045154545';
-    // profileImageUrl.value = 'user_image_url';
+  Future<void> _loadUserData() async {
+    try {
+      final token = StorageService.accessToken;
+
+      final response = await http.get(
+        Uri.parse('https://sofiapi.dsrt321.online/api/auth/profile/'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+        nameController.text = data['username'] as String? ?? '';
+        emailController.text = data['email'] as String? ?? '';
+        // API has no mobile field; leave as-is or load from local storage
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to load profile',
+          snackPosition: SnackPosition.BOTTOM);
+    }
   }
 
   Future<void> pickImageFromGallery() async {
@@ -41,11 +64,8 @@ class EditProfileController extends GetxController {
         selectedImagePath.value = image.path;
       }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to pick image',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      Get.snackbar('Error', 'Failed to pick image',
+          snackPosition: SnackPosition.BOTTOM);
     }
   }
 
@@ -61,11 +81,8 @@ class EditProfileController extends GetxController {
         selectedImagePath.value = image.path;
       }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to capture image',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      Get.snackbar('Error', 'Failed to capture image',
+          snackPosition: SnackPosition.BOTTOM);
     }
   }
 
@@ -82,10 +99,7 @@ class EditProfileController extends GetxController {
           children: [
             const Text(
               'Choose Profile Photo',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 20),
             ListTile(
@@ -95,10 +109,8 @@ class EditProfileController extends GetxController {
                   color: const Color(0xFFBC9041).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(
-                  Icons.photo_library_rounded,
-                  color: Color(0xFFBC9041),
-                ),
+                child: const Icon(Icons.photo_library_rounded,
+                    color: Color(0xFFBC9041)),
               ),
               title: const Text('Choose from Gallery'),
               onTap: () {
@@ -113,10 +125,8 @@ class EditProfileController extends GetxController {
                   color: const Color(0xFFBC9041).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(
-                  Icons.camera_alt_rounded,
-                  color: Color(0xFFBC9041),
-                ),
+                child: const Icon(Icons.camera_alt_rounded,
+                    color: Color(0xFFBC9041)),
               ),
               title: const Text('Take a Photo'),
               onTap: () {
@@ -132,55 +142,57 @@ class EditProfileController extends GetxController {
   }
 
   Future<void> saveProfile() async {
-    // Validate inputs
     if (nameController.text.trim().isEmpty) {
-      Get.snackbar(
-        'Error',
-        'Please enter your name',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-      return;
-    }
-
-    if (emailController.text.trim().isEmpty) {
-      Get.snackbar(
-        'Error',
-        'Please enter your email',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-      return;
-    }
-
-    if (!GetUtils.isEmail(emailController.text.trim())) {
-      Get.snackbar(
-        'Error',
-        'Please enter a valid email',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      Get.snackbar('Error', 'Please enter your name',
+          snackPosition: SnackPosition.BOTTOM);
       return;
     }
 
     isLoading.value = true;
 
     try {
-      // TODO: Call your API to update profile
-      await Future.delayed(const Duration(seconds: 2)); // Simulated delay
+      final token = StorageService.accessToken;
 
-      Get.snackbar(
-        'Success',
-        'Profile updated successfully',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
+      final response = await http.patch(
+        Uri.parse('https://sofiapi.dsrt321.online/api/auth/profile/'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'username': nameController.text.trim(),
+        }),
       );
 
-      Get.back(); // Navigate back to profile page
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+
+        // Refresh ProfileController if it's registered
+        if (Get.isRegistered<ProfileController>()) {
+          final pc = Get.find<ProfileController>();
+          pc.userName.value = data['username'] as String? ?? '';
+          pc.userEmail.value = data['email'] as String? ?? '';
+        }
+
+        Get.snackbar(
+          'Success',
+          'Profile updated successfully',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+
+        Get.back();
+      } else if (response.statusCode == 401) {
+        StorageService.logout();
+        AppNavigation.pushAndClear(Get.context!, SingInScreen());
+      } else {
+        Get.snackbar('Error', 'Failed to update (${response.statusCode})',
+            snackPosition: SnackPosition.BOTTOM);
+      }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to update profile',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      Get.snackbar('Error', 'Failed to update profile: $e',
+          snackPosition: SnackPosition.BOTTOM);
     } finally {
       isLoading.value = false;
     }

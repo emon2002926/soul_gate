@@ -55,18 +55,7 @@ class ProfilePage extends StatelessWidget {
 
                 const SizedBox(height: 24),
 
-                // Language Change Section
-                // _buildMenuCard(
-                //   children: [
-                //     _buildMenuItem(
-                //       icon: Icons.language_rounded,
-                //       iconColor: const Color(0xFF4A90D9),
-                //       title: 'Language Change',
-                //       subtitle: 'Switch to your preferred language.',
-                //       onTap: controller.onLanguageChange,
-                //     ),
-                //   ],
-                // ),
+
 
                 const SizedBox(height: 16),
 
@@ -128,6 +117,20 @@ class ProfilePage extends StatelessWidget {
                       subtitle: '',
                       onTap: controller.openSupportEmail,
                     ),
+
+// Delete Account Section
+                    _buildMenuCard(
+                      children: [
+                        _buildMenuItem(
+                          icon: Icons.delete_outline_rounded,
+                          iconColor: const Color(0xFFE85C4A),
+                          title: 'Delete Account',
+                          subtitle: 'Permanently delete your account.',
+                          onTap: controller.confirmDeleteAccount,
+                        ),
+                      ],
+                    ),
+
                     _buildMenuItem(
                       icon: Icons.logout,
                       iconColor: const Color(0xFFE85C4A),
