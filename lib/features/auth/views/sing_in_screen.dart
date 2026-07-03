@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:soul_gate/core/constants/app_assert_image.dart';
+import 'package:soul_gate/core/util/app_navigation.dart';
 import 'package:soul_gate/features/auth/views/sign_up_screen.dart';
 import 'package:soul_gate/features/auth/views/verify_email_screen.dart';
 import 'package:soul_gate/features/auth/views/widget/language_selection_dialog.dart';
@@ -18,9 +19,8 @@ class SingInScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ✅ Initialize controllers
-    // final controller = Get.put(LoginController());
-    final controller = Get.find<LoginController>();
-    Get.put(LanguageController()); // Add language controller
+    final controller = Get.put(LoginController());
+    Get.put(LanguageController());
 
     return Scaffold(
       body: Stack(
@@ -128,7 +128,7 @@ class SingInScreen extends StatelessWidget {
                           label2: strings.forgotPassword,
                           hintText: strings.enterYourPassword,
                           label2OnClick: () {
-                            Get.to(() => EmailVerificationPage());
+                           AppNavigation.push(context, EmailVerificationPage());
                           },
                           controller: controller.passwordController,
                           obscureText: !controller.isPasswordVisible.value,

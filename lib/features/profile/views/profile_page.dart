@@ -126,7 +126,9 @@ class ProfilePage extends StatelessWidget {
                           iconColor: const Color(0xFFE85C4A),
                           title: 'Delete Account',
                           subtitle: 'Permanently delete your account.',
-                          onTap: controller.confirmDeleteAccount,
+                          onTap:() {
+                            controller.confirmDeleteAccount(context);
+                          },
                         ),
                       ],
                     ),

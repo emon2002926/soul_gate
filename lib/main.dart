@@ -13,7 +13,6 @@ import 'features/auth/view_models/sign_in_controller.dart';
 Future<void> main() async {
   await GetStorage.init();
   Get.lazyPut(() => SplashController());
-  Get.lazyPut(() => LoginController());
 
 
   SystemChrome.setPreferredOrientations([

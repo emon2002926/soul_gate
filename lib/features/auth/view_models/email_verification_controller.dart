@@ -5,20 +5,21 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../../../core/routes/app_routes.dart';
+import '../../../core/util/app_log.dart';
+import '../../../core/widgets/snakbar/custom_snackbar.dart';
 
 
 
 class EmailVerificationController extends GetxController {
   final TextEditingController emailController = TextEditingController();
 
-  // Timer for resend countdown
   Timer? resendTimer;
   final resendCountdown = 0.obs;
   final isLoading = false.obs;
   final hasCodeBeenSent = false.obs;
 
-  // Updated Base URL
   static final String baseUrl = 'https://sofiapi.dsrt321.online/api';
+  static const String _endpoint = '/auth/forgot-password/';
 
   void startResendCountdown(int seconds) {
     resendCountdown.value = seconds;
@@ -33,80 +34,49 @@ class EmailVerificationController extends GetxController {
   }
 
   Future<void> sendVerificationCode() async {
-    if (emailController.text.trim().isEmpty) {
-      Get.snackbar(
-        "Error",
-        "Please enter your email address",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+    final email = emailController.text.trim();
+
+    if (email.isEmpty) {
+      CustomSnackBar.error("Please enter your email address");
       return;
     }
 
-    if (!GetUtils.isEmail(emailController.text.trim())) {
-      Get.snackbar(
-        "Error",
-        "Please enter a valid email address",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+    if (!GetUtils.isEmail(email)) {
+      CustomSnackBar.error("Please enter a valid email address");
       return;
     }
 
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('$baseUrl/auth/forgot-password/');
+      final url = Uri.parse('$baseUrl$_endpoint');
+      final body = {'email': email};
+
+      AppLog.request(_endpoint, body: body);
 
       final response = await http.post(
         url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'email': emailController.text.trim(),
-        }),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(body),
       );
 
       final responseData = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
+        AppLog.response(_endpoint, responseData);
+
         hasCodeBeenSent.value = true;
-        startResendCountdown(60); // 1 minute countdown
+        startResendCountdown(60);
 
-        // Show success message
-        String message = responseData['message'] ?? 'OTP sent to your email';
-
-        Get.snackbar(
-          "Success",
-          message,
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: const Color(0xFF4CAF50),
-          colorText: Colors.white,
-        );
-
-        // Navigate to OTP verification
+        CustomSnackBar.success(responseData['message'] ?? 'OTP sent to your email');
         continueToOtpVerification();
       } else {
-        // Handle error response
-        Get.snackbar(
-          "Error",
-          responseData['message'] ?? 'Failed to send verification code',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        AppLog.error(_endpoint, responseData, statusCode: response.statusCode);
+        CustomSnackBar.error(responseData['message'] ?? 'Failed to send verification code');
       }
     } catch (e) {
-      Get.snackbar(
-        "Error",
-        "Something went wrong: ${e.toString()}",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      AppLog.error(_endpoint, e.toString());
+      CustomSnackBar.error("Something went wrong: ${e.toString()}");
     } finally {
       isLoading.value = false;
     }
@@ -114,73 +84,45 @@ class EmailVerificationController extends GetxController {
 
   Future<void> resendCode() async {
     if (resendCountdown.value > 0) {
-      Get.snackbar(
-        "Please Wait",
-        "You can resend code in ${resendCountdown.value} seconds",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-      );
+      CustomSnackBar.warning("You can resend code in ${resendCountdown.value} seconds");
       return;
     }
 
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('$baseUrl/auth/forgot-password/');
+      final url = Uri.parse('$baseUrl$_endpoint');
+      final body = {'email': emailController.text.trim()};
+
+      AppLog.request(_endpoint, body: body);
 
       final response = await http.post(
         url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'email': emailController.text.trim(),
-        }),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(body),
       );
 
       final responseData = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        startResendCountdown(60); // 1 minute countdown for next resend
+        AppLog.response(_endpoint, responseData);
 
-        // Show success message
-        String message = responseData['message'] ?? 'OTP sent to your email';
-
-        Get.snackbar(
-          "Code Sent",
-          message,
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.blueAccent,
-          colorText: Colors.white,
-        );
-
-        // Optionally navigate to OTP verification again
+        startResendCountdown(60);
+        CustomSnackBar.success(responseData['message'] ?? 'OTP sent to your email');
         continueToOtpVerification();
       } else {
-        Get.snackbar(
-          "Error",
-          responseData['message'] ?? 'Failed to resend code',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        AppLog.error(_endpoint, responseData, statusCode: response.statusCode);
+        CustomSnackBar.error(responseData['message'] ?? 'Failed to resend code');
       }
     } catch (e) {
-      Get.snackbar(
-        "Error",
-        "Something went wrong: ${e.toString()}",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      AppLog.error(_endpoint, e.toString());
+      CustomSnackBar.error("Something went wrong: ${e.toString()}");
     } finally {
       isLoading.value = false;
     }
   }
 
-  Future<void> continueToOtpVerification() async {
-    // Navigate to OTP verification with context
+  void continueToOtpVerification() {
     Get.toNamed(
       AppRoutes.otpVerifyPage,
       arguments: {
@@ -189,7 +131,6 @@ class EmailVerificationController extends GetxController {
       },
     );
   }
-
 
   @override
   void onClose() {

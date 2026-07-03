@@ -85,6 +85,7 @@ class ResetPassScreen extends StatelessWidget {
                       hintTextColor: Colors.white,
                       borderColor: AppColors.instance.primaryBtnColor,
                       fillColor: Colors.transparent,
+                      inputTextColor: Colors.white,
                     )),
 
                     const SizedBox(height: 20),
@@ -103,6 +104,7 @@ class ResetPassScreen extends StatelessWidget {
                       hintTextColor: Colors.white,
                       borderColor: AppColors.instance.primaryBtnColor,
                       fillColor: Colors.transparent,
+                      inputTextColor: Colors.white,
                     )),
 
                     const Spacer(),

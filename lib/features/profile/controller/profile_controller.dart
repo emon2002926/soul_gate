@@ -180,7 +180,7 @@ class ProfileController extends GetxController {
     }
   }
 
-  void confirmDeleteAccount() {
+  void confirmDeleteAccount(BuildContext context) {
     Get.dialog(
       AlertDialog(
         shape: RoundedRectangleBorder(
@@ -217,7 +217,7 @@ class ProfileController extends GetxController {
         ),
         actions: [
           TextButton(
-            onPressed: () => Get.back(),
+            onPressed:() {Navigator.pop(context);},
             child: const Text(
               'Cancel',
               style: TextStyle(color: Color(0xFF8E8E8E)),
