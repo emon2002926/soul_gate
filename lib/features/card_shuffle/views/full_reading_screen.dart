@@ -123,6 +123,8 @@ class FullReadingScreen extends StatelessWidget {
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: const Color(0xFF3C2A21),
+                maxLines: 100,
+
               ),
             ),
 
@@ -133,6 +135,7 @@ class FullReadingScreen extends StatelessWidget {
               data: finalMessage,
               textAlign: TextAlign.center,
               fontSize: 15,
+              maxLines: 200,
               color: const Color(0xFF5C4A42),
               height: 1.6,
             ),

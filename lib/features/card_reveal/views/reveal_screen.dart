@@ -730,24 +730,24 @@ class _CardInterpretationItem extends StatelessWidget {
                 ),
               ),
               // Audio button for this card
-              Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFFD4A574),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Obx(() {
-                  final isSpeaking = controller.isSpeaking.value &&
-                      controller.currentPlayingCardIndex.value == index;
-                  return IconButton(
-                    iconSize: 22,
-                    icon: Icon(
-                      isSpeaking ? Icons.stop : Icons.volume_up,
-                      color: Colors.white,
-                    ),
-                    onPressed: () => controller.speakCardAtIndex(index),
-                  );
-                }),
-              ),
+              // Container(
+              //   decoration: BoxDecoration(
+              //     color: const Color(0xFFD4A574),
+              //     borderRadius: BorderRadius.circular(8),
+              //   ),
+              //   child: Obx(() {
+              //     final isSpeaking = controller.isSpeaking.value &&
+              //         controller.currentPlayingCardIndex.value == index;
+              //     return IconButton(
+              //       iconSize: 22,
+              //       icon: Icon(
+              //         isSpeaking ? Icons.stop : Icons.volume_up,
+              //         color: Colors.white,
+              //       ),
+              //       onPressed: () => controller.speakCardAtIndex(index),
+              //     );
+              //   }),
+              // ),
             ],
           ),
           const SizedBox(height: 14),

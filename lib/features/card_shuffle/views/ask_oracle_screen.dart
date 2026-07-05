@@ -405,6 +405,7 @@ class QuestionConfirmationScreen extends StatelessWidget {
                             controller.continueToReading(
                               readingTypeIndex,
                               deckIndex,
+                                controller.selectedQuestion.question
                             );
                           },
                           fillColor: const Color(0xFFD4AF37),
@@ -448,9 +449,11 @@ class QuestionConfirmationController extends GetxController {
   void continueToReading(
       int readingTypeIndex,
       int deckIndex,
+      String questions,
       ) {
     final question = questionController.text.trim();
 
+    String  fullQuestion= "$questions and is $question";
     if (question.isEmpty) {
       CustomSnackBar.error('Please enter a question before continuing',);
       return;
@@ -464,7 +467,7 @@ class QuestionConfirmationController extends GetxController {
     AppNavigation.push(
       Get.context!,
       ShortBlessingScreen(
-        questionText: question,
+        questionText: fullQuestion,
         readingTypeIndex: readingTypeIndex,
         deckIndex: deckIndex,
       ),

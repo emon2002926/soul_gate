@@ -60,6 +60,7 @@ class SignUpScreen extends StatelessWidget {
                     // Full Name field
                     AppTextField(
                       label: appStrings.name,
+
                       controller: controller.fullNameController,
                       // keyboardType: TextInputType.none,
                       validator: controller.validateEmail,

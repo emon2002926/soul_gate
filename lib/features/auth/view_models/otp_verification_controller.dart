@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:soul_gate/core/util/app_navigation.dart';
+import '../../../core/onboarding/splash/views/onboarding_screen.dart';
 import '../../subscription/views/subscription_page.dart';
 import '../../../core/routes/app_routes.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import 'dart:async';
-
 import '../../../core/util/storage_service.dart';
-
-
-
-
 
 
 class OtpVerificationController extends GetxController {
@@ -142,7 +137,7 @@ class OtpVerificationController extends GetxController {
         );
 
         // Navigate to onboarding serving selection (default for all users)
-        AppNavigation.push(Get.context!, SubscriptionPage());
+        AppNavigation.push(Get.context!, OnboardingScreen());
       } else {
         // Handle error response
         Get.snackbar(
