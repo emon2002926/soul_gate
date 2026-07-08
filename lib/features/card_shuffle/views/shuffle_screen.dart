@@ -377,10 +377,10 @@ class ShuffleScreen extends StatelessWidget {
             final allSelected = controller.allCardsSelected;
 
             final String buttonText = isShuffling
-                ? "Shuffling..."
+                ? AppStrings.instance.shufflingBtn
                 : allSelected
-                ? "Continue"
-                : "Shuffle";
+                ? AppStrings.instance.continue_
+                : AppStrings.instance.shuffleBtn;
 
             return AppButton(
               buttonText: buttonText,

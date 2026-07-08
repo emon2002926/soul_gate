@@ -79,7 +79,7 @@ class AppStrings {
 
 
    String get welcomeTitle =>
-  _getText("Welcome to\nSoulGate", "Bienvenido a\nSoulGate");
+  _getText("Welcome to\nSoulGate", "Bienvenido a\Puerta del Alma");
 
    String get welcomeSubtitle =>
   _getText("To the realm of the soul", "Al reino del alma");
@@ -103,6 +103,16 @@ class AppStrings {
   _getText(
     "Your inner\nworld,\nilluminated.",
     "Tu mundo\ninterior,\niluminado.",
+  );
+
+  String get audioAndTextReading => _getText(
+    "Audio & Text Reading",
+    "Lectura de audio y texto",
+  );
+
+  String get textReading => _getText(
+    "Text Reading",
+    "Lectura de texto",
   );
 
    String get personalizedReadings =>
@@ -143,7 +153,7 @@ class AppStrings {
 
   String get subscriptionRequiredMessage => _getText(
     "An active subscription is required to access SoulGate. Please subscribe to continue your spiritual journey.",
-    "Se requiere una suscripción activa para acceder a SoulGate. Por favor suscríbete para continuar tu viaje espiritual.",
+    "Se requiere una suscripción activa para acceder a Puerta del Alma. Por favor suscríbete para continuar tu viaje espiritual.",
   );
   String get subscriptionRequired => _getText(
     "Subscription Required",
@@ -153,7 +163,7 @@ class AppStrings {
     "Go to Subscription",
     "Ir a Suscripción",
   );
-   String  get freeReadingsDescription => _getText("To help you experience the depth of SoulGate, you receive 5 free readings. Each one is unique, channeled, and designed to bring clarity.", "Para ayudarte a experimentar la profundidad de SoulGate, recibes 5 lecturas gratuitas. Cada una es única, canalizada y diseñada para brindar claridad.",);
+   String  get freeReadingsDescription => _getText("To help you experience the depth of SoulGate, you receive 5 free readings. Each one is unique, channeled, and designed to bring clarity.", "Para ayudarte a experimentar la profundidad de Puerta del Alma, recibes 5 lecturas gratuitas. Cada una es única, canalizada y diseñada para brindar claridad.",);
 
   String get selectDeckOfCards => _getText("Select Deck of Cards", "Selecciona una baraja de cartas",);
 
@@ -211,7 +221,7 @@ class AppStrings {
 
   String get saintMichaelsBlessingText => _getText(
     "MAY THIS SPACE, SOULGATE, BE UNDER\nTHE PROTECTION OF THE LIGHT OF THE\nUNIVERSE.\nMAY THE GUIDANCE OFFERED BE CLEAR\nAND ALWAYS RESPECT FREE WILL.\nMAY ONLY THAT WHICH SERVES THE\nHIGHEST GOOD TAKE PLACE.\nSO BE IT. THANK YOU. THANK YOU.\nTHANK YOU.",
-    "QUE ESTE ESPACIO, SOULGATE, ESTÉ BAJO\nLA PROTECCIÓN DE LA LUZ DEL\nUNIVERSO.\nQUE LA GUÍA OFRECIDA SEA CLARA\nY SIEMPRE RESPETE EL LIBRE ALBEDRÍO.\nQUE SOLO AQUELLO QUE SIRVA AL\nBIEN MÁS ALTO TENGA LUGAR.\nASÍ SEA. GRACIAS. GRACIAS.\nGRACIAS.",
+    "QUE ESTE ESPACIO, Puerta del Alma, ESTÉ BAJO\nLA PROTECCIÓN DE LA LUZ DEL\nUNIVERSO.\nQUE LA GUÍA OFRECIDA SEA CLARA\nY SIEMPRE RESPETE EL LIBRE ALBEDRÍO.\nQUE SOLO AQUELLO QUE SIRVA AL\nBIEN MÁS ALTO TENGA LUGAR.\nASÍ SEA. GRACIAS. GRACIAS.\nGRACIAS.",
   );
 
   String get saintMichaelsBlessingTextSH => _getText(
@@ -219,7 +229,7 @@ class AppStrings {
         "May the guidance offered be clear and always respect free will. "
         "May only that which serves the highest good take place. "
         "So be it. Thank you. Thank you. Thank you.",
-    "Que este espacio, SoulGate, esté bajo la protección de la Luz del Universo. "
+    "Que este espacio, Puerta del Alma, esté bajo la protección de la Luz del Universo. "
         "Que la guía ofrecida sea clara y siempre respete el libre albedrío. "
         "Que solo aquello que sirva al bien más alto tenga lugar. "
         "Así sea. Gracias. Gracias. Gracias.",
@@ -420,4 +430,65 @@ class AppStrings {
   String get viewAll => _getText("View all", "Ver todo");
   String get readMore => _getText("Read more", "Leer más");
   String get readLess => _getText("Read less", "Leer menos");
+
+  String get selectFirstCard =>
+      _getText("Select your first card", "Selecciona tu primera carta");
+
+  String get selectSecondCard =>
+      _getText("Select your second card", "Selecciona tu segunda carta");
+
+  String get selectThirdCard =>
+      _getText("Select your third card", "Selecciona tu tercera carta");
+
+  String get yourReadingIsReady =>
+      _getText("Your reading is ready", "Tu lectura está lista");
+
+  String get tapCardFromArc =>
+      _getText("Tap a card from the arc", "Toca una carta del arco");
+
+  // String get shuffling =>
+  //     _getText("Shuffling...", "Barajando...");
+  //
+  // String get shuffle =>
+  //     _getText("Shuffle", "Barajar");
+  //
+  // String get continueText =>
+  //     _getText("Continue", "Continuar");
+
+
+
+
+
+
+
+  static List<String> get predefinedQuestions => [
+    AppStrings.instance._getText(
+      'What do I need in my life right now?',
+      '¿Qué necesito en mi vida en este momento?',
+    ),
+    AppStrings.instance._getText(
+      'Lack of clarity and motivation',
+      'Falta de claridad y motivación',
+    ),
+    AppStrings.instance._getText(
+      'About my life purpose',
+      'Sobre mi propósito de vida',
+    ),
+    AppStrings.instance._getText(
+      'About love and relationships',
+      'Sobre el amor y las relaciones',
+    ),
+    AppStrings.instance._getText(
+      'About my work, professional life, and projects',
+      'Sobre mi trabajo, mi vida profesional y mis proyectos',
+    ),
+    AppStrings.instance._getText(
+      'About my financial situation and my relationship with money',
+      'Sobre mi situación financiera y mi relación con el dinero',
+    ),
+    AppStrings.instance._getText(
+      "Tell me, what's in your mind?",
+      'Cuéntame, ¿qué tienes en mente?',
+    ), // Open question - always last
+  ];
 }

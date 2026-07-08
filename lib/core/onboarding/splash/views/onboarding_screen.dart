@@ -279,7 +279,7 @@ class _SelectionPage extends StatelessWidget {
               Expanded(
                 child: _SelectionCard(
                   icon: Icons.graphic_eq_rounded,
-                  label: 'Audio & Text Reading',
+                  label: AppStrings.instance.audioAndTextReading,
                   isSelected: controller.selectedReadingType.value == ReadingType.audioAndText,
                   onTap: () => controller.selectReadingType(ReadingType.audioAndText),
                 ),
@@ -290,7 +290,7 @@ class _SelectionPage extends StatelessWidget {
               Expanded(
                 child: _SelectionCard(
                   icon: Icons.menu_book_rounded,
-                  label: 'Text Reading',
+                  label: AppStrings.instance.textReading,
                   isSelected: controller.selectedReadingType.value == ReadingType.textOnly,
                   onTap: () => controller.selectReadingType(ReadingType.textOnly),
                 ),

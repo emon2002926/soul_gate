@@ -43,19 +43,10 @@ class AskOracleScreen extends StatelessWidget {
     required this.deckIndex,
   });
 
-  // Predefined questions
-  static const List<String> _predefinedQuestions = [
-    'What do I need in my life right now?',
-    'Lack of clarity and motivation',
-    'About my life purpose',
-    'About love and relationships',
-    'About my work, professional life, and projects',
-    'About my financial situation and my relationship with money',
-    "Tell me, what's in your mind?", // Open question - always last
-  ];
+
 
   void _selectQuestion(BuildContext context, int index) {
-    final questionText = _predefinedQuestions[index];
+    final questionText = AppStrings.predefinedQuestions[index];
     final isOpenQuestion = index == 6; // Last question is the open one
 
     final question = OracleQuestion(
@@ -125,7 +116,7 @@ class AskOracleScreen extends StatelessWidget {
                   padding: EdgeInsets.symmetric(
                     horizontal: context.widthPercentage(5),
                   ),
-                  itemCount: _predefinedQuestions.length,
+                  itemCount: AppStrings.predefinedQuestions.length,
                   itemBuilder: (context, index) {
                     final isOpenQuestion = index == 6;
                     final isFirstQuestion = index == 0;
@@ -137,7 +128,7 @@ class AskOracleScreen extends StatelessWidget {
                           SizedBox(height: context.heightPercentage(3)),
 
                         _QuestionTile(
-                          question: _predefinedQuestions[index],
+                          question: AppStrings.predefinedQuestions[index],
                           onTap: () => _selectQuestion(context, index),
                           isDefault: isFirstQuestion,
                         ),
@@ -156,9 +147,7 @@ class AskOracleScreen extends StatelessWidget {
   }
 }
 
-// ==================== SHARED WIDGETS ====================
 
-// Question Tile Widget - Same styling for all questions
 class _QuestionTile extends StatelessWidget {
   final String question;
   final VoidCallback onTap;

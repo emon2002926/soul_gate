@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../../../core/constants/app_assert_image.dart';
+import '../../../core/constants/app_strings.dart';
 import '../data/tarot_data.dart';
 
 class CardController extends GetxController {
@@ -92,15 +93,15 @@ class CardController extends GetxController {
   String getInstructionText() {
     switch (selectedCardCount.value) {
       case 0:
-        return 'Select your first card ';
+        return AppStrings.instance.selectFirstCard;
       case 1:
-        return 'Select your second card';
+        return AppStrings.instance.selectSecondCard;
       case 2:
-        return 'Select your third card';
+        return AppStrings.instance.selectThirdCard;
       case 3:
-        return 'Your reading is ready';
+        return AppStrings.instance.yourReadingIsReady;
       default:
-        return 'Tap a card from the arc';
+        return AppStrings.instance.tapCardFromArc;
     }
   }
 

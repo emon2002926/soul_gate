@@ -84,8 +84,8 @@ class QuestionScreen extends StatelessWidget {
                               keyboardType: TextInputType.multiline,
                               textInputAction: TextInputAction.done,
                               decoration: InputDecoration(
-                                hintText:
-                                appStrings.currentSituationQuestion,
+                                // hintText:
+                                // appStrings.currentSituationQuestion,
                                 hintStyle: TextStyle(
                                   color: Colors.white.withOpacity(0.7),
                                   fontSize: 16,

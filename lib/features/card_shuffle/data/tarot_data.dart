@@ -45,6 +45,7 @@ const List<TarotCard> tarotCards = [
     name: 'The Fool',
     arcana: 'major',
     image: '$imageBase/0_the_fool.jpg',
+
     keywords: ['beginnings', 'innocence', 'spontaneity', 'free spirit'],
     meaning:
         'The Fool represents new beginnings, having faith in the future, being inexperienced, not knowing what to expect, having beginner\'s luck, improvisation and believing in the universe.',

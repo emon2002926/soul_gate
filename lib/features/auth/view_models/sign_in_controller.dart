@@ -1,7 +1,7 @@
-import 'dart:ffi';
 
 import 'package:get/get.dart';
 import 'package:soul_gate/core/onboarding/splash/views/onboarding_screen.dart';
+import 'package:soul_gate/core/util/app_log.dart';
 import 'package:soul_gate/core/widgets/snakbar/custom_snackbar.dart';
 import '../../subscription/views/subscription_page.dart';
 import '../../../core/util/app_navigation.dart';
