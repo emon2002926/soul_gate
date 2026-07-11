@@ -94,18 +94,20 @@ class EditProfilePage extends StatelessWidget {
                   controller: controller.emailController,
                   hintText: 'Enter your email',
                   keyboardType: TextInputType.emailAddress,
+                  enabled: false,
                 ),
 
                 const SizedBox(height: 20),
 
-                // Mobile Field
-                _buildWhiteLabel('Mobile'),
-                const SizedBox(height: 8),
-                AppTextField(
-                  controller: controller.mobileController,
-                  hintText: 'Enter your mobile number',
-                  keyboardType: TextInputType.phone,
-                ),
+                // // Mobile Field
+                // _buildWhiteLabel('Mobile'),
+                // const SizedBox(height: 8),
+                // AppTextField(
+                //   controller: controller.mobileController,
+                //   hintText: 'Enter your mobile number',
+                //   keyboardType: TextInputType.phone,
+                //   enabled: false,
+                // ),
 
                 const SizedBox(height: 40),
 

@@ -70,15 +70,15 @@ class ProfilePage extends StatelessWidget {
                       onTap: controller.onEditProfile,
                     ),
                     const Divider(height: 1, indent: 56),
-                    _buildMenuItem(
-                      icon: Icons.lock_outline_rounded,
-                      iconColor: const Color(0xFFE8A54B),
-                      title: 'Change Password',
-                      subtitle: 'Change your account password securely.',
-                      onTap: (){
-                        AppNavigation.push(context, ChangePasswordPage());
-                      },
-                    ),
+                    // _buildMenuItem(
+                    //   icon: Icons.lock_outline_rounded,
+                    //   iconColor: const Color(0xFFE8A54B),
+                    //   title: 'Change Password',
+                    //   subtitle: 'Change your account password securely.',
+                    //   onTap: (){
+                    //     AppNavigation.push(context, ChangePasswordPage());
+                    //   },
+                    // ),
                   ],
                 ),
 

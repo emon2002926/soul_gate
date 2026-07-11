@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../constants/app_assert_image.dart';
+import '../../../language_controller.dart';
 import '../controller/splash_controller.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -9,6 +10,7 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<SplashController>();
+    final languageController = Get.find<LanguageController>();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -16,7 +18,11 @@ class SplashScreen extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage(AppAssertImage.instance.splashImage),
+            image: AssetImage(
+              languageController.isEnglish
+                  ? AppAssertImage.instance.splashImageEnglish
+                  : AppAssertImage.instance.splashImageMx,
+            ),
             fit: BoxFit.cover,
           ),
         ),

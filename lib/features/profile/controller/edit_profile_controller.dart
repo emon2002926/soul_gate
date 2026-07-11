@@ -8,6 +8,7 @@ import 'package:soul_gate/features/profile/controller/profile_controller.dart';
 
 import '../../../core/util/app_navigation.dart';
 import '../../../core/util/storage_service.dart';
+import '../../../core/widgets/snakbar/custom_snackbar.dart';
 import '../../auth/views/sing_in_screen.dart';
 class EditProfileController extends GetxController {
   // Text Controllers
@@ -160,7 +161,7 @@ class EditProfileController extends GetxController {
           'Authorization': 'Bearer $token',
         },
         body: jsonEncode({
-          'username': nameController.text.trim(),
+          'name': nameController.text.trim(),
         }),
       );
 
@@ -170,17 +171,12 @@ class EditProfileController extends GetxController {
         // Refresh ProfileController if it's registered
         if (Get.isRegistered<ProfileController>()) {
           final pc = Get.find<ProfileController>();
-          pc.userName.value = data['username'] as String? ?? '';
+          pc.userName.value = data['name'] as String? ?? '';
           pc.userEmail.value = data['email'] as String? ?? '';
         }
+        CustomSnackBar.success('Profile updated successfully');
 
-        Get.snackbar(
-          'Success',
-          'Profile updated successfully',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+
 
         Get.back();
       } else if (response.statusCode == 401) {

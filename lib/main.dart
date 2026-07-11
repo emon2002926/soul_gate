@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:soul_gate/core/language_controller.dart';
 import 'core/onboarding/splash/controller/splash_controller.dart';
 import 'core/onboarding/splash/views/splash_screen.dart';
 import 'core/routes/app_routes_file.dart';
@@ -13,6 +14,7 @@ import 'features/auth/view_models/sign_in_controller.dart';
 Future<void> main() async {
   await GetStorage.init();
   Get.lazyPut(() => SplashController());
+  Get.lazyPut(() => LanguageController());
 
 
   SystemChrome.setPreferredOrientations([

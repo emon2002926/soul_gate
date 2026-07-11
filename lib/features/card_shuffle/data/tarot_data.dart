@@ -1,5 +1,5 @@
 
-const String imageBase = 'https://sofiapi.dsrt321.online/static/images/cards';
+const String imageBase = 'https://sofiapi.dsrt321.online/tarot/static/images/cards';
 
 
 class TarotCard {

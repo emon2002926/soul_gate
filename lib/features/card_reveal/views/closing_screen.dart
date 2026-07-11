@@ -29,7 +29,6 @@ class ClosingScreen extends StatelessWidget {
         child: SafeArea(
           child: Column(
             children: [
-              // ── Scrollable Text Content ──────────────────────────
               Expanded(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(
@@ -118,49 +117,49 @@ class ClosingScreen extends StatelessWidget {
                   children: [
 
                     // Subscription Button
-                    GestureDetector(
-                      onTap: controller.goToSubscription,
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [
-                              Color(0xFFD4A574),
-                              Color(0xFFB8956A),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFFD4A574).withOpacity(0.4),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.star_rounded,
-                              color: Colors.white,
-                              size: 24,
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              'Go to Subscription',
-                              style: GoogleFonts.cinzel(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                                letterSpacing: 1.2,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    // GestureDetector(
+                    //   onTap: controller.goToSubscription,
+                    //   child: Container(
+                    //     width: double.infinity,
+                    //     padding: const EdgeInsets.symmetric(vertical: 16),
+                    //     decoration: BoxDecoration(
+                    //       gradient: const LinearGradient(
+                    //         colors: [
+                    //           Color(0xFFD4A574),
+                    //           Color(0xFFB8956A),
+                    //         ],
+                    //       ),
+                    //       borderRadius: BorderRadius.circular(12),
+                    //       boxShadow: [
+                    //         BoxShadow(
+                    //           color: const Color(0xFFD4A574).withOpacity(0.4),
+                    //           blurRadius: 12,
+                    //           offset: const Offset(0, 4),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //     child: Row(
+                    //       mainAxisAlignment: MainAxisAlignment.center,
+                    //       children: [
+                    //         const Icon(
+                    //           Icons.star_rounded,
+                    //           color: Colors.white,
+                    //           size: 24,
+                    //         ),
+                    //         const SizedBox(width: 10),
+                    //         Text(
+                    //           'Go to Subscription',
+                    //           style: GoogleFonts.cinzel(
+                    //             fontSize: 16,
+                    //             fontWeight: FontWeight.w600,
+                    //             color: Colors.white,
+                    //             letterSpacing: 1.2,
+                    //           ),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
 
                     const SizedBox(height: 16),
 

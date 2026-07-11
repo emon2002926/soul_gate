@@ -135,7 +135,7 @@ class SignUpController extends GetxController {
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
-          'username' : fullNameController.text.trim(),
+          'name' : fullNameController.text.trim(),
           'email': emailController.text.trim(),
           'password': passwordController.text.trim(),
         }),

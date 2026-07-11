@@ -11,13 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/text/text_field/AppTextFiled.dart';
-// Import your helper widgets
-// import 'path/to/app_button.dart';
-// import 'path/to/app_text_field.dart';
 
-// ============================================================================
-// CHANGE PASSWORD CONTROLLER
-// ============================================================================
 
 class ChangePasswordController extends GetxController {
   final oldPasswordController = TextEditingController();
@@ -104,9 +98,6 @@ class ChangePasswordController extends GetxController {
   }
 }
 
-// ============================================================================
-// CHANGE PASSWORD PAGE
-// ============================================================================
 
 class ChangePasswordPage extends StatelessWidget {
   const ChangePasswordPage({super.key});

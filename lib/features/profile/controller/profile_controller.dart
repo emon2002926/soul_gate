@@ -50,7 +50,7 @@ class ProfileController extends GetxController {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
 
         // username can be null -> fall back to email prefix
-        final uname = data['username'] as String?;
+        final uname = data['name'] as String?;
         userName.value = (uname != null && uname.isNotEmpty)
             ? uname
             : (data['email'] as String? ?? '').split('@').first;

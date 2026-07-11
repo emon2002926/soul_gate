@@ -8,7 +8,8 @@
     final String appleLogo = "assets/icons/apple_logo.png";
     final String googleLogo = "assets/icons/google_logo.png";
     final String profile = "assets/icons/profile_icon.png";
-    final String splashImage  = "assets/images/splash_image.png";
+    final String splashImageEnglish  = "assets/images/splash_image.png";
+    final String splashImageMx  = "assets/images/splash_image_mx.png";
     final String appBackground = "assets/images/app_bg_one.png";
     final String cardDecoration = "assets/images/card_decoration.png";
     final String onboardingImage1 = "assets/images/art4.png";
