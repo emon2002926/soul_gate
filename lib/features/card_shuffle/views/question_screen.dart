@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:soul_gate/core/widgets/app_bar/build_app_bar.dart';
 import 'package:soul_gate/core/widgets/text/app_text.dart';
 import 'package:soul_gate/features/card_shuffle/views/shuffle_screen.dart';
 
@@ -23,6 +24,9 @@ class QuestionScreen extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: true,
+      appBar: BuildAppBar(
+
+      ),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(

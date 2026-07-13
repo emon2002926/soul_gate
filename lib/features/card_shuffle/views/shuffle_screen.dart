@@ -157,6 +157,38 @@ class ShuffleScreen extends StatelessWidget {
             ),
           );
         }),
+        SizedBox(height: context.responsiveSize(10)),
+        // Obx(() {
+        //   final isShuffling = controller.isShuffling.value;
+        //   return Padding(
+        //     padding: EdgeInsets.symmetric(horizontal: context.responsiveSize(40)),
+        //     child: ElevatedButton(
+        //       onPressed: isShuffling
+        //           ? null
+        //           : () => controller.shuffleAndDivideCards(),
+        //       style: ElevatedButton.styleFrom(
+        //         backgroundColor: const Color(0xFFD4A574),
+        //         padding: EdgeInsets.symmetric(vertical: context.responsiveSize(18)),
+        //         shape: RoundedRectangleBorder(
+        //           borderRadius: BorderRadius.circular(context.responsiveSize(30)),
+        //         ),
+        //         elevation: 0,
+        //       ),
+        //       child: SizedBox(
+        //         width: double.infinity,
+        //         child: Center(
+        //           child: AppText(
+        //             data: "Contunue ",
+        //             fontSize: context.responsiveFontSize(16),
+        //             fontWeight: FontWeight.w600,
+        //             color: Colors.white,
+        //           ),
+        //         ),
+        //       ),
+        //     ),
+        //   );
+        // }),
+
         SizedBox(height: context.responsiveSize(40)),
       ],
     );
@@ -292,11 +324,7 @@ class ShuffleScreen extends StatelessWidget {
       return;
     }
 
-    // Pick 3 random indices from tarotCards (0-77)
-    final List<int> allIndices = List.generate(78, (i) => i)..shuffle();
-    final List<int> randomCardIndices = allIndices.take(3).toList();
-
-    print('Selected card indices: $randomCardIndices'); // 🖨️
+    final List<int> pickedPositions = controller.selectedCards.map((c) => c.id).toList();
 
     Get.delete<CardController>(force: true);
 
@@ -309,6 +337,7 @@ class ShuffleScreen extends StatelessWidget {
         cardCount: 3,
         questionId: questionId,
         isSceoundTime: isSecondTime,
+        pickedPositions: pickedPositions,
       ),
     );
   }

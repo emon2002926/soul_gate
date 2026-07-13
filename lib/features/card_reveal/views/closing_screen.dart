@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/constants/app_assert_image.dart';
 import '../../../core/constants/app_strings.dart';
 import 'package:get/get.dart';
+import '../../../core/widgets/app_bar/build_app_bar.dart';
 import '../controllers/closing_controller.dart';
 
 class ClosingScreen extends StatelessWidget {
@@ -15,6 +16,9 @@ class ClosingScreen extends StatelessWidget {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
+      appBar: BuildAppBar(
+
+      ),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(

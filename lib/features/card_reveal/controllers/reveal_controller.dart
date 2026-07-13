@@ -15,10 +15,8 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 class RevealController extends GetxController {
-  // Updated base URL
   static const String baseUrl = 'https://sofiapi.dsrt321.online/tarot/api';
 
-  // Bearer token
   static String? bearerToken = StorageService.accessToken;
 
   static const int maxRetries = 3;
@@ -26,7 +24,6 @@ class RevealController extends GetxController {
   final audioPlayer = AudioPlayer();
 
   var isFlipped = <bool>[].obs;
-
 
   var allCardsRevealed = false.obs;
 
@@ -40,7 +37,6 @@ class RevealController extends GetxController {
   var isSpeaking = false.obs;
   var isDownloadingAudio = false.obs;
 
-  // NEW: Track which card's audio is currently playing
   var currentPlayingCardIndex = Rxn<int>();
 
   @override
@@ -64,7 +60,6 @@ class RevealController extends GetxController {
   }
 
   Future<void> clearMemoryData() async {
-    // Clear all reactive variables
     isFlipped.value = [];
     allCardsRevealed.value = false;
     isAnimating.value = false;
@@ -75,7 +70,6 @@ class RevealController extends GetxController {
     isDownloadingAudio.value = false;
     currentPlayingCardIndex.value = null;
 
-    // Stop and dispose audio
     await stopSpeaking();
 
     debugPrint('✅ RevealController memory cleared');
@@ -115,16 +109,16 @@ class RevealController extends GetxController {
     });
   }
 
-  void delayedFetchInterpretation(String question, int cardCount) {
+  void delayedFetchInterpretation(String question, int cardCount, List<int> pickedPositions) {
     Future.delayed(const Duration(milliseconds: 100), () {
-      _fetchInterpretation(question, cardCount);
+      _fetchInterpretation(question, cardCount, pickedPositions);
     });
   }
 
-  Future<void> fetchInterpretation(String question, int cardCount) async {
+  Future<void> fetchInterpretation(String question, int cardCount, List<int> pickedPositions) async {
     try {
       isLoadingInterpretation.value = true;
-      await _fetchInterpretation(question, cardCount);
+      await _fetchInterpretation(question, cardCount, pickedPositions);
     } catch (e) {
       debugPrint('❌ Failed to fetch interpretation: $e');
       isLoadingInterpretation.value = false;
@@ -139,11 +133,10 @@ class RevealController extends GetxController {
     }
   }
 
-  Future<void> _fetchInterpretation(String question, int cardCount) async {
+  Future<void> _fetchInterpretation(String question, int cardCount, List<int> pickedPositions) async {
     isLoadingInterpretation.value = true;
 
     try {
-      // Refresh bearer token before each request
       bearerToken = StorageService.accessToken;
 
       final uri = Uri.parse('$baseUrl/interpret');
@@ -153,7 +146,7 @@ class RevealController extends GetxController {
         'custom_question': '',
         'language': StorageService.language,
         'generate_audio': true,
-        'card_count': cardCount,
+        'picked_positions': pickedPositions,
       };
 
       debugPrint('🔄 Making API request (attempt ${retryCount.value + 1}/$maxRetries)...');
@@ -196,7 +189,6 @@ class RevealController extends GetxController {
           debugPrint('📝 Final interpretation length: ${tarotReading.value!.finalInterpretation.length}');
           debugPrint('🔊 Final audio URL: ${tarotReading.value!.finalAudioUrl}');
 
-          // NEW: Auto-reveal all cards after successful load
           _autoRevealAllCards();
         } else {
           final errorMsg = data['message'] ?? data['error'] ?? 'Unknown error';
@@ -204,7 +196,7 @@ class RevealController extends GetxController {
           debugPrint('❌ Server error message: $errorMsg');
           debugPrint('📄 Full error data: $data');
           isLoadingInterpretation.value = false;
-          _handleApiError('Server error: $errorMsg', cardCount, question, response.statusCode);
+          _handleApiError('Server error: $errorMsg', cardCount, question, pickedPositions, response.statusCode);
         }
       } else if (response.statusCode == 403) {
         debugPrint('❌ Subscription required (403)');
@@ -215,24 +207,22 @@ class RevealController extends GetxController {
         debugPrint('❌ API error: ${response.statusCode}');
         debugPrint('📄 Response body: ${response.body}');
         isLoadingInterpretation.value = false;
-        _handleApiError('Server error (${response.statusCode})', cardCount, question, response.statusCode);
+        _handleApiError('Server error (${response.statusCode})', cardCount, question, pickedPositions, response.statusCode);
       }
     } on TimeoutException catch (e) {
       debugPrint('⏱️ Timeout: $e');
       isLoadingInterpretation.value = false;
-      _handleApiError('Request timed out. The AI is taking longer than expected.', cardCount, question, null);
+      _handleApiError('Request timed out. The AI is taking longer than expected.', cardCount, question, pickedPositions, null);
     } catch (e) {
       debugPrint('❌ API error: $e');
       isLoadingInterpretation.value = false;
-      _handleApiError('An unexpected error occurred', cardCount, question, null);
+      _handleApiError('An unexpected error occurred', cardCount, question, pickedPositions, null);
     }
   }
 
-  // NEW: Auto-reveal all cards with staggered animation
   void _autoRevealAllCards() {
     debugPrint('🎴 Auto-revealing all cards...');
 
-    // Reveal cards one by one with delay
     for (int i = 0; i < isFlipped.length; i++) {
       Future.delayed(Duration(milliseconds: 300 * i), () {
         if (i < isFlipped.length) {
@@ -241,7 +231,6 @@ class RevealController extends GetxController {
       });
     }
 
-    // Set all cards revealed after all animations complete
     Future.delayed(Duration(milliseconds: 300 * isFlipped.length + 500), () {
       allCardsRevealed.value = true;
       debugPrint('✅ All cards revealed');
@@ -262,18 +251,18 @@ class RevealController extends GetxController {
     );
   }
 
-  void _handleApiError(String message, int cardCount, String question, int? statusCode) {
+  void _handleApiError(String message, int cardCount, String question, List<int> pickedPositions, int? statusCode) {
     if (statusCode == 403) return;
 
     if (retryCount.value < maxRetries - 1) {
-      _showRetryDialog(message, cardCount, question);
+      _showRetryDialog(message, cardCount, question, pickedPositions);
     } else {
-      _showErrorDialog(message, cardCount, question);
+      _showErrorDialog(message, cardCount, question, pickedPositions);
       retryCount.value = 0;
     }
   }
 
-  void _showRetryDialog(String message, int cardCount, String question) {
+  void _showRetryDialog(String message, int cardCount, String question, List<int> pickedPositions) {
     RevealDialogs.showRetryDialog(
       message: message,
       currentAttempt: retryCount.value + 1,
@@ -281,7 +270,7 @@ class RevealController extends GetxController {
       onRetry: () {
         Get.back();
         retryCount.value++;
-        _fetchInterpretation(question, cardCount);
+        _fetchInterpretation(question, cardCount, pickedPositions);
       },
       onGoBack: () {
         Get.back();
@@ -291,13 +280,13 @@ class RevealController extends GetxController {
     );
   }
 
-  void _showErrorDialog(String message, int cardCount, String question) {
+  void _showErrorDialog(String message, int cardCount, String question, List<int> pickedPositions) {
     RevealDialogs.showErrorDialog(
       message: message,
       onTryAgain: () {
         Get.back();
         retryCount.value = 0;
-        _fetchInterpretation(question, cardCount);
+        _fetchInterpretation(question, cardCount, pickedPositions);
       },
       onGoBack: () {
         Get.back();
@@ -305,8 +294,6 @@ class RevealController extends GetxController {
       },
     );
   }
-
-
 
   void navigateToFullReading(String message, bool isSecoundTime) {
     AppNavigation.push(
@@ -320,7 +307,6 @@ class RevealController extends GetxController {
     );
   }
 
-
   void resetReveal() {
     final reading = tarotReading.value;
     final cardCount = reading?.cardCount ?? 3;
@@ -332,7 +318,6 @@ class RevealController extends GetxController {
     stopSpeaking();
   }
 
-  /// Download and play audio from URL
   Future<void> playAudioFromUrl(String audioUrl, {int? cardIndex}) async {
     if (audioUrl.isEmpty) {
       debugPrint('❌ No audio URL provided');
@@ -347,13 +332,11 @@ class RevealController extends GetxController {
     }
 
     try {
-      // If currently playing the same card, stop it
       if (isSpeaking.value && currentPlayingCardIndex.value == cardIndex) {
         await stopSpeaking();
         return;
       }
 
-      // Stop any currently playing audio
       if (isSpeaking.value) {
         await stopSpeaking();
       }
@@ -364,7 +347,6 @@ class RevealController extends GetxController {
         currentPlayingCardIndex.value = cardIndex;
       }
 
-      // Construct full URL
       String fullUrl;
       if (audioUrl.startsWith('http')) {
         fullUrl = audioUrl;
@@ -372,7 +354,6 @@ class RevealController extends GetxController {
         fullUrl = '$baseUrl$audioUrl';
       }
 
-      // Add timestamp parameter
       if (!fullUrl.contains('?t=')) {
         final timestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
         fullUrl = '$fullUrl?t=$timestamp';
@@ -380,7 +361,6 @@ class RevealController extends GetxController {
 
       debugPrint('🔊 Full audio URL: $fullUrl');
 
-      // Download the file
       final response = await http.get(
         Uri.parse(fullUrl),
         headers: {
@@ -389,12 +369,10 @@ class RevealController extends GetxController {
       ).timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
-        // Get temporary directory
         final tempDir = await getTemporaryDirectory();
         final fileName = 'tarot_audio_${DateTime.now().millisecondsSinceEpoch}.mp3';
         final filePath = '${tempDir.path}/$fileName';
 
-        // Write file
         final file = File(filePath);
         await file.writeAsBytes(response.bodyBytes);
 
@@ -403,11 +381,9 @@ class RevealController extends GetxController {
 
         isDownloadingAudio.value = false;
 
-        // Play from local file
         await audioPlayer.play(DeviceFileSource(filePath));
         isSpeaking.value = true;
 
-        // Clean up file after playing
         audioPlayer.onPlayerComplete.listen((_) async {
           try {
             if (await file.exists()) {
@@ -465,7 +441,6 @@ class RevealController extends GetxController {
   }
 
   Future<void> speakCardMeaning(TarotCard card) async {
-    // Find the card index
     final cardIndex = cards.indexWhere((c) => c.id == card.id);
     if (cardIndex != -1) {
       await speakCardAtIndex(cardIndex);

@@ -1,15 +1,20 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:soul_gate/features/card_shuffle/views/question_screen.dart';
 import '../../../core/constants/app_assert_image.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/widgets/snakbar/custom_snackbar.dart';
 import '../../../core/widgets/text/app_text.dart';
 import '../../../core/util/storage_service.dart';
 import '../../../core/util/app_navigation.dart';
+import 'package:file_saver/file_saver.dart';
+
 import 'package:get/get.dart';
 
 import '../../card_reveal/views/closing_screen.dart';
@@ -53,7 +58,6 @@ class FullReadingScreen extends StatelessWidget {
           },
         ),
         title: AppText(
-          // data: appStrings.appProgressMessage,
           data: appStrings.appProgressMessage,
           color: Colors.white,
           fontWeight: FontWeight.w600,
@@ -115,10 +119,9 @@ class FullReadingScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Title
             Center(
               child: AppText(
-                data: "Iman your question interpretation is \n $questionText",
+                data: "Iman your question is \n $questionText",
                 textAlign: TextAlign.center,
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -130,7 +133,6 @@ class FullReadingScreen extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // Reading content
             AppText(
               data: finalMessage,
               textAlign: TextAlign.center,
@@ -142,11 +144,41 @@ class FullReadingScreen extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // Action buttons
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                // Speaker button with loading/playing state
+                Obx(() {
+                  final isDownloading = controller.isDownloadingReading.value;
+
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFD4A574),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: IconButton(
+                      icon: isDownloading
+                          ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation(Colors.white),
+                        ),
+                      )
+                          : const Icon(
+                        Icons.download,
+                        color: Colors.white,
+                      ),
+                      onPressed: isDownloading
+                          ? null
+                          : () {
+                        controller.downloadReading(questionText, finalMessage);
+                      },
+                    ),
+                  );
+                }),
+                const SizedBox(width: 12),
+
                 Obx(() {
                   final isLoading = controller.isDownloadingAudio.value;
                   final isPlaying = controller.isSpeaking.value;
@@ -180,7 +212,6 @@ class FullReadingScreen extends StatelessWidget {
                 }),
                 const SizedBox(width: 12),
 
-                // Share button
                 Container(
                   decoration: BoxDecoration(
                     color: const Color(0xFFD4A574),
@@ -211,13 +242,13 @@ class FullReadingScreen extends StatelessWidget {
   }
 }
 
-// Controller for FullReadingScreen
 class FullReadingController extends GetxController {
   final String audioUrl;
   final audioPlayer = AudioPlayer();
 
   var isSpeaking = false.obs;
   var isDownloadingAudio = false.obs;
+  var isDownloadingReading = false.obs;
 
   FullReadingController({required this.audioUrl});
 
@@ -243,17 +274,35 @@ class FullReadingController extends GetxController {
       }
     });
   }
+  Future<void> downloadReading(String questionText, String finalMessage) async {
+    try {
+      isDownloadingReading.value = true;
 
+      final content = "Your Question\n$questionText\n\nYour Reading\n$finalMessage";
+      final bytes = Uint8List.fromList(utf8.encode(content));
+      final fileName = 'tarot_reading_${DateTime.now().millisecondsSinceEpoch}';
+
+      await FileSaver.instance.saveAs(
+        name: fileName,
+        bytes: bytes,
+        ext: 'txt',
+        mimeType: MimeType.text,
+      );
+
+      isDownloadingReading.value = false;
+
+      CustomSnackBar.success('Reading saved to your device');
+    } catch (e) {
+      debugPrint('❌ Reading download error: $e');
+      isDownloadingReading.value = false;
+
+      CustomSnackBar.error('Could not download reading: ${e.toString()}');
+    }
+  }
   Future<void> playAudio() async {
     if (audioUrl.isEmpty) {
       debugPrint('❌ No audio URL provided');
-      Get.snackbar(
-        'Audio Unavailable',
-        'No audio available for this reading',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.orange.withOpacity(0.8),
-        colorText: Colors.white,
-      );
+      CustomSnackBar.warning('No audio available for this reading');
       return;
     }
 
@@ -266,7 +315,6 @@ class FullReadingController extends GetxController {
       debugPrint('🔊 Downloading audio from: $audioUrl');
       isDownloadingAudio.value = true;
 
-      // Construct full URL
       String fullUrl;
       if (audioUrl.startsWith('http')) {
         fullUrl = audioUrl;
@@ -275,7 +323,6 @@ class FullReadingController extends GetxController {
         fullUrl = '$audioBaseUrl$audioUrl';
       }
 
-      // Add timestamp parameter
       if (!fullUrl.contains('?t=')) {
         final timestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
         fullUrl = '$fullUrl?t=$timestamp';
@@ -283,7 +330,6 @@ class FullReadingController extends GetxController {
 
       debugPrint('🔊 Full audio URL: $fullUrl');
 
-      // Download the file
       final response = await http.get(
         Uri.parse(fullUrl),
         headers: {
@@ -292,12 +338,10 @@ class FullReadingController extends GetxController {
       ).timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
-        // Get temporary directory
         final tempDir = await getTemporaryDirectory();
         final fileName = 'final_reading_${DateTime.now().millisecondsSinceEpoch}.mp3';
         final filePath = '${tempDir.path}/$fileName';
 
-        // Write file
         final file = File(filePath);
         await file.writeAsBytes(response.bodyBytes);
 
@@ -306,11 +350,9 @@ class FullReadingController extends GetxController {
 
         isDownloadingAudio.value = false;
 
-        // Play from local file
         await audioPlayer.play(DeviceFileSource(filePath));
         isSpeaking.value = true;
 
-        // Clean up file after playing
         audioPlayer.onPlayerComplete.listen((_) async {
           try {
             if (await file.exists()) {
@@ -324,26 +366,14 @@ class FullReadingController extends GetxController {
       } else {
         debugPrint('❌ Failed to download audio: ${response.statusCode}');
         isDownloadingAudio.value = false;
-        Get.snackbar(
-          'Download Failed',
-          'Could not download audio (${response.statusCode})',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red.withOpacity(0.8),
-          colorText: Colors.white,
-        );
+        CustomSnackBar.error('Could not download audio (${response.statusCode})');
       }
     } catch (e) {
       debugPrint('❌ Audio download/playback error: $e');
       isDownloadingAudio.value = false;
       isSpeaking.value = false;
 
-      Get.snackbar(
-        'Audio Error',
-        'Failed to play audio: ${e.toString()}',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red.withOpacity(0.8),
-        colorText: Colors.white,
-      );
+      CustomSnackBar.error('Failed to play audio: ${e.toString()}');
     }
   }
 

@@ -19,6 +19,7 @@ class RevealScreen extends StatelessWidget {
   final int? questionId;
   final int cardCount;
   final bool isSceoundTime;
+  final List<int> pickedPositions;
 
   RevealScreen({
     super.key,
@@ -28,6 +29,7 @@ class RevealScreen extends StatelessWidget {
     this.questionId,
     required this.cardCount,
     required this.isSceoundTime,
+    required this.pickedPositions,
   });
 
   AppStrings appStrings = AppStrings();
@@ -41,7 +43,7 @@ class RevealScreen extends StatelessWidget {
     }
 
     final controller = Get.put(RevealController());
-    controller.delayedFetchInterpretation(questionText, cardCount);
+    controller.delayedFetchInterpretation(questionText, cardCount, pickedPositions);
 
     return Scaffold(
       extendBodyBehindAppBar: true,

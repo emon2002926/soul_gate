@@ -24,7 +24,8 @@ class AppStrings {
   String get selectLanguage => _getText("Select Language", "Seleccionar idioma");
   String get english => "English";
   String get spanish => "Español";
-  String get choose => _getText("Choose", "Elegir");
+  // String get choose => _getText("Choose", "Elegir");
+  String get choose => _getText("Focus on your question, then", "Elegir");
 
 
   // ========== Authentication ==========
@@ -184,7 +185,8 @@ class AppStrings {
 
   String get yesContinueButton => _getText("Yes, continue", "Sí, continuar",);
 
-  String get preparingYourReading => _getText("Preparing Your Reading", "Preparando tu lectura",);
+  // String get preparingYourReading => _getText("Preparing Your Reading", "Preparando tu lectura",);
+  String get preparingYourReading => _getText("Shuffle — up to 3 times", "Preparando tu lectura",);
 
   String get shufflingBtn => _getText("Shuffling...", "Barajando...",);
 
@@ -278,7 +280,7 @@ class AppStrings {
 
   String get anyQuestionsPrompt =>
       _getText(
-        "DO YOU HAVE ANY\nQUESTION OR DOUBTS?",
+        "DO YOU HAVE ANOTHER\nQUESTION ?",
         "¿TIENES ALGUNA\nPREGUNTA O DUDA?",
       );
 

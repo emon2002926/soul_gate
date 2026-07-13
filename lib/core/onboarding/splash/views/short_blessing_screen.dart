@@ -259,8 +259,8 @@ class ShortBlessingController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _initSpeakingAnimations();
-    _initAudio();
+    // _initSpeakingAnimations();
+    // _initAudio();
   }
 
   void _initSpeakingAnimations() {
@@ -268,82 +268,82 @@ class ShortBlessingController extends GetxController {
     // We'll use a simpler animation approach
   }
 
-  Future<void> _initAudio() async {
-    try {
-      // Get current language
-      final language = StorageService.language;
+  // Future<void> _initAudio() async {
+  //   try {
+  //     // Get current language
+  //     final language = StorageService.language;
+  //
+  //     // Determine audio file path based on language
+  //     final audioPath = language == 'es'
+  //         ? 'assets/audio/blessing_es.mp3'
+  //         : 'assets/audio/blessing_en.mp3';
+  //
+  //     print('Loading audio: $audioPath for language: $language');
+  //
+  //     // Set audio source from asset
+  //     await audioPlayer.setSource(AssetSource(
+  //         language == 'es'
+  //             ? 'audio/blessing_es.mp3'
+  //             : 'audio/blessing_en.mp3'
+  //     ));
+  //
+  //     // Listen to player state
+  //     audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
+  //       if (state == PlayerState.playing) {
+  //         isPlaying.value = true;
+  //       } else if (state == PlayerState.completed) {
+  //         isPlaying.value = false;
+  //         isCompleted.value = true;
+  //         _onBlessingComplete();
+  //       } else {
+  //         isPlaying.value = false;
+  //       }
+  //     });
+  //
+  //     isInitialized.value = true;
+  //
+  //     // Auto-play after 1 second
+  //     await Future.delayed(const Duration(milliseconds: 1000));
+  //     await _playBlessing();
+  //   } catch (e) {
+  //     debugPrint("Audio Init Error: $e");
+  //     // If audio fails, skip to next screen after showing error
+  //     Get.snackbar(
+  //       'Audio Error',
+  //       'Could not load blessing audio',
+  //       snackPosition: SnackPosition.TOP,
+  //       backgroundColor: Colors.red.withOpacity(0.8),
+  //       colorText: Colors.white,
+  //     );
+  //   }
+  // }
 
-      // Determine audio file path based on language
-      final audioPath = language == 'es'
-          ? 'assets/audio/blessing_es.mp3'
-          : 'assets/audio/blessing_en.mp3';
-
-      print('Loading audio: $audioPath for language: $language');
-
-      // Set audio source from asset
-      await audioPlayer.setSource(AssetSource(
-          language == 'es'
-              ? 'audio/blessing_es.mp3'
-              : 'audio/blessing_en.mp3'
-      ));
-
-      // Listen to player state
-      audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
-        if (state == PlayerState.playing) {
-          isPlaying.value = true;
-        } else if (state == PlayerState.completed) {
-          isPlaying.value = false;
-          isCompleted.value = true;
-          _onBlessingComplete();
-        } else {
-          isPlaying.value = false;
-        }
-      });
-
-      isInitialized.value = true;
-
-      // Auto-play after 1 second
-      await Future.delayed(const Duration(milliseconds: 1000));
-      await _playBlessing();
-    } catch (e) {
-      debugPrint("Audio Init Error: $e");
-      // If audio fails, skip to next screen after showing error
-      Get.snackbar(
-        'Audio Error',
-        'Could not load blessing audio',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red.withOpacity(0.8),
-        colorText: Colors.white,
-      );
-    }
-  }
-
-  Future<void> _playBlessing() async {
-    if (isInitialized.value) {
-      try {
-        isPlaying.value = true;
-        await audioPlayer.resume();
-      } catch (e) {
-        debugPrint("Audio play failed: $e");
-        isPlaying.value = false;
-      }
-    }
-  }
-
-  void _onBlessingComplete() {
-    Future.delayed(const Duration(seconds: 2), () {
-      // Navigate to shuffle screen with parameters
-      AppNavigation.push(
-        Get.context!,
-        ShuffleScreen(
-          questionText: questionText ?? '',
-          readingTypeIndex: readingTypeIndex ?? 0,
-          deckIndex: deckIndex ?? 0,
-          isScoundTime: false,
-        ),
-      );
-    });
-  }
+  // Future<void> _playBlessing() async {
+  //   if (isInitialized.value) {
+  //     try {
+  //       isPlaying.value = true;
+  //       await audioPlayer.resume();
+  //     } catch (e) {
+  //       debugPrint("Audio play failed: $e");
+  //       isPlaying.value = false;
+  //     }
+  //   }
+  // }
+  //
+  // void _onBlessingComplete() {
+  //   Future.delayed(const Duration(seconds: 2), () {
+  //     // Navigate to shuffle screen with parameters
+  //     AppNavigation.push(
+  //       Get.context!,
+  //       ShuffleScreen(
+  //         questionText: questionText ?? '',
+  //         readingTypeIndex: readingTypeIndex ?? 0,
+  //         deckIndex: deckIndex ?? 0,
+  //         isScoundTime: false,
+  //       ),
+  //     );
+  //   });
+  // }
 
   Future<void> skipBlessing() async {
     await audioPlayer.stop();
