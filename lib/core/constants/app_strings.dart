@@ -24,12 +24,9 @@ class AppStrings {
   String get selectLanguage => _getText("Select Language", "Seleccionar idioma");
   String get english => "English";
   String get spanish => "Español";
-  // String get choose => _getText("Choose", "Elegir");
-  String get choose => _getText("Focus on your question, then", "Elegir");
-
+  String get choose => _getText("Focus on your question, then", "Enfócate en tu pregunta, luego");
 
   // ========== Authentication ==========
-
   String get login => _getText("Log in", "Iniciar sesión");
   String get signUp => _getText("Sign Up", "Registrarse");
   String get name => _getText("Name", "Nombre");
@@ -41,67 +38,61 @@ class AppStrings {
   String get dontHaveAccount => _getText("Don't have an account?", "¿No tienes una cuenta?");
   String get alreadyHaveAccount => _getText("Already have an account?", "¿Ya tienes una cuenta?");
   String get createAccount => _getText("Create Account", "Crear cuenta");
-  String get createAccountBtn =>
-      _getText("Create account", "Crear cuenta");
-
-  String get creatingAccountBtn =>
-      _getText("Creating account...", "Creando cuenta...");
-
+  String get createAccountBtn => _getText("Create account", "Crear cuenta");
+  String get creatingAccountBtn => _getText("Creating account...", "Creando cuenta...");
   String get confirmPassword => _getText("Confirm Password", "Confirmar contraseña");
   String get fullName => _getText("Full Name", "Nombre completo");
 
-  //=========Subscription
-  String get unlockSoulPath =>
-      _getText("UNLOCK YOUR FULL\nSOUL PATH", "DESBLOQUEA TU CAMINO\nCOMPLETO DEL ALMA",);
-  String get accessUnlimitedReadings =>
-      _getText(
-        "Access Unlimited Readings, Voice Guidance, And\nDeeper Spiritual Clarity.",
-        "Accede a lecturas ilimitadas, guía por voz y\nuna claridad espiritual más profunda.",
-      );
-  String get freeReadings =>
-      _getText(
-        "These are your free readings",
-        "Estas son tus lecturas gratuitas",
-      );
+  // ========== Subscription ==========
+  String get unlockSoulPath => _getText(
+    "UNLOCK YOUR FULL\nSOUL PATH",
+    "DESBLOQUEA TU CAMINO\nCOMPLETO DEL ALMA",
+  );
 
-  String get startFreeTrial =>
-      _getText(
-        "Start Your 7-Day Free Trial",
-        "Comienza tu prueba gratuita de 7 días",
-      );
-  String get trialNoChargeInfo =>
-      _getText(
-        "You won't be charged until the end of the trial. Cancel\nanytime.",
-        "No se te cobrará hasta el final de la prueba. Cancela\nen cualquier momento.",
-      );
+  String get accessUnlimitedReadings => _getText(
+    "Access Unlimited Readings, Voice Guidance, And\nDeeper Spiritual Clarity.",
+    "Accede a lecturas ilimitadas, guía por voz y\nuna claridad espiritual más profunda.",
+  );
 
-  //===================================
+  String get freeReadings => _getText(
+    "These are your free readings",
+    "Estas son tus lecturas gratuitas",
+  );
 
+  String get startFreeTrial => _getText(
+    "Start Your 7-Day Free Trial",
+    "Comienza tu prueba gratuita de 7 días",
+  );
 
+  String get trialNoChargeInfo => _getText(
+    "You won't be charged until the end of the trial. Cancel\nanytime.",
+    "No se te cobrará hasta el final de la prueba. Cancela\nen cualquier momento.",
+  );
 
-   String get welcomeTitle =>
-  _getText("Welcome to\nSoulGate", "Bienvenido a\Puerta del Alma");
+  // ========== Welcome / Onboarding Screens ==========
+  String get welcomeTitle => _getText(
+    "Welcome to\nSoulGate",
+    "Bienvenido a\nSoulGate",
+  );
 
-   String get welcomeSubtitle =>
-  _getText("To the realm of the soul", "Al reino del alma");
+  String get welcomeSubtitle => _getText(
+    "To the realm of the soul",
+    "Al reino del alma",
+  );
 
-   String get welcomeDescription =>
-  _getText(
+  String get welcomeDescription => _getText(
     "A space of clarity, guidance, and light",
     "Un espacio de claridad, guía y luz",
   );
 
-   String get customizeExperience =>
-  _getText(
+  String get customizeExperience => _getText(
     "Customize Your Experience",
     "Personaliza tu experiencia",
   );
 
-   String get continueText =>
-  _getText("Continue", "Continuar");
+  String get continueText => _getText("Continue", "Continuar");
 
-   String get innerWorldTitle =>
-  _getText(
+  String get innerWorldTitle => _getText(
     "Your inner\nworld,\nilluminated.",
     "Tu mundo\ninterior,\niluminado.",
   );
@@ -116,114 +107,122 @@ class AppStrings {
     "Lectura de texto",
   );
 
-   String get personalizedReadings =>
-  _getText(
+  String get personalizedReadings => _getText(
     "Personalized tarot readings",
     "Lecturas de tarot personalizadas",
   );
 
-   String get  voiceOrText =>
-  _getText(
+  String get voiceOrText => _getText(
     "Voice or text guidance",
     "Guía por voz o texto",
   );
 
-   String get guideMessages =>
-  _getText(
+  String get guideMessages => _getText(
     "Messages from your guides",
     "Mensajes de tus guías",
   );
 
-   String get lifeInsights =>
-  _getText(
+  String get lifeInsights => _getText(
     "Insights for love, purpose, money & spiritual path",
     "Perspectivas sobre amor, propósito, dinero y camino espiritual",
   );
 
-   String get secureSpace =>
-  _getText(
+  String get secureSpace => _getText(
     "Secure, private, sacred space",
     "Espacio seguro, privado y sagrado",
   );
 
-   String get freeReadingsTitle =>
-  _getText(
+  String get freeReadingsTitle => _getText(
     "Your first\nreadings\nare a gift.",
     "Tus primeras\nlecturas\nson un regalo.",
   );
 
   String get subscriptionRequiredMessage => _getText(
     "An active subscription is required to access SoulGate. Please subscribe to continue your spiritual journey.",
-    "Se requiere una suscripción activa para acceder a Puerta del Alma. Por favor suscríbete para continuar tu viaje espiritual.",
+    "Se requiere una suscripción activa para acceder a SoulGate. Por favor suscríbete para continuar tu viaje espiritual.",
   );
+
   String get subscriptionRequired => _getText(
     "Subscription Required",
     "Suscripción Requerida",
   );
+
   String get goToSubscription => _getText(
     "Go to Subscription",
     "Ir a Suscripción",
   );
-   String  get freeReadingsDescription => _getText("To help you experience the depth of SoulGate, you receive 5 free readings. Each one is unique, channeled, and designed to bring clarity.", "Para ayudarte a experimentar la profundidad de Puerta del Alma, recibes 5 lecturas gratuitas. Cada una es única, canalizada y diseñada para brindar claridad.",);
 
-  String get selectDeckOfCards => _getText("Select Deck of Cards", "Selecciona una baraja de cartas",);
+  String get freeReadingsDescription => _getText(
+    "To help you experience the depth of SoulGate, you receive 5 free readings. Each one is unique, channeled, and designed to bring clarity.",
+    "Para ayudarte a experimentar la profundidad de SoulGate, recibes 5 lecturas gratuitas. Cada una es única, canalizada y diseñada para brindar claridad.",
+  );
+  // ========== Card / Reading Flow ==========
+  String get selectDeckOfCards => _getText(
+    "Select Deck of Cards",
+    "Selecciona una baraja de cartas",
+  );
 
-  String get howWouldYouLikeYourReading => _getText("How would you like\nyour reading?", "¿Cómo te gustaría\ntu lectura?",);
+  String get howWouldYouLikeYourReading => _getText(
+    "How would you like\nyour reading?",
+    "¿Cómo te gustaría\ntu lectura?",
+  );
 
-  String get stepIntoThePortal => _getText("Step into\nthe portal.", "Entra en\nel portal.",);
+  String get stepIntoThePortal => _getText(
+    "Step into\nthe portal.",
+    "Entra en\nel portal.",
+  );
 
-  String get enterThePortal => _getText("Enter the Portal", "Entrar al Portal",);
+  String get enterThePortal => _getText("Enter the Portal", "Entrar al Portal");
+  String get askTheOracle => _getText("Ask the Oracle", "Pregunta al Oráculo");
 
-  String get askTheOracle => _getText("Ask the Oracle", "Pregunta al Oráculo",);
+  String get exploreQuestionPrompt => _getText(
+    "Is this the question\nyou want to explore?",
+    "¿Es esta la pregunta\nque quieres explorar?",
+  );
 
+  String get typeYourQuestionHint => _getText(
+    "Type your question here...",
+    "Escribe tu pregunta aquí...",
+  );
 
-  //=================
+  String get yesContinueButton => _getText("Yes, continue", "Sí, continuar");
 
-  String get exploreQuestionPrompt => _getText("Is this the question\nyou want to explore?", "¿Es esta la pregunta\nque quieres explorar?",);
+  String get preparingYourReading => _getText(
+    "Shuffle — up to 3 times",
+    "Baraja — hasta 3 veces",
+  );
 
-  String get typeYourQuestionHint => _getText("Type your question here...", "Escribe tu pregunta aquí...",);
+  String get shufflingBtn => _getText("Shuffling...", "Barajando...");
+  String get shuffleBtn => _getText("Shuffle", "Barajar");
+  String get sevenCardReading => _getText("7 Card Reading", "Lectura de 7 cartas");
 
-  String get yesContinueButton => _getText("Yes, continue", "Sí, continuar",);
+  String get threeCardReading => _getText(
+    "You can shuffle up to 3 times",
+    "Puedes barajar hasta 3 veces",
+  );
 
-  // String get preparingYourReading => _getText("Preparing Your Reading", "Preparando tu lectura",);
-  String get preparingYourReading => _getText("Shuffle — up to 3 times", "Preparando tu lectura",);
+  String get connectionIssue => _getText("Connection Issue", "Problema de conexión");
 
-  String get shufflingBtn => _getText("Shuffling...", "Barajando...",);
+  String get attemptOfMaxRetries => _getText(
+    "Attempt \$currentAttempt of \$maxRetries",
+    "Intento \$currentAttempt de \$maxRetries",
+  );
 
-  String get shuffleBtn => _getText("Shuffle", "Barajar",);
-  String get sevenCardReading => _getText("7 Card Reading", "Lectura de 7 cartas",);
+  String get retry => _getText("Retry", "Reintentar");
+  String get goBack => _getText("Go Back", "Regresar");
+  String get readingError => _getText("Reading Error", "Error de lectura");
+  String get yourReading => _getText("Your Reading", "Tu lectura");
+  String get listen => _getText("Listen", "Escuchar");
 
-  String get threeCardReading => _getText("3 Card Reading", "Lectura de 3 cartas",);
-
-
-
-
-  String get connectionIssue => _getText("Connection Issue", "Problema de conexión",);
-
-  String get attemptOfMaxRetries => _getText("Attempt \$currentAttempt of \$maxRetries", "Intento \$currentAttempt de \$maxRetries",);
-
-  String get retry => _getText("Retry", "Reintentar",);
-
-  String get goBack => _getText("Go Back", "Regresar",);
-
-
-  String get readingError => _getText("Reading Error", "Error de lectura",);
-
-
-  String get yourReading => _getText("Your Reading", "Tu lectura",);
-
-  String get listen => _getText("Listen", "Escuchar",);
-
-
-  //==========================
-
-
-
-  String get saintMichaelsBlessingTitle => _getText("Blessing", "Bendición de San Miguel",);
+  // ========== Blessing ==========
+  String get saintMichaelsBlessingTitle => _getText(
+    "Blessing",
+    "Bendición de San Miguel",
+  );
 
   String get saintMichaelsBlessingText => _getText(
     "MAY THIS SPACE, SOULGATE, BE UNDER\nTHE PROTECTION OF THE LIGHT OF THE\nUNIVERSE.\nMAY THE GUIDANCE OFFERED BE CLEAR\nAND ALWAYS RESPECT FREE WILL.\nMAY ONLY THAT WHICH SERVES THE\nHIGHEST GOOD TAKE PLACE.\nSO BE IT. THANK YOU. THANK YOU.\nTHANK YOU.",
-    "QUE ESTE ESPACIO, Puerta del Alma, ESTÉ BAJO\nLA PROTECCIÓN DE LA LUZ DEL\nUNIVERSO.\nQUE LA GUÍA OFRECIDA SEA CLARA\nY SIEMPRE RESPETE EL LIBRE ALBEDRÍO.\nQUE SOLO AQUELLO QUE SIRVA AL\nBIEN MÁS ALTO TENGA LUGAR.\nASÍ SEA. GRACIAS. GRACIAS.\nGRACIAS.",
+    "QUE ESTE ESPACIO, SOULGATE, ESTÉ BAJO\nLA PROTECCIÓN DE LA LUZ DEL\nUNIVERSO.\nQUE LA GUÍA OFRECIDA SEA CLARA\nY SIEMPRE RESPETE EL LIBRE ALBEDRÍO.\nQUE SOLO AQUELLO QUE SIRVA AL\nBIEN MÁS ALTO TENGA LUGAR.\nASÍ SEA. GRACIAS. GRACIAS.\nGRACIAS.",
   );
 
   String get saintMichaelsBlessingTextSH => _getText(
@@ -231,23 +230,17 @@ class AppStrings {
         "May the guidance offered be clear and always respect free will. "
         "May only that which serves the highest good take place. "
         "So be it. Thank you. Thank you. Thank you.",
-    "Que este espacio, Puerta del Alma, esté bajo la protección de la Luz del Universo. "
+    "Que este espacio, SoulGate, esté bajo la protección de la Luz del Universo. "
         "Que la guía ofrecida sea clara y siempre respete el libre albedrío. "
         "Que solo aquello que sirva al bien más alto tenga lugar. "
         "Así sea. Gracias. Gracias. Gracias.",
   );
+  String get consultingTheCards => _getText(
+    "Consulting the cards...",
+    "Consultando las cartas...",
+  );
 
-
-
-  String get consultingTheCards => _getText("Consulting the cards...", "Consultando las cartas...",);
-
-
-
-   late List<String> messages = [
-    // _getText(
-    //   "Reading the cards...",
-    //   "Leyendo las cartas...",
-    // ),
+  late List<String> messages = [
     _getText(
       "Consulting the universe...",
       "Consultando el universo...",
@@ -258,77 +251,56 @@ class AppStrings {
     ),
     _getText(
       "Getting Ready ...",
-      "Canalizando sabiduría...",
+      "Preparándose...",
     ),
   ];
 
+  String get loadingTimeoutMessage => _getText(
+    "This may take up to 30 seconds...",
+    "Esto puede tardar hasta 30 segundos...",
+  );
 
-  String get loadingTimeoutMessage => _getText("This may take up to 30 seconds...", "Esto puede tardar hasta 30 segundos...",);
+  String get appProgressTitle => _getText(
+    "Your app is progressing beautifully.",
+    "Tu aplicación está avanzando maravillosamente.",
+  );
 
+  String get appProgressMessage => _getText("Message", "Mensaje");
 
-  String get appProgressTitle =>
-      _getText(
-        "Your app is progressing beautifully.",
-        "Tu aplicación está avanzando maravillosamente.",
-      );
+  String get anyQuestionsPrompt => _getText(
+    "DO YOU HAVE ANOTHER\nQUESTION ?",
+    "¿TIENES ALGUNA\nOTRA PREGUNTA?",
+  );
 
-  String get appProgressMessage =>
-      _getText(
-        "Message",
-        "Mensaje",
-      );
+  String get currentSituationQuestion => _getText(
+    "What do I most need to understand about my\ncurrent situation?",
+    "¿Qué necesito entender más sobre mi\nsituación actual?",
+  );
 
-  String get anyQuestionsPrompt =>
-      _getText(
-        "DO YOU HAVE ANOTHER\nQUESTION ?",
-        "¿TIENES ALGUNA\nPREGUNTA O DUDA?",
-      );
+  String get noThanks => _getText("No, Thanks", "No, gracias");
 
-  String get currentSituationQuestion =>
-      _getText(
-        "What do I most need to understand about my\ncurrent situation?",
-        "¿Qué necesito entender más sobre mi\nsituación actual?",
-      );
+  // ========== Closing Ritual ==========
+  String get thankYouGuidance => _getText(
+    "THANK YOU FOR THE GUIDANCE RECEIVED IN THIS SESSION.",
+    "GRACIAS POR LA ORIENTACIÓN RECIBIDA EN ESTA SESIÓN.",
+  );
 
-  String get noThanks =>
-      _getText(
-        "No, Thanks",
-        "No, gracias",
-      );
+  String get closeReadingWithGratitude => _getText(
+    "I CLOSE THIS READING WITH GRATITUDE, CLARITY, AND PEACE.",
+    "CIERRO ESTA LECTURA CON GRATITUD, CLARIDAD Y PAZ.",
+  );
 
+  String get insightsSupportHighestGood => _getText(
+    "MAY THE INSIGHTS OFFERED CONTINUE SUPPORTING MY HIGHEST GOOD.",
+    "QUE LOS CONOCIMIENTOS OFRECIDOS SIGAN APOYANDO MI BIEN MÁS ALTO.",
+  );
 
-  String get thankYouGuidance =>
-      _getText(
-        "THANK YOU FOR THE GUIDANCE RECEIVED IN THIS SESSION.",
-        "GRACIAS POR LA ORIENTACIÓN RECIBIDA EN ESTA SESIÓN.",
-      );
+  String get insightsSupportLast => _getText(
+    "SoulGate offers you clarity, and supports your personal process.",
+    "SoulGate te ofrece claridad y apoya tu proceso personal.",
+  );
 
-  String get closeReadingWithGratitude =>
-      _getText(
-        "I CLOSE THIS READING WITH GRATITUDE, CLARITY, AND PEACE.",
-        "CIERRO ESTA LECTURA CON GRATITUD, CLARIDAD Y PAZ.",
-      );
-
-  String get insightsSupportHighestGood =>
-      _getText(
-        "MAY THE INSIGHTS OFFERED CONTINUE SUPPORTING MY HIGHEST GOOD.",
-        "QUE LOS CONOCIMIENTOS OFRECIDOS SIGAN APOYANDO MI BIEN MÁS ALTO.",
-      );
-  String get insightsSupportLast =>
-      _getText(
-        "SoulGate offers you clarity, and supports your personal process.",
-        "QUE LOS CONOCIMIENTOS OFRECIDOS SIGAN APOYANDO MI BIEN MÁS ALTO.",
-      );
-
-  String get soBeIt =>
-      _getText(
-        "SO BE IT.",
-        "ASÍ SEA.",
-      );
-
-
-//==========================
-
+  String get soBeIt => _getText("SO BE IT.", "ASÍ SEA.");
 
   // ========== Home Screen ==========
   String get home => _getText("Home", "Inicio");
@@ -372,8 +344,10 @@ class AppStrings {
   String get aboutUs => _getText("About Us", "Acerca de nosotros");
   String get privacyPolicy => _getText("Privacy Policy", "Política de privacidad");
   String get termsOfService => _getText("Terms of Service", "Términos de servicio");
-  String get termsOfServiceAgreement =>
-      _getText("I agree to Terms and Conditions ", "Acepto los Términos de servicio");
+  String get termsOfServiceAgreement => _getText(
+    "I agree to Terms and Conditions ",
+    "Acepto los Términos de servicio",
+  );
   String get logout => _getText("Logout", "Cerrar sesión");
 
   // ========== Loading & Messages ==========
@@ -394,11 +368,26 @@ class AppStrings {
   String get emailRequired => _getText("Email is required", "El correo electrónico es obligatorio");
   String get passwordRequired => _getText("Password is required", "La contraseña es obligatoria");
   String get invalidEmail => _getText("Invalid email format", "Formato de correo electrónico no válido");
-  String get passwordTooShort => _getText("Password must be at least 6 characters", "La contraseña debe tener al menos 6 caracteres");
-  String get passwordsDoNotMatch => _getText("Passwords do not match", "Las contraseñas no coinciden");
-  String get loginFailed => _getText("Login failed. Please try again.", "Inicio de sesión fallido. Inténtalo de nuevo.");
-  String get registrationFailed => _getText("Registration failed. Please try again.", "Registro fallido. Inténtalo de nuevo.");
-  String get networkError => _getText("Network error. Please check your connection.", "Error de red. Verifica tu conexión.");
+  String get passwordTooShort => _getText(
+    "Password must be at least 6 characters",
+    "La contraseña debe tener al menos 6 caracteres",
+  );
+  String get passwordsDoNotMatch => _getText(
+    "Passwords do not match",
+    "Las contraseñas no coinciden",
+  );
+  String get loginFailed => _getText(
+    "Login failed. Please try again.",
+    "Inicio de sesión fallido. Inténtalo de nuevo.",
+  );
+  String get registrationFailed => _getText(
+    "Registration failed. Please try again.",
+    "Registro fallido. Inténtalo de nuevo.",
+  );
+  String get networkError => _getText(
+    "Network error. Please check your connection.",
+    "Error de red. Verifica tu conexión.",
+  );
   String get somethingWentWrong => _getText("Something went wrong", "Algo salió mal");
 
   // ========== Onboarding ==========
@@ -433,35 +422,30 @@ class AppStrings {
   String get readMore => _getText("Read more", "Leer más");
   String get readLess => _getText("Read less", "Leer menos");
 
-  String get selectFirstCard =>
-      _getText("Select your first card", "Selecciona tu primera carta");
+  String get selectFirstCard => _getText(
+    "Select your first card",
+    "Selecciona tu primera carta",
+  );
 
-  String get selectSecondCard =>
-      _getText("Select your second card", "Selecciona tu segunda carta");
+  String get selectSecondCard => _getText(
+    "Select your second card",
+    "Selecciona tu segunda carta",
+  );
 
-  String get selectThirdCard =>
-      _getText("Select your third card", "Selecciona tu tercera carta");
+  String get selectThirdCard => _getText(
+    "Select your third card",
+    "Selecciona tu tercera carta",
+  );
 
-  String get yourReadingIsReady =>
-      _getText("Your reading is ready", "Tu lectura está lista");
+  String get yourReadingIsReady => _getText(
+    "Tap continue to see your reading",
+    "Tu lectura está lista",
+  );
 
-  String get tapCardFromArc =>
-      _getText("Tap a card from the arc", "Toca una carta del arco");
-
-  // String get shuffling =>
-  //     _getText("Shuffling...", "Barajando...");
-  //
-  // String get shuffle =>
-  //     _getText("Shuffle", "Barajar");
-  //
-  // String get continueText =>
-  //     _getText("Continue", "Continuar");
-
-
-
-
-
-
+  String get tapCardFromArc => _getText(
+    "Tap a card from the arc",
+    "Toca una carta del arco",
+  );
 
   static List<String> get predefinedQuestions => [
     AppStrings.instance._getText(
@@ -491,6 +475,6 @@ class AppStrings {
     AppStrings.instance._getText(
       "Tell me, what's in your mind?",
       'Cuéntame, ¿qué tienes en mente?',
-    ), // Open question - always last
+    ),
   ];
 }

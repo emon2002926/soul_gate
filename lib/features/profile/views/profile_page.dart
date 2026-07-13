@@ -22,9 +22,7 @@ class ProfilePage extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: BuildAppBar(
         title: appStrings.profile,
-        showSideButton: true,
         sideButtonIcon: Icons.account_circle_outlined,
-        onSideButtonPressed: ()=>AppNavigation.push(Get.context!, ProfilePage()),
         onBackButtonPrassed: (){
           Navigator.pop(context);
         },

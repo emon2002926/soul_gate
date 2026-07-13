@@ -12,7 +12,7 @@ import '../controllers/reveal_controller.dart';
 import '../models/tarot_response.dart';
 
 
-class RevealScreen extends StatelessWidget {
+class RevealScreen extends StatefulWidget {
   final String questionText;
   final int readingTypeIndex;
   final int deckIndex;
@@ -21,7 +21,7 @@ class RevealScreen extends StatelessWidget {
   final bool isSceoundTime;
   final List<int> pickedPositions;
 
-  RevealScreen({
+  const RevealScreen({
     super.key,
     required this.questionText,
     required this.readingTypeIndex,
@@ -32,19 +32,30 @@ class RevealScreen extends StatelessWidget {
     required this.pickedPositions,
   });
 
+  @override
+  State<RevealScreen> createState() => _RevealScreenState();
+}
+
+class _RevealScreenState extends State<RevealScreen> {
   AppStrings appStrings = AppStrings();
+  late final RevealController controller;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+
     if (Get.isRegistered<RevealController>()) {
       final oldController = Get.find<RevealController>();
       oldController.stopSpeaking();
       Get.delete<RevealController>(force: true);
     }
 
-    final controller = Get.put(RevealController());
-    controller.delayedFetchInterpretation(questionText, cardCount, pickedPositions);
+    controller = Get.put(RevealController());
+    controller.delayedFetchInterpretation(widget.questionText, widget.cardCount, widget.pickedPositions);
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: const Color(0xFFF5F3EE),
@@ -91,7 +102,7 @@ class RevealScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: _Build3CardLayout(
                         controller: controller,
-                        deckImage: controller.getDeckImage(deckIndex),
+                        deckImage: controller.getDeckImage(widget.deckIndex),
                       ),
                     ),
                   ),
@@ -103,8 +114,8 @@ class RevealScreen extends StatelessWidget {
                     right: 0,
                     child: _AllCardsDetailsPanel(
                       controller: controller,
-                      questionText: questionText,
-                      isSecoundTime: isSceoundTime,
+                      questionText: widget.questionText,
+                      isSecoundTime: widget.isSceoundTime,
                     ),
                   ),
 
@@ -146,7 +157,6 @@ class RevealScreen extends StatelessWidget {
     );
   }
 }
-
 class _LoadingWidget extends StatefulWidget {
   @override
   State<_LoadingWidget> createState() => _LoadingWidgetState();

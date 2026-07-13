@@ -101,7 +101,7 @@ class CardController extends GetxController {
       case 3:
         return AppStrings.instance.yourReadingIsReady;
       default:
-        return AppStrings.instance.tapCardFromArc;
+        return AppStrings.instance.threeCardReading;
     }
   }
 

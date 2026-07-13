@@ -120,7 +120,7 @@ class ShuffleScreen extends StatelessWidget {
         SizedBox(height: context.spacing24),
         AppText(
           data: appStrings.preparingYourReading,
-          fontSize: context.responsiveFontSize(24),
+          fontSize: context.responsiveFontSize(18),
           fontWeight: FontWeight.w600,
           color: Colors.white,
         ),

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:soul_gate/core/util/app_navigation.dart';
+import 'package:soul_gate/features/profile/views/profile_page.dart';
 import '../../../core/constants/app_assert_image.dart';
 import '../../../core/constants/app_strings.dart';
 import 'package:get/get.dart';
+import '../../../core/onboarding/splash/views/onboarding_screen.dart';
 import '../../../core/widgets/app_bar/build_app_bar.dart';
 import '../controllers/closing_controller.dart';
 
@@ -17,7 +20,11 @@ class ClosingScreen extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: BuildAppBar(
-
+        onBackButtonPrassed: (){Navigator.pop(context);},
+        onSideButtonPressed: (){AppNavigation.push(context, ProfilePage());},
+        title: "closing screen",
+        showSideButton: true,
+        sideButtonIcon: Icons.account_circle_outlined,
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -203,6 +210,42 @@ class ClosingScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+                    SizedBox(height: 16),
+                    GestureDetector(
+                      onTap: (){
+                        AppNavigation.pushAndClear(Get.context!, OnboardingScreen());
+
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.4),
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+
+                            const SizedBox(width: 10),
+                            Text(
+                              'Start over again ',
+                              style: GoogleFonts.cinzel(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
 
                   ],
                 ),
