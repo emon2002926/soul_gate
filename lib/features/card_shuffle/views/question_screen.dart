@@ -25,7 +25,9 @@ class QuestionScreen extends StatelessWidget {
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: true,
       appBar: BuildAppBar(
-
+        onBackButtonPrassed: (){
+          Navigator.pop(context);
+        },
       ),
       body: Container(
         decoration: BoxDecoration(
