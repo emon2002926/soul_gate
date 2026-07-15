@@ -140,13 +140,16 @@ class RevealController extends GetxController {
       bearerToken = StorageService.accessToken;
 
       final uri = Uri.parse('$baseUrl/interpret');
+      final reorderedPositions = pickedPositions.isNotEmpty
+          ? [pickedPositions.last, ...pickedPositions.sublist(0, pickedPositions.length - 1)]
+          : pickedPositions;
 
       final requestBody = {
         'question': question,
         'custom_question': '',
         'language': StorageService.language,
         'generate_audio': true,
-        'picked_positions': pickedPositions,
+        'picked_positions': reorderedPositions,
       };
 
       debugPrint('🔄 Making API request (attempt ${retryCount.value + 1}/$maxRetries)...');
