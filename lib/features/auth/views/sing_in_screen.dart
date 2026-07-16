@@ -45,56 +45,56 @@ class SingInScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // ✅ Language Selection Button (Top Right)
-                        Align(
-                          alignment: Alignment.topRight,
-                          child: GestureDetector(
-                            onTap: () => LanguageSelectionDialog.show(context),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.15),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: Colors.white.withOpacity(0.3),
-                                  width: 1,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    strings.language,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 6),
-                                  Obx(() => Text(
-                                    Get.find<LanguageController>().isEnglish
-                                        ? strings.english
-                                        : strings.spanish,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  )),
-                                  const SizedBox(width: 4),
-                                  Icon(
-                                    Icons.keyboard_arrow_down,
-                                    color: Colors.white,
-                                    size: 16,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
+                        // Align(
+                        //   alignment: Alignment.topRight,
+                        //   child: GestureDetector(
+                        //     onTap: () => LanguageSelectionDialog.show(context),
+                        //     child: Container(
+                        //       padding: const EdgeInsets.symmetric(
+                        //         horizontal: 12,
+                        //         vertical: 8,
+                        //       ),
+                        //       decoration: BoxDecoration(
+                        //         color: Colors.white.withOpacity(0.15),
+                        //         borderRadius: BorderRadius.circular(20),
+                        //         border: Border.all(
+                        //           color: Colors.white.withOpacity(0.3),
+                        //           width: 1,
+                        //         ),
+                        //       ),
+                        //       child: Row(
+                        //         mainAxisSize: MainAxisSize.min,
+                        //         children: [
+                        //           Text(
+                        //             strings.language,
+                        //             style: TextStyle(
+                        //               color: Colors.white,
+                        //               fontSize: 12,
+                        //               fontWeight: FontWeight.w500,
+                        //             ),
+                        //           ),
+                        //           const SizedBox(width: 6),
+                        //           Obx(() => Text(
+                        //             Get.find<LanguageController>().isEnglish
+                        //                 ? strings.english
+                        //                 : strings.spanish,
+                        //             style: TextStyle(
+                        //               color: Colors.white,
+                        //               fontSize: 12,
+                        //               fontWeight: FontWeight.w600,
+                        //             ),
+                        //           )),
+                        //           const SizedBox(width: 4),
+                        //           Icon(
+                        //             Icons.keyboard_arrow_down,
+                        //             color: Colors.white,
+                        //             size: 16,
+                        //           ),
+                        //         ],
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
 
                         SizedBox(height: 50.h),
 
