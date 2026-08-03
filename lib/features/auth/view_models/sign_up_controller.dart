@@ -23,7 +23,7 @@ class SignUpController extends GetxController {
   final isPasswordVisible = false.obs;
 
   // Updated Base URL
-  static final String baseUrl = 'https://sofiapi.dsrt321.online/api';
+  static final String baseUrl = 'https://api.soulgatelight.com/api';
 
   void togglePasswordVisibility() {
     isPasswordVisible.value = !isPasswordVisible.value;

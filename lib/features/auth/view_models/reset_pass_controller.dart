@@ -18,7 +18,7 @@ class ResetPassController extends GetxController {
   final otp = ''.obs;
 
   // Updated Base URL
-  static final String baseUrl = 'https://sofiapi.dsrt321.online/api';
+  static final String baseUrl = 'https://api.soulgatelight.com/api';
 
   @override
   void onInit() {

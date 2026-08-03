@@ -39,7 +39,7 @@ class ProfileController extends GetxController {
       final token = StorageService.accessToken; // your stored bearer token
 
       final response = await http.get(
-        Uri.parse('https://sofiapi.dsrt321.online/api/auth/profile/'),
+        Uri.parse('https://api.soulgatelight.com/api/auth/profile/'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -58,6 +58,9 @@ class ProfileController extends GetxController {
         userEmail.value = data['email'] as String? ?? '';
         isVerified.value = data['is_verified'] as bool? ?? false;
         language.value = data['language'] as String? ?? 'en';
+
+        // Save username to storage
+        await StorageService.saveUserName(userName.value);
 
         // No premium field in API; keep false unless your backend adds it
         isPremiumUser.value = false;
@@ -146,7 +149,7 @@ class ProfileController extends GetxController {
       final token = StorageService.accessToken;
 
       final response = await http.delete(
-        Uri.parse('https://sofiapi.dsrt321.online/api/auth/delete-account/'),
+        Uri.parse('https://api.soulgatelight.com/api/auth/delete-account/'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',

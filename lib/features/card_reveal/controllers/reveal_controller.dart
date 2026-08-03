@@ -15,7 +15,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 class RevealController extends GetxController {
-  static const String baseUrl = 'https://sofiapi.dsrt321.online/tarot/api';
+  static const String baseUrl = 'https://api.soulgatelight.com/tarot/api';
 
   static String? bearerToken = StorageService.accessToken;
 

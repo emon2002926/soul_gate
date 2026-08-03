@@ -21,7 +21,7 @@ class LoginController extends GetxController {
   final isLoading = false.obs;
   final isPasswordVisible = false.obs;
 
-    static final String baseUrl = 'https://sofiapi.dsrt321.online/api';
+    static final String baseUrl = 'https://api.soulgatelight.com/api';
 
   @override
   void onClose() {

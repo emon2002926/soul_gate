@@ -1,0 +1,105 @@
+Section,Key,English,Spanish
+App Name,appName,SOULGATE,SOULGATE
+App Name,appTagline,TAROT & LIGHT,TAROT Y LUZ
+Language Selection,selectLanguage,Select Language,Seleccionar idioma
+Language Selection,english,English,English
+Language Selection,spanish,Español,Español
+Language Selection,choose,"Focus on your question, then","Enfócate en tu pregunta, luego"
+Authentication,login,Log in,Iniciar sesión
+Authentication,signUp,Sign Up,Registrarse
+Authentication,name,Name,Nombre
+Authentication,email,Email,Correo electrónico
+Authentication,password,Password,Contraseña
+Authentication,enterYourEmail,Enter your email,Ingresa tu correo electrónico
+Authentication,enterYourPassword,Enter your password,Ingresa tu contraseña
+Authentication,forgotPassword,Forgot Password?,¿Olvidaste tu contraseña?
+Authentication,dontHaveAccount,"Don't have an account?",¿No tienes una cuenta?
+Authentication,alreadyHaveAccount,Already have an account?,¿Ya tienes una cuenta?
+Authentication,createAccount,Create Account,Crear cuenta
+Authentication,createAccountBtn,Create account,Crear cuenta
+Authentication,creatingAccountBtn,Creating account...,Creando cuenta...
+Authentication,confirmPassword,Confirm Password,Confirmar contraseña
+Authentication,fullName,Full Name,Nombre completo
+Subscription,unlockSoulPath,"UNLOCK YOUR FULL\nSOUL PATH","DESBLOQUEA TU CAMINO\nCOMPLETO DEL ALMA"
+Subscription,accessUnlimitedReadings,"Access Unlimited Readings, Voice Guidance, And\nDeeper Spiritual Clarity.","Accede a lecturas ilimitadas, guía por voz y\nuna claridad espiritual más profunda."
+Subscription,freeReadings,These are your free readings,Estas son tus lecturas gratuitas
+Subscription,startFreeTrial,Start Your 7-Day Free Trial,Comienza tu prueba gratuita de 7 días
+Subscription,trialNoChargeInfo,"You won't be charged until the end of the trial. Cancel\nanytime.","No se te cobrará hasta el final de la prueba. Cancela\nen cualquier momento."
+Welcome,welcomeTitle,"Welcome to\nSoulGate","Bienvenido a\nSoulGate"
+Welcome,welcomeSubtitle,To the realm of the soul,Al reino del alma
+Welcome,welcomeDescription,"A space of clarity, guidance, and light","Un espacio de claridad, guía y luz"
+Welcome,customizeExperience,Customize Your Experience,Personaliza tu experiencia
+Welcome,continueText,Continue,Continuar
+Welcome,innerWorldTitle,"Your inner\nworld,\nilluminated.","Tu mundo\ninterior,\niluminado."
+Welcome,audioAndTextReading,Audio & Text Reading,Lectura de audio y texto
+Welcome,textReading,Text Reading,Lectura de texto
+Welcome,personalizedReadings,Personalized tarot readings,Lecturas de tarot personalizadas
+Welcome,voiceOrText,Voice or text guidance,Guía por voz o texto
+Welcome,guideMessages,Messages from your guides,Mensajes de tus guías
+Welcome,lifeInsights,"Insights for love, purpose, money & spiritual path","Perspectivas sobre amor, propósito, dinero y camino espiritual"
+Welcome,secureSpace,"Secure, private, sacred space","Espacio seguro, privado y sagrado"
+Welcome,freeReadingsTitle,"Your first\nreadings\nare a gift.","Tus primeras\nlecturas\nson un regalo."
+Welcome,subscriptionRequiredMessage,An active subscription is required to access SoulGate. Please subscribe to continue your spiritual journey.,Se requiere una suscripción activa para acceder a SoulGate. Por favor suscríbete para continuar tu viaje espiritual.
+Welcome,subscriptionRequired,Subscription Required,Suscripción Requerida
+Welcome,goToSubscription,Go to Subscription,Ir a Suscripción
+Welcome,freeReadingsDescription,"To help you experience the depth of SoulGate, you receive 5 free readings. Each one is unique, channeled, and designed to bring clarity.","Para ayudarte a experimentar la profundidad de SoulGate, recibes 5 lecturas gratuitas. Cada una es única, canalizada y diseñada para brindar claridad."
+Reading Flow,selectDeckOfCards,Select Deck of Cards,Selecciona una baraja de cartas
+Reading Flow,howWouldYouLikeYourReading,"How would you like\nyour reading?","¿Cómo te gustaría\ntu lectura?"
+Reading Flow,stepIntoThePortal,"Step into\nthe portal.","Entra en\nel portal."
+Reading Flow,enterThePortal,Enter the Portal,Entrar al Portal
+Reading Flow,askTheOracle,Ask the Oracle,Pregunta al Oráculo
+Reading Flow,exploreQuestionPrompt,Is this the question\nyou want to explore?,¿Es esta la pregunta\nque quieres explorar?
+Reading Flow,typeYourQuestionHint,Type your question here...,Escribe tu pregunta aquí...
+Reading Flow,yesContinueButton,"Yes, continue","Sí, continuar"
+Reading Flow,preparingYourReading,Shuffle — up to 3 times,Baraja — hasta 3 veces
+Reading Flow,shufflingBtn,Shuffling...,Barajando...
+Reading Flow,shuffleBtn,Shuffle,Barajar
+Reading Flow,sevenCardReading,7 Card Reading,Lectura de 7 cartas
+Reading Flow,threeCardReading,You can shuffle up to 3 times,Puedes barajar hasta 3 veces
+Reading Flow,connectionIssue,Connection Issue,Problema de conexión
+Reading Flow,attemptOfMaxRetries,Attempt $currentAttempt of $maxRetries,Intento $currentAttempt de $maxRetries
+Reading Flow,retry,Retry,Reintentar
+Reading Flow,goBack,Go Back,Regresar
+Reading Flow,readingError,Reading Error,Error de lectura
+Reading Flow,yourReading,Your Reading,Tu lectura
+Reading Flow,listen,Listen,Escuchar
+Blessing,saintMichaelsBlessingTitle,Blessing,Bendición de San Miguel
+Blessing,saintMichaelsBlessingText,"MAY THIS SPACE, SOULGATE, BE UNDER\nTHE PROTECTION OF THE LIGHT OF THE\nUNIVERSE.\nMAY THE GUIDANCE OFFERED BE CLEAR\nAND ALWAYS RESPECT FREE WILL.\nMAY ONLY THAT WHICH SERVES THE\nHIGHEST GOOD TAKE PLACE.\nSO BE IT. THANK YOU. THANK YOU.\nTHANK YOU.","QUE ESTE ESPACIO, SOULGATE, ESTÉ BAJO\nLA PROTECCIÓN DE LA LUZ DEL\nUNIVERSO.\nQUE LA GUÍA OFRECIDA SEA CLARA\nY SIEMPRE RESPETE EL LIBRE ALBEDRÍO.\nQUE SOLO AQUELLO QUE SIRVA AL\nBIEN MÁS ALTO TENGA LUGAR.\nASÍ SEA. GRACIAS. GRACIAS.\nGRACIAS."
+Blessing,saintMichaelsBlessingTextSH,May this space SoulGate be under the protection of the Light of the Universe. May the guidance offered be clear and always respect free will. May only that which serves the highest good take place. So be it. Thank you. Thank you. Thank you.,Que este espacio SoulGate esté bajo la protección de la Luz del Universo. Que la guía ofrecida sea clara y siempre respete el libre albedrío. Que solo aquello que sirva al bien más alto tenga lugar. Así sea. Gracias. Gracias. Gracias.
+Messages,msg1,Consulting the universe...,Consultando el universo...
+Messages,msg2,Interpreting your path...,Interpretando tu camino...
+Messages,msg3,Getting Ready ...,Preparándose...
+Common,home,Home,Inicio
+Common,start,Start,Comenzar
+Common,profile,Profile,Perfil
+Common,welcome,Welcome,Bienvenido
+Common,welcomeBack,Welcome back,Bienvenido de nuevo
+Common,save,Save,Guardar
+Common,delete,Delete,Eliminar
+Common,cancel,Cancel,Cancelar
+Common,ok,OK,Aceptar
+Common,close,Close,Cerrar
+Common,back,Back,Atrás
+Common,submit,Submit,Enviar
+Common,search,Search,Buscar
+Common,filter,Filter,Filtrar
+Common,sortBy,Sort by,Ordenar por
+Common,viewAll,View all,Ver todo
+Common,readMore,Read more,Leer más
+Common,readLess,Read less,Leer menos
+Errors,emailRequired,Email is required,El correo electrónico es obligatorio
+Errors,passwordRequired,Password is required,La contraseña es obligatoria
+Errors,invalidEmail,Invalid email format,Formato de correo electrónico no válido
+Errors,passwordTooShort,Password must be at least 6 characters,La contraseña debe tener al menos 6 caracteres
+Errors,passwordsDoNotMatch,Passwords do not match,Las contraseñas no coinciden
+Errors,loginFailed,Login failed. Please try again.,Inicio de sesión fallido. Inténtalo de nuevo.
+Errors,registrationFailed,Registration failed. Please try again.,Registro fallido. Inténtalo de nuevo.
+Errors,networkError,Network error. Please check your connection.,Error de red. Verifica tu conexión.
+Errors,somethingWentWrong,Something went wrong,Algo salió mal
+Questions,Q1,What do I need in my life right now?,¿Qué necesito en mi vida en este momento?
+Questions,Q2,Lack of clarity and motivation,Falta de claridad y motivación
+Questions,Q3,About my life purpose,Sobre mi propósito de vida
+Questions,Q4,About love and relationships,Sobre el amor y las relaciones
+Questions,Q5,"About my work, professional life, and projects",Sobre mi trabajo mi vida profesional y mis proyectos
+Questions,Q6,About my financial situation and my relationship with money,Sobre mi situación financiera y mi relación con el dinero
+Questions,Q7,"Tell me, what's in your mind?",Cuéntame ¿qué tienes en mente?

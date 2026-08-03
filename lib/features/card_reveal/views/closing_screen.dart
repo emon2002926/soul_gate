@@ -213,7 +213,7 @@ class ClosingScreen extends StatelessWidget {
                     SizedBox(height: 16),
                     GestureDetector(
                       onTap: (){
-                        AppNavigation.pushAndClear(Get.context!, OnboardingScreen());
+                        // AppNavigation.pushAndClear(Get.context!, OnboardingScreen());
 
                       },
                       child: Container(
@@ -233,7 +233,7 @@ class ClosingScreen extends StatelessWidget {
 
                             const SizedBox(width: 10),
                             Text(
-                              'Start over again ',
+                              'SEE YOU SOON',
                               style: GoogleFonts.cinzel(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,

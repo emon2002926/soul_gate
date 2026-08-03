@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:soul_gate/core/util/screen_size.dart';
+import 'package:soul_gate/core/util/storage_service.dart';
 import 'package:soul_gate/core/widgets/snakbar/custom_snackbar.dart';
 import '../../../core/constants/app_assert_image.dart';
 import '../../../core/constants/app_strings.dart';
@@ -31,7 +32,6 @@ class OracleQuestion {
   }
 }
 
-// ==================== SCREEN 1: Ask the Oracle ====================
 
 class AskOracleScreen extends StatelessWidget {
   final int readingTypeIndex;
@@ -69,6 +69,8 @@ class AskOracleScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     print('Reading Type Index: $readingTypeIndex');
     print('Deck Index: $deckIndex');
+
+    print("sfkglfh: ${StorageService.userName}");
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: BuildAppBar(

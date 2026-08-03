@@ -489,7 +489,7 @@ class SubscriptionController extends GetxController {
   final RxList<SubscriptionPlan> plans = <SubscriptionPlan>[].obs;
 
   // Replace with your actual API base URL
-  static const String baseUrl = 'https://sofiapi.dsrt321.online/api';
+  static const String baseUrl = 'https://api.soulgatelight.com/api';
 
   String?  authToken = StorageService.accessToken;
 

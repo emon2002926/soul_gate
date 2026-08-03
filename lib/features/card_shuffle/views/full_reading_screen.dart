@@ -121,7 +121,7 @@ class FullReadingScreen extends StatelessWidget {
           children: [
             Center(
               child: AppText(
-                data: "Iman your question is \n $questionText",
+                data: "${StorageService.userName} your question is \n $questionText",
                 textAlign: TextAlign.center,
                 fontSize: 22,
                 fontWeight: FontWeight.bold,

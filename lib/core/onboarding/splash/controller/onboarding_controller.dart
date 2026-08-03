@@ -5,6 +5,7 @@ import 'package:soul_gate/core/util/app_navigation.dart';
 
 import '../../../../features/card_shuffle/views/ask_oracle_screen.dart';
 import '../../../constants/app_assert_image.dart';
+import '../../../../features/profile/controller/profile_controller.dart';
 // ==================== Models ====================
 
 enum OnboardingPageType {
@@ -112,6 +113,21 @@ class OnboardingController extends GetxController {
   // Set default selections
   final selectedReadingType = Rx<ReadingType>(ReadingType.audioAndText);
   final selectedDeck = Rx<DeckType>(DeckType.classic);
+
+  @override
+  void onInit() {
+    super.onInit();
+    _fetchUserData();
+  }
+
+  Future<void> _fetchUserData() async {
+    try {
+      final profileController = Get.put(ProfileController());
+      await profileController.fetchProfile();
+    } catch (e) {
+      debugPrint('Error fetching profile in onboarding: $e');
+    }
+  }
 
   void nextPage() {
     if (currentPage.value < onboardingPages.length - 1) {

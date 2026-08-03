@@ -46,7 +46,7 @@ class AskOracleController extends GetxController {
       print('Token: ${accessToken?.substring(0, 20)}...');
 
       final response = await http.get(
-        Uri.parse('https://sofiapi.dsrt321.online/tarot/api/questions'),
+        Uri.parse('https://api.soulgatelight.com/tarot/api/questions'),
         headers: {
           'Authorization': 'Bearer $accessToken',
         },

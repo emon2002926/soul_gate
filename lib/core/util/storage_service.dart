@@ -7,6 +7,7 @@ class StorageService {
   static const _tokenKey = 'access_token';
   static const _refreshTokenKey = 'refresh_token';
   static const _languageKey = 'app_language';
+  static const _userNameKey = 'user_name';
 
   // Access Token
   static Future<void> saveToken(String accessToken) async {
@@ -15,6 +16,13 @@ class StorageService {
 
   static String? get accessToken => _box.read(_tokenKey);
   static bool get hasToken => accessToken != null && accessToken!.isNotEmpty;
+
+  // User Name
+  static Future<void> saveUserName(String name) async {
+    await _box.write(_userNameKey, name);
+  }
+
+  static String get userName => _box.read(_userNameKey) ?? '';
 
   // Refresh Token
   static Future<void> saveRefreshToken(String refreshToken) async {
@@ -35,6 +43,7 @@ class StorageService {
   static Future<void> clearToken() async {
     await _box.remove(_tokenKey);
     await _box.remove(_refreshTokenKey);
+    await _box.remove(_userNameKey);
   }
 
   static Future<void> logout() async {

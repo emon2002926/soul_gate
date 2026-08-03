@@ -34,7 +34,7 @@ class EditProfileController extends GetxController {
       final token = StorageService.accessToken;
 
       final response = await http.get(
-        Uri.parse('https://sofiapi.dsrt321.online/api/auth/profile/'),
+        Uri.parse('https://api.soulgatelight.com/api/auth/profile/'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -155,7 +155,7 @@ class EditProfileController extends GetxController {
       final token = StorageService.accessToken;
 
       final response = await http.patch(
-        Uri.parse('https://sofiapi.dsrt321.online/api/auth/profile/'),
+        Uri.parse('https://api.soulgatelight.com/api/auth/profile/'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -174,6 +174,10 @@ class EditProfileController extends GetxController {
           pc.userName.value = data['name'] as String? ?? '';
           pc.userEmail.value = data['email'] as String? ?? '';
         }
+
+        // Save updated username to storage
+        await StorageService.saveUserName(data['name'] as String? ?? '');
+
         CustomSnackBar.success('Profile updated successfully');
 
 

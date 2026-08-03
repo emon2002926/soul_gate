@@ -18,7 +18,7 @@ class EmailVerificationController extends GetxController {
   final isLoading = false.obs;
   final hasCodeBeenSent = false.obs;
 
-  static final String baseUrl = 'https://sofiapi.dsrt321.online/api';
+  static final String baseUrl = 'https://api.soulgatelight.com/api';
   static const String _endpoint = '/auth/forgot-password/';
 
   void startResendCountdown(int seconds) {
