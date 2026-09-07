@@ -286,7 +286,7 @@ class OtpVerificationController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('$baseUrl/auth/signup/');
+      final url = Uri.parse('$baseUrl/auth/resend-otp/');
 
       final response = await http.post(
         url,
@@ -295,6 +295,7 @@ class OtpVerificationController extends GetxController {
         },
         body: jsonEncode({
           'email': email.value,
+          'otp_type': 'signup',
         }),
       );
 
@@ -368,7 +369,7 @@ class OtpVerificationController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('$baseUrl/auth/forgot-password/');
+      final url = Uri.parse('$baseUrl/auth/resend-otp/');
 
       final response = await http.post(
         url,
@@ -377,6 +378,7 @@ class OtpVerificationController extends GetxController {
         },
         body: jsonEncode({
           'email': email.value,
+          'otp_type': 'reset',
         }),
       );
 

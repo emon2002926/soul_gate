@@ -91,10 +91,13 @@ class EmailVerificationController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = Uri.parse('$baseUrl$_endpoint');
-      final body = {'email': emailController.text.trim()};
+      final url = Uri.parse('$baseUrl/auth/resend-otp/');
+      final body = {
+        'email': emailController.text.trim(),
+        'otp_type': 'reset',
+      };
 
-      AppLog.request(_endpoint, body: body);
+      AppLog.request('/auth/resend-otp/', body: body);
 
       final response = await http.post(
         url,

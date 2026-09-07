@@ -60,6 +60,7 @@ class LoginController extends GetxController {
         body: jsonEncode({
           'email': emailController.text.trim(),
           'password': passwordController.text.trim(),
+          'remember_me': true,
         }),
       );
 
@@ -70,13 +71,13 @@ class LoginController extends GetxController {
         final accessToken = responseData['access'];
         await StorageService.saveToken(accessToken);
         dispose();
-        // Save refresh token if you need it later
-        // final refreshToken = responseData['refresh'];
-        // if (refreshToken != null) {
-        //   await StorageService.saveRefreshToken(refreshToken);
-        // }
-        //
-        // // Save user data if needed
+        // Save refresh token
+        final refreshToken = responseData['refresh'];
+        if (refreshToken != null) {
+          await StorageService.saveRefreshToken(refreshToken);
+        }
+        
+        // Save user data if needed
         // final user = responseData['user'];
         // if (user != null) {
         //   await StorageService.saveUserId(user['id'].toString());

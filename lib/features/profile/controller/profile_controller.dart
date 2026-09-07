@@ -105,10 +105,29 @@ class ProfileController extends GetxController {
   void onContactUs() {
     AppNavigation.push(Get.context!, LegalConditionsScreen());
   }
+  Future<void> logUot() async {
+    try {
+      final token = StorageService.accessToken;
+      final refresh = StorageService.refreshToken;
 
-  void logUot() {
-    StorageService.logout();
-    AppNavigation.pushAndClear(Get.context!, SingInScreen());
+      if (token != null && refresh != null) {
+        await http.post(
+          Uri.parse('https://api.soulgatelight.com/api/auth/logout/'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({
+            'refresh': refresh,
+          }),
+        );
+      }
+    } catch (e) {
+      // Ignore API errors on logout
+    } finally {
+      StorageService.logout();
+      AppNavigation.pushAndClear(Get.context!, SingInScreen());
+    }
   }
 
   void onFAQ() {
@@ -144,9 +163,17 @@ class ProfileController extends GetxController {
 
 
 
-  Future<void> deleteAccount() async {
+  Future<void> deleteAccount(String password) async {
     try {
       final token = StorageService.accessToken;
+      final refresh = StorageService.refreshToken;
+
+      final body = <String, dynamic>{
+        'password': password,
+      };
+      if (refresh != null && refresh.isNotEmpty) {
+        body['refresh'] = refresh;
+      }
 
       final response = await http.delete(
         Uri.parse('https://api.soulgatelight.com/api/auth/delete-account/'),
@@ -154,6 +181,7 @@ class ProfileController extends GetxController {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
+        body: jsonEncode(body),
       );
 
       if (response.statusCode == 200 || response.statusCode == 204) {
@@ -184,6 +212,7 @@ class ProfileController extends GetxController {
   }
 
   void confirmDeleteAccount(BuildContext context) {
+    final passwordController = TextEditingController();
     Get.dialog(
       AlertDialog(
         shape: RoundedRectangleBorder(
@@ -212,11 +241,34 @@ class ProfileController extends GetxController {
             ),
           ],
         ),
-        content: const Text(
-          'Are you sure you want to delete your account? '
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Are you sure you want to delete your account? '
               'This action is permanent and cannot be undone. '
               'All your data will be lost.',
-          style: TextStyle(fontSize: 14, height: 1.4),
+              style: TextStyle(fontSize: 14, height: 1.4),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Enter your password to confirm:',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: passwordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                hintText: 'Password',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              ),
+            ),
+          ],
         ),
         actions: [
           TextButton(
@@ -228,8 +280,17 @@ class ProfileController extends GetxController {
           ),
           TextButton(
             onPressed: () {
+              final password = passwordController.text.trim();
+              if (password.isEmpty) {
+                Get.snackbar(
+                  'Error',
+                  'Please enter your password',
+                  snackPosition: SnackPosition.BOTTOM,
+                );
+                return;
+              }
               Get.back(); // close dialog first
-              deleteAccount();
+              deleteAccount(password);
             },
             child: const Text(
               'Delete',

@@ -43,7 +43,7 @@ class EditProfileController extends GetxController {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
-        nameController.text = data['username'] as String? ?? '';
+        nameController.text = data['name'] as String? ?? '';
         emailController.text = data['email'] as String? ?? '';
         // API has no mobile field; leave as-is or load from local storage
       }

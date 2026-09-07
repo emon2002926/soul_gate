@@ -285,7 +285,7 @@ class FullReadingController extends GetxController {
       await FileSaver.instance.saveAs(
         name: fileName,
         bytes: bytes,
-        ext: 'txt',
+        fileExtension: 'txt',
         mimeType: MimeType.text,
       );
 
