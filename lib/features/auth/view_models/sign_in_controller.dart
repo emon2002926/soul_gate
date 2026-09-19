@@ -52,25 +52,30 @@ class LoginController extends GetxController {
 
       final url = Uri.parse('$baseUrl/auth/login/');
 
+      final bodyData = {
+        'email': emailController.text.trim(),
+        'password': passwordController.text.trim(),
+        'remember_me': true,
+      };
+
+      AppLog.request(url.toString(), body: bodyData);
+
       final response = await http.post(
         url,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({
-          'email': emailController.text.trim(),
-          'password': passwordController.text.trim(),
-          'remember_me': true,
-        }),
+        body: jsonEncode(bodyData),
       );
 
       final responseData = jsonDecode(response.body);
+      AppLog.response(url.toString(), responseData);
 
       if (response.statusCode == 200 && responseData['access'] != null) {
         // Save access token
         final accessToken = responseData['access'];
         await StorageService.saveToken(accessToken);
-        dispose();
+        clearFields();
         // Save refresh token
         final refreshToken = responseData['refresh'];
         if (refreshToken != null) {
@@ -88,19 +93,35 @@ class LoginController extends GetxController {
         // All users navigate to onboarding serving selection
         AppNavigation.pushAndClear(Get.context!, OnboardingScreen());
       } else {
-        dispose();
-        CustomSnackBar.error('Login failed');
+        clearFields();
+        String errorMessage = 'Login failed';
+        if (responseData is Map) {
+          if (responseData.containsKey('email')) {
+            errorMessage = responseData['email'][0] ?? 'Email error';
+          } else if (responseData.containsKey('password')) {
+            errorMessage = responseData['password'][0] ?? 'Password error';
+          } else if (responseData.containsKey('non_field_errors')) {
+            errorMessage = responseData['non_field_errors'][0] ?? 'Login failed';
+          } else if (responseData.containsKey('detail')) {
+            errorMessage = responseData['detail'];
+          } else if (responseData.containsKey('message')) {
+            errorMessage = responseData['message'];
+          } else if (responseData.containsKey('error')) {
+            errorMessage = responseData['error'];
+          }
+        }
+        CustomSnackBar.error(errorMessage);
       }
     } catch (e) {
-      dispose();
-      CustomSnackBar.error('Something went wrong');
+      clearFields();
+      CustomSnackBar.error(e.toString());
     } finally {
       isLoading.value = false;
     }
   }
 
 
-  void dispose (){
+  void clearFields (){
 
     emailController.clear();
     passwordController.clear();

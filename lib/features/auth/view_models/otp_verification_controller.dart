@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 import '../../../core/util/storage_service.dart';
+import '../../../core/util/app_log.dart';
 
 
 class OtpVerificationController extends GetxController {
@@ -100,19 +101,24 @@ class OtpVerificationController extends GetxController {
 
       final url = Uri.parse('$baseUrl/auth/verify-otp/');
 
+      final bodyData = {
+        "email": email.value,
+        "otp": otpCode,
+        "otp_type": "signup"
+      };
+
+      AppLog.request(url.toString(), body: bodyData);
+
       final response = await http.post(
         url,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({
-          "email": email.value,
-          "otp": otpCode,
-          "otp_type": "signup"
-        }),
+        body: jsonEncode(bodyData),
       );
 
       final responseData = jsonDecode(response.body);
+      AppLog.response(url.toString(), responseData);
 
       if (response.statusCode == 200 && responseData['access'] != null) {
         // Cancel timer on successful verification
@@ -137,12 +143,12 @@ class OtpVerificationController extends GetxController {
         );
 
         // Navigate to onboarding serving selection (default for all users)
-        AppNavigation.push(Get.context!, OnboardingScreen());
+        AppNavigation.pushAndClear(Get.context!, OnboardingScreen());
       } else {
         // Handle error response
         Get.snackbar(
           "Error",
-          responseData['message'] ?? 'Invalid or expired OTP code',
+          _extractErrorMessage(responseData, 'Invalid or expired OTP code'),
           snackPosition: SnackPosition.TOP,
           backgroundColor: Colors.red,
           colorText: Colors.white,
@@ -151,7 +157,7 @@ class OtpVerificationController extends GetxController {
     } catch (e) {
       Get.snackbar(
         "Error",
-        "Something went wrong: ${e.toString()}",
+        e.toString(),
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -192,19 +198,24 @@ class OtpVerificationController extends GetxController {
 
       final url = Uri.parse('$baseUrl/auth/verify-otp/');
 
+      final bodyData = {
+        'email': email.value,
+        'otp': otpCode,
+        'otp_type': 'reset',
+      };
+
+      AppLog.request(url.toString(), body: bodyData);
+
       final response = await http.post(
         url,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({
-          'email': email.value,
-          'otp': otpCode,
-          'otp_type': 'reset',
-        }),
+        body: jsonEncode(bodyData),
       );
 
       final responseData = jsonDecode(response.body);
+      AppLog.response(url.toString(), responseData);
 
       if (response.statusCode == 200) {
         // Cancel timer on successful verification
@@ -230,7 +241,7 @@ class OtpVerificationController extends GetxController {
         // Handle error response
         Get.snackbar(
           "Error",
-          responseData['message'] ?? 'Invalid or expired OTP code',
+          _extractErrorMessage(responseData, 'Invalid or expired OTP code'),
           snackPosition: SnackPosition.TOP,
           backgroundColor: Colors.red,
           colorText: Colors.white,
@@ -239,7 +250,7 @@ class OtpVerificationController extends GetxController {
     } catch (e) {
       Get.snackbar(
         "Error",
-        "Something went wrong: ${e.toString()}",
+        e.toString(),
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -288,18 +299,23 @@ class OtpVerificationController extends GetxController {
 
       final url = Uri.parse('$baseUrl/auth/resend-otp/');
 
+      final bodyData = {
+        'email': email.value,
+        'otp_type': 'signup',
+      };
+
+      AppLog.request(url.toString(), body: bodyData);
+
       final response = await http.post(
         url,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({
-          'email': email.value,
-          'otp_type': 'signup',
-        }),
+        body: jsonEncode(bodyData),
       );
 
       final responseData = jsonDecode(response.body);
+      AppLog.response(url.toString(), responseData);
 
       if (response.statusCode == 200) {
         // Start countdown timer
@@ -322,7 +338,7 @@ class OtpVerificationController extends GetxController {
       } else {
         Get.snackbar(
           "Error",
-          responseData['message'] ?? 'Failed to resend OTP',
+          _extractErrorMessage(responseData, 'Failed to resend OTP'),
           snackPosition: SnackPosition.TOP,
           backgroundColor: Colors.red,
           colorText: Colors.white,
@@ -331,7 +347,7 @@ class OtpVerificationController extends GetxController {
     } catch (e) {
       Get.snackbar(
         "Error",
-        "Something went wrong: ${e.toString()}",
+        e.toString(),
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -371,18 +387,23 @@ class OtpVerificationController extends GetxController {
 
       final url = Uri.parse('$baseUrl/auth/resend-otp/');
 
+      final bodyData = {
+        'email': email.value,
+        'otp_type': 'reset',
+      };
+
+      AppLog.request(url.toString(), body: bodyData);
+
       final response = await http.post(
         url,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({
-          'email': email.value,
-          'otp_type': 'reset',
-        }),
+        body: jsonEncode(bodyData),
       );
 
       final responseData = jsonDecode(response.body);
+      AppLog.response(url.toString(), responseData);
 
       if (response.statusCode == 200) {
         // Start countdown timer
@@ -405,7 +426,7 @@ class OtpVerificationController extends GetxController {
       } else {
         Get.snackbar(
           "Error",
-          responseData['message'] ?? 'Failed to resend OTP',
+          _extractErrorMessage(responseData, 'Failed to resend OTP'),
           snackPosition: SnackPosition.TOP,
           backgroundColor: Colors.red,
           colorText: Colors.white,
@@ -414,7 +435,7 @@ class OtpVerificationController extends GetxController {
     } catch (e) {
       Get.snackbar(
         "Error",
-        "Something went wrong: ${e.toString()}",
+        e.toString(),
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -434,6 +455,15 @@ class OtpVerificationController extends GetxController {
       node.dispose();
     }
     super.onClose();
+  }
+
+  String _extractErrorMessage(dynamic responseData, String defaultMessage) {
+    if (responseData is Map) {
+      if (responseData.containsKey('detail')) return responseData['detail'];
+      if (responseData.containsKey('message')) return responseData['message'];
+      if (responseData.containsKey('error')) return responseData['error'];
+    }
+    return defaultMessage;
   }
 }
 

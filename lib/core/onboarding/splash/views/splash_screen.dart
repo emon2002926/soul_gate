@@ -21,7 +21,7 @@ class SplashScreen extends StatelessWidget {
             image: AssetImage(
               languageController.isEnglish
                   ? AppAssertImage.instance.splashImageEnglish
-                  : AppAssertImage.instance.splashImageMx,
+                  : AppAssertImage.instance.splashImageEnglish,
             ),
             fit: BoxFit.cover,
           ),

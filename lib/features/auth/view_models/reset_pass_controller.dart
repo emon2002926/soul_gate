@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../../../core/routes/app_routes.dart';
+import '../../../core/util/app_log.dart';
 
 
 
@@ -121,20 +122,25 @@ class ResetPassController extends GetxController {
 
       final url = Uri.parse('$baseUrl/auth/reset-password/');
 
+      final bodyData = {
+        'email': email.value,
+        'otp': otp.value,
+        'new_password': newPasswordController.text.trim(),
+        'confirm_password': confirmPasswordController.text.trim(),
+      };
+
+      AppLog.request(url.toString(), body: bodyData);
+
       final response = await http.post(
         url,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({
-          'email': email.value,
-          'otp': otp.value,
-          'new_password': newPasswordController.text.trim(),
-          'confirm_password': confirmPasswordController.text.trim(),
-        }),
+        body: jsonEncode(bodyData),
       );
 
       final responseData = jsonDecode(response.body);
+      AppLog.response(url.toString(), responseData);
 
       if (response.statusCode == 200) {
         Get.snackbar(
@@ -148,14 +154,17 @@ class ResetPassController extends GetxController {
 
         // Navigate to login screen after successful password reset
         await Future.delayed(const Duration(seconds: 1));
-        Get.offAllNamed(AppRoutes.login);
+        clearFields();
+        Get.until((route) => route.isFirst);
       } else {
         // Handle error response
         String errorMessage = 'Failed to reset password';
 
         if (responseData is Map) {
           // Check for specific field errors
-          if (responseData.containsKey('new_password')) {
+          if (responseData.containsKey('detail')) {
+            errorMessage = responseData['detail'];
+          } else if (responseData.containsKey('new_password')) {
             errorMessage = responseData['new_password'][0] ?? 'Password error';
           } else if (responseData.containsKey('confirm_password')) {
             errorMessage = responseData['confirm_password'][0] ?? 'Password confirmation error';
@@ -165,6 +174,8 @@ class ResetPassController extends GetxController {
             errorMessage = responseData['email'][0] ?? 'Email error';
           } else if (responseData.containsKey('message')) {
             errorMessage = responseData['message'];
+          } else if (responseData.containsKey('error')) {
+            errorMessage = responseData['error'];
           }
         }
 
@@ -179,7 +190,7 @@ class ResetPassController extends GetxController {
     } catch (e) {
       Get.snackbar(
         'Error',
-        'Something went wrong: ${e.toString()}',
+        e.toString(),
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -187,6 +198,11 @@ class ResetPassController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  void clearFields() {
+    newPasswordController.clear();
+    confirmPasswordController.clear();
   }
 
   @override

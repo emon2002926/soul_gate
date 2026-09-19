@@ -98,12 +98,30 @@ class ProfileController extends GetxController {
     Get.snackbar('About Us', 'Opening about page...');
   }
 
-  void onPrivacyPolicy() {
-    Get.snackbar('Privacy Policy', 'Opening privacy policy...');
+  Future<void> onPrivacyPolicy() async {
+    final Uri url = Uri.parse('https://privacy.soulgatelight.com/');
+    try {
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url);
+      } else {
+        Get.snackbar('Error', 'Could not open privacy policy');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Could not open privacy policy');
+    }
   }
 
-  void onContactUs() {
-    AppNavigation.push(Get.context!, LegalConditionsScreen());
+  Future<void> onContactUs() async {
+    final Uri url = Uri.parse('https://privacy.soulgatelight.com/support/');
+    try {
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url);
+      } else {
+        Get.snackbar('Error', 'Could not open terms and conditions');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Could not open terms and conditions');
+    }
   }
   Future<void> logUot() async {
     try {

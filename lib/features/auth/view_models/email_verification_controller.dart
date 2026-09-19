@@ -72,11 +72,23 @@ class EmailVerificationController extends GetxController {
         continueToOtpVerification();
       } else {
         AppLog.error(_endpoint, responseData, statusCode: response.statusCode);
-        CustomSnackBar.error(responseData['message'] ?? 'Failed to send verification code');
+        String errorMessage = 'Failed to send verification code';
+        if (responseData is Map) {
+          if (responseData.containsKey('email')) {
+            errorMessage = responseData['email'][0] ?? 'Email error';
+          } else if (responseData.containsKey('detail')) {
+            errorMessage = responseData['detail'];
+          } else if (responseData.containsKey('message')) {
+            errorMessage = responseData['message'];
+          } else if (responseData.containsKey('error')) {
+            errorMessage = responseData['error'];
+          }
+        }
+        CustomSnackBar.error(errorMessage);
       }
     } catch (e) {
       AppLog.error(_endpoint, e.toString());
-      CustomSnackBar.error("Something went wrong: ${e.toString()}");
+      CustomSnackBar.error(e.toString());
     } finally {
       isLoading.value = false;
     }
@@ -115,11 +127,23 @@ class EmailVerificationController extends GetxController {
         continueToOtpVerification();
       } else {
         AppLog.error(_endpoint, responseData, statusCode: response.statusCode);
-        CustomSnackBar.error(responseData['message'] ?? 'Failed to resend code');
+        String errorMessage = 'Failed to resend code';
+        if (responseData is Map) {
+          if (responseData.containsKey('email')) {
+            errorMessage = responseData['email'][0] ?? 'Email error';
+          } else if (responseData.containsKey('detail')) {
+            errorMessage = responseData['detail'];
+          } else if (responseData.containsKey('message')) {
+            errorMessage = responseData['message'];
+          } else if (responseData.containsKey('error')) {
+            errorMessage = responseData['error'];
+          }
+        }
+        CustomSnackBar.error(errorMessage);
       }
     } catch (e) {
       AppLog.error(_endpoint, e.toString());
-      CustomSnackBar.error("Something went wrong: ${e.toString()}");
+      CustomSnackBar.error(e.toString());
     } finally {
       isLoading.value = false;
     }
@@ -133,6 +157,10 @@ class EmailVerificationController extends GetxController {
         "email": emailController.text.trim(),
       },
     );
+  }
+
+  void clearFields() {
+    emailController.clear();
   }
 
   @override

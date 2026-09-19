@@ -91,7 +91,7 @@ class _SubscriptionRequiredContent extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: const Icon(
-              Icons.lock_outline_rounded,
+              Icons.info_outline_rounded,
               color: Color(0xFFD4A574),
               size: 48,
             ),
@@ -112,26 +112,26 @@ class _SubscriptionRequiredContent extends StatelessWidget {
             height: 1.5,
           ),
           const SizedBox(height: 24),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: onGoToSubscription,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFD4A574),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 0,
-              ),
-              child: AppText(
-                data: appStrings.goToSubscription ,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
-            ),
-          ),
+          // SizedBox(
+          //   width: double.infinity,
+          //   child: ElevatedButton(
+          //     onPressed: onGoToSubscription,
+          //     style: ElevatedButton.styleFrom(
+          //       backgroundColor: const Color(0xFFD4A574),
+          //       padding: const EdgeInsets.symmetric(vertical: 14),
+          //       shape: RoundedRectangleBorder(
+          //         borderRadius: BorderRadius.circular(12),
+          //       ),
+          //       elevation: 0,
+          //     ),
+          //     child: AppText(
+          //       data: appStrings.goToSubscription ,
+          //       fontSize: 16,
+          //       fontWeight: FontWeight.w600,
+          //       color: Colors.white,
+          //     ),
+          //   ),
+          // ),
           const SizedBox(height: 12),
           SizedBox(
             width: double.infinity,

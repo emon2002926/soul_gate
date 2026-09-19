@@ -138,13 +138,13 @@ class AppStrings {
   );
 
   String get subscriptionRequiredMessage => _getText(
-    "An active subscription is required to access SoulGate. Please subscribe to continue your spiritual journey.",
-    "Se requiere una suscripción activa para acceder a SoulGate. Por favor suscríbete para continuar tu viaje espiritual.",
+    "You have reached your limit of free readings. Please try again later.",
+    "Has alcanzado tu límite de lecturas gratuitas. Por favor, inténtalo de nuevo más tarde.",
   );
 
   String get subscriptionRequired => _getText(
-    "Subscription Required",
-    "Suscripción Requerida",
+    "Limit Reached",
+    "Límite Alcanzado",
   );
 
   String get goToSubscription => _getText(

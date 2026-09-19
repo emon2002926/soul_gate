@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../../../core/widgets/snakbar/custom_snackbar.dart';
+import '../../../core/util/app_log.dart';
 
 class SignUpController extends GetxController {
   // Form key
@@ -129,27 +130,35 @@ class SignUpController extends GetxController {
       final url = Uri.parse('$baseUrl/auth/signup/');
 
 
+      final bodyData = {
+        'name' : fullNameController.text.trim(),
+        'email': emailController.text.trim(),
+        'password': passwordController.text.trim(),
+      };
+
+      AppLog.request(url.toString(), body: bodyData);
+
       final response = await http.post(
         url,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({
-          'name' : fullNameController.text.trim(),
-          'email': emailController.text.trim(),
-          'password': passwordController.text.trim(),
-        }),
+        body: jsonEncode(bodyData),
       );
 
       final responseData = jsonDecode(response.body);
+      AppLog.response(url.toString(), responseData);
 
       if (response.statusCode == 201 || response.statusCode == 200) {
 
         CustomSnackBar.success("Account created successfully! Please login.");
 
+        final email = emailController.text.trim();
+        clearFields();
+
         // Navigate to login screen
         Get.offAllNamed(AppRoutes.otpVerifyPage, arguments: {
-          'email': emailController.text.trim(),
+          'email': email,
           'isFromSignUp': true,
         });
       } else if (response.statusCode == 400) {
@@ -168,15 +177,30 @@ class SignUpController extends GetxController {
         }
         CustomSnackBar.error(errorMessage);
       } else {
-
-        CustomSnackBar.error(responseData['message'] ?? 'Failed to create account');
+        String errorMessage = 'Failed to create account';
+        if (responseData is Map) {
+          if (responseData.containsKey('detail')) {
+            errorMessage = responseData['detail'];
+          } else if (responseData.containsKey('message')) {
+            errorMessage = responseData['message'];
+          } else if (responseData.containsKey('error')) {
+            errorMessage = responseData['error'];
+          }
+        }
+        CustomSnackBar.error(errorMessage);
       }
     } catch (e) {
-
-      CustomSnackBar.error("Something went wrong: ${e.toString()}");
+      CustomSnackBar.error(e.toString());
     } finally {
       isLoading.value = false;
     }
+  }
+
+  void clearFields() {
+    fullNameController.clear();
+    emailController.clear();
+    passwordController.clear();
+    phoneController.clear();
   }
 
   @override
